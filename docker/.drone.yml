@@ -1,0 +1,118 @@
+kind: pipeline
+type: kubernetes
+name: kratos-ui
+
+# metadata:
+#   namespace: default
+
+platform:
+  os: linux
+  arch: amd64
+
+#steps:
+#- name: restore
+#  image: appleboy/drone-sftp-cache
+#  settings:
+#    server: drone-sftp-svc
+#    port: 22
+#    username: drone
+#    password: abcde
+#    path: cache/ends
+#    ignore_branch: true # filename based on mount path
+#    restore: true
+#    mount:
+#    - node_modules
+
+- name: build
+  image: suisrc/npmjs:node-12-v1
+  commands:
+  - cnpm install && npm run build && tar -cf docker/dist.tar -C dist .
+
+#- name: recache
+#  image: appleboy/drone-sftp-cache
+#  settings:
+#    server: drone-sftp-svc
+#    port: 22
+#    username: drone
+#    password: abcde
+#    path: cache/ends
+#    ignore_branch: true
+#    rebuild: true
+#    mount:
+#    - node_modules
+
+- name: publish
+  # http://plugins.drone.io/banzaicloud/drone-kaniko/
+  image: banzaicloud/drone-kaniko:0.6.1
+  pull: true
+  settings:
+    username:
+      from_secret: dcr_username
+    password:
+      from_secret: dcr_password
+    registry: registry-vpc.cn-hongkong.aliyuncs.com
+    repo: suisrc/kratos-ui
+    tags: br-${DRONE_BUILD_NUMBER},latest
+    dockerfile: docker/Dockerfile
+    context: docker
+    #skip_tls_verify: false
+    #cache: true
+    #build_args:
+    # - --cache=true
+    # - --cache-dir=/drone/src/kaniko
+
+#- name: publish
+#  image: docker:19.03.6
+#  pull: true
+#  environment:
+#    DOCKER_HOST: tcp://docker:2375
+#    PLUGIN_REGISTRY: registry-vpc.cn-hongkong.aliyuncs.com
+#    PLUGIN_REPO: suisrc/kratos-ui:br-${DRONE_BUILD_NUMBER}
+#  commands: 
+#    #- dockerd      --data-root /var/lib/docker
+#    #- docker version
+#    - docker build --rm=true -f docker/Dockerfile -t $PLUGIN_REGISTRY/$PLUGIN_REPO docker
+#    - docker login -u $PLUGIN_USERNAME -p $PLUGIN_PASSWORD $PLUGIN_REGISTRY
+#    - docker push $PLUGIN_REGISTRY/$PLUGIN_REPO
+#    - docker rmi  $PLUGIN_REGISTRY/$PLUGIN_REPO
+#    - docker system prune -f
+
+#- name: deploy
+#  # https://github.com/honestbee/drone-kubernetes
+#  image: quay.io/honestbee/drone-kubernetes
+#  pull: true
+#  settings:
+#    kubernetes_server: https://kubernetes.default.svc
+#    kubernetes_token: 
+#        from_secret: kube_token
+#    namespace: test
+#    deployment: kratos-ui
+#    container: kratos-ui
+#    repo: registry-vpc.cn-hongkong.aliyuncs.com/suisrc/kratos-ui
+#    tag: br-${DRONE_BUILD_NUMBER}
+
+#- name: notice
+#    # https://docs.drone.io/pipeline/environment/reference/
+#    # http://plugins.drone.io/drone-plugins/drone-webhook/
+#    image: plugins/webhook
+#    settings:
+#      username: myusername
+#      password: mypassword  
+#      urls: https://your.webhook/...
+#      content_type: application/json
+#      template: |
+#        {
+#          "build": "{{ build.number }}",
+#          "commit": "{{ commit.link}}",
+#          "repo": "{{ repo.name }}",
+#          "status": "{{ build.status }}",
+#        }
+
+#https://docs.drone.io/pipeline/kubernetes/syntax/trigger/
+trigger:
+  branch:
+  - deploy-auto
+  event:
+  - push
+  #- tag
+ 

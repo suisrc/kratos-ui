@@ -1,0 +1,39 @@
+name: Docker
+
+# https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#github-context
+# https://help.github.com/en/actions/reference/events-that-trigger-workflows
+on:
+  #release:
+  #  types: [published]
+  push:
+    branches: [ deploy-auto ]
+
+env:
+  DOCKER_IMAGE_NAME: suisrc/kratos-ui
+  ALIYUN_REGISTRY: registry.cn-hongkong.aliyuncs.com
+
+jobs:
+  vscode:
+    #if: false
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm install && npm run build && tar -cf docker/dist.tar -C dist .
+
+      - name: Build image
+        run:  docker build ./docker --file ./docker/Dockerfile --tag image
+
+      - name: Push image
+        run: |
+          REGISTRY_URL=$ALIYUN_REGISTRY
+          echo "${{ secrets.ALIYUN_TOKEN }}" | docker login $REGISTRY_URL -u ${{ secrets.ALIYUN_USER }} --password-stdin
+
+          IMAGE_ID=$REGISTRY_URL/$DOCKER_IMAGE_NAME
+          echo IMAGE_ID=$IMAGE_ID
+
+          VERSION=$DOCKER_VERSION
+          echo VERSION=$VERSION
+
+          docker tag image $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
