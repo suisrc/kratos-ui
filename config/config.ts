@@ -23,11 +23,11 @@ export default defineConfig({
     // ...darkTheme,
     'primary-color': defaultSettings.primaryColor,
   },
-  layout: {
-    name: defaultSettings.title,
-    locale: true,
-    logo: '@/assets/logo.svg',
-  },
+  // layout: {
+  //   name: defaultSettings.title,
+  //   locale: true,
+  //   logo: '@/assets/logo.svg',
+  // },
   title: defaultSettings.title,
   ignoreMomentLocale: true,
   proxy: proxy['dev'], //proxy[REACT_APP_ENV || 'dev'],

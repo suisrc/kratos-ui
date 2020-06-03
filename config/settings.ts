@@ -1,9 +1,10 @@
 // 默认值
+import { Settings as ProSettings } from '@ant-design/pro-layout';
 export interface DefaultSettings {
   [key: string]: any;
 }
 
-const defaultSettings: DefaultSettings = {
+const defaultSettings: ProSettings = {
   navTheme: 'dark',
   // 拂晓蓝
   primaryColor: '#1890ff',
