@@ -1,10 +1,9 @@
-import { Settings as ProSettings } from '@ant-design/pro-layout';
+// 默认值
+export interface DefaultSettings {
+  [key: string]: any;
+}
 
-type DefaultSettings = ProSettings & {
-  pwa: boolean;
-};
-
-const proSettings: DefaultSettings = {
+const defaultSettings: DefaultSettings = {
   navTheme: 'dark',
   // 拂晓蓝
   primaryColor: '#1890ff',
@@ -17,10 +16,7 @@ const proSettings: DefaultSettings = {
     locale: true,
   },
   title: 'Kratos',
-  pwa: false,
   iconfontUrl: '',
 };
 
-export type { DefaultSettings };
-
-export default proSettings;
+export default defaultSettings;

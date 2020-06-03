@@ -1,21 +1,18 @@
 // https://umijs.org/config/
 import { defineConfig } from 'umi';
-import defaultSettings from './defaultSettings';
+import defaultSettings from './settings';
 import proxy from './proxy';
 import route from './route';
 
-const { REACT_APP_ENV: string } = process.env;
+// const { REACT_APP_ENV } = process.env;
 
 export default defineConfig({
-  hash: true,
-  antd: {},
-  dva: {
-    hmr: true,
-  },
   locale: {
-    default: 'zh-CN',
     antd: true,
-    baseNavigator: true,
+  },
+  dva: {},
+  nodeModulesTransform: {
+    type: 'none',
   },
   dynamicImport: {
     loading: '@/components/PageLoading/index',
@@ -26,10 +23,14 @@ export default defineConfig({
     // ...darkTheme,
     'primary-color': defaultSettings.primaryColor,
   },
-  // @ts-ignore
-  title: false,
+  layout: {
+    name: defaultSettings.title,
+    locale: true,
+    logo: '@/assets/logo.svg',
+  },
+  title: defaultSettings.title,
   ignoreMomentLocale: true,
-  proxy: proxy[REACT_APP_ENV || 'dev'],
+  proxy: proxy['dev'], //proxy[REACT_APP_ENV || 'dev'],
   manifest: {
     basePath: '/',
   },
