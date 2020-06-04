@@ -4,5 +4,5 @@ import styles from './index.less';
 import { Result } from 'antd';
 
 export default () => {
-  return <div></div>;
+  return <div>首页</div>;
 };

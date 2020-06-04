@@ -24,23 +24,20 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
 
   const [settings, setSettings] = useState({});
   return (
-    <>
-      <Space className={className}>
-        <Tooltip title="使用文档">
-          <span
-            className={styles.action}
-            onClick={() => {
-              window.location.href = 'https://kratos.quay.run/docs';
-            }}
-          >
-            <QuestionCircleOutlined />
-          </span>
-        </Tooltip>
-        <AvatarDropdown />
-        <SelectLang className={styles.action} />
-      </Space>
-      <SettingDrawer settings={settings} onSettingChange={setSettings} />
-    </>
+    <Space className={className}>
+      <Tooltip title="使用文档">
+        <span
+          className={styles.action}
+          onClick={() => {
+            window.location.href = 'https://kratos.quay.run/docs';
+          }}
+        >
+          <QuestionCircleOutlined />
+        </span>
+      </Tooltip>
+      <AvatarDropdown />
+      <SelectLang className={styles.action} />
+    </Space>
   );
 };
 

@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
-import BasicLayout, {
-  SettingDrawer,
-  BasicLayoutProps,
-} from '@ant-design/pro-layout';
+import { SettingDrawer } from '@ant-design/pro-layout';
 
-const Layout = (props: BasicLayoutProps) => {
+import { IRouteComponentProps } from 'umi';
+
+export default function(props: IRouteComponentProps) {
   const [settings, setSettings] = useState({});
   return (
     <>
+      {props.children}
       <SettingDrawer settings={settings} onSettingChange={setSettings} />
     </>
   );
-};
-
-export default Layout;
+}

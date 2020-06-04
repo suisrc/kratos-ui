@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
   BasicLayoutProps,
@@ -13,6 +13,8 @@ import Footer from '@/components/Footer';
 import { queryCurrent } from './services/user';
 
 import defaultSettings from '../config/defaultSettings';
+
+// 全局配置
 
 export async function getInitialState(): Promise<{
   currentUser?: API.CurrentUser;
@@ -46,23 +48,10 @@ export const layout = ({
   return {
     rightContentRender: () => <GlobalHeaderRight />,
     footerRender: () => <Footer />,
+    // isChildrenLayout: true,
     disableContentMargin: false,
-    //menuHeaderRender: undefined,
+    menuHeaderRender: undefined,
     // menuDataRender: () => [],
     ...initialState?.settings,
   };
 };
-
-// const GlobalLayout: React.FC = (
-//   children,
-//   initialState: { settings?: LayoutSettings },
-// ) => {
-//   const [settings, setSettings] = useState({ ...initialState?.settings });
-//   return (
-//     <>
-//       {children}
-//       <SettingDrawer settings={settings} onSettingChange={setSettings} />
-//     </>
-//   );
-// };
-// export default GlobalLayout;
