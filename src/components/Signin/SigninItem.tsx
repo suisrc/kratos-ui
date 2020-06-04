@@ -2,22 +2,22 @@ import { Button, Col, Input, Row, Form, message } from 'antd';
 import React, { useState, useCallback, useEffect } from 'react';
 import omit from 'omit.js';
 import { FormItemProps } from 'antd/es/form/FormItem';
-import { getFakeCaptcha } from '@/services/login';
+import { getFakeCaptcha } from '@/services/signin';
 
 import ItemMap from './map';
-import LoginContext, { LoginContextProps } from './LoginContext';
+import SigninContext, { SigninContextProps } from './SigninContext';
 import styles from './index.less';
 
-export type WrappedLoginItemProps = LoginItemProps;
-export type LoginItemKeyType = keyof typeof ItemMap;
-export interface LoginItemType {
-  UserName: React.FC<WrappedLoginItemProps>;
-  Password: React.FC<WrappedLoginItemProps>;
-  Mobile: React.FC<WrappedLoginItemProps>;
-  Captcha: React.FC<WrappedLoginItemProps>;
+export type WrappedSigninItemProps = SigninItemProps;
+export type SigninItemKeyType = keyof typeof ItemMap;
+export interface SigninItemType {
+  Username: React.FC<WrappedSigninItemProps>;
+  Password: React.FC<WrappedSigninItemProps>;
+  Mobile: React.FC<WrappedSigninItemProps>;
+  Captcha: React.FC<WrappedSigninItemProps>;
 }
 
-export interface LoginItemProps extends Partial<FormItemProps> {
+export interface SigninItemProps extends Partial<FormItemProps> {
   name?: string;
   style?: React.CSSProperties;
   placeholder?: string;
@@ -25,12 +25,12 @@ export interface LoginItemProps extends Partial<FormItemProps> {
   countDown?: number;
   getCaptchaButtonText?: string;
   getCaptchaSecondText?: string;
-  updateActive?: LoginContextProps['updateActive'];
+  updateActive?: SigninContextProps['updateActive'];
   type?: string;
   defaultValue?: string;
   customProps?: { [key: string]: unknown };
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  tabUtil?: LoginContextProps['tabUtil'];
+  tabUtil?: SigninContextProps['tabUtil'];
 }
 
 const FormItem = Form.Item;
@@ -40,13 +40,13 @@ const getFormItemOptions = ({
   defaultValue,
   customProps = {},
   rules,
-}: LoginItemProps) => {
+}: SigninItemProps) => {
   const options: {
-    rules?: LoginItemProps['rules'];
-    onChange?: LoginItemProps['onChange'];
-    initialValue?: LoginItemProps['defaultValue'];
+    rules?: SigninItemProps['rules'];
+    onChange?: SigninItemProps['onChange'];
+    initialValue?: SigninItemProps['defaultValue'];
   } = {
-    rules: rules || (customProps.rules as LoginItemProps['rules']),
+    rules: rules || (customProps.rules as SigninItemProps['rules']),
   };
   if (onChange) {
     options.onChange = onChange;
@@ -57,7 +57,7 @@ const getFormItemOptions = ({
   return options;
 };
 
-const LoginItem: React.FC<LoginItemProps> = props => {
+const SigninItem: React.FC<SigninItemProps> = props => {
   const [count, setCount] = useState<number>(props.countDown || 0);
   const [timing, setTiming] = useState(false);
   // 这么写是为了防止restProps中 带入 onChange, defaultValue, rules props tabUtil
@@ -146,14 +146,14 @@ const LoginItem: React.FC<LoginItemProps> = props => {
   );
 };
 
-const LoginItems: Partial<LoginItemType> = {};
+const SigninItems: Partial<SigninItemType> = {};
 
 Object.keys(ItemMap).forEach(key => {
   const item = ItemMap[key];
-  LoginItems[key] = (props: LoginItemProps) => (
-    <LoginContext.Consumer>
+  SigninItems[key] = (props: SigninItemProps) => (
+    <SigninContext.Consumer>
       {context => (
-        <LoginItem
+        <SigninItem
           customProps={item.props}
           rules={item.rules}
           {...props}
@@ -162,8 +162,8 @@ Object.keys(ItemMap).forEach(key => {
           updateActive={context.updateActive}
         />
       )}
-    </LoginContext.Consumer>
+    </SigninContext.Consumer>
   );
 });
 
-export default LoginItems as LoginItemType;
+export default SigninItems as SigninItemType;

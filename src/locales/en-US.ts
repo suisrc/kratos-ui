@@ -1,8 +1,8 @@
 import component from './en-US/component';
 import menu from './en-US/menu';
-import pwa from './en-US/pwa';
 import settingDrawer from './en-US/settingDrawer';
 import settings from './en-US/settings';
+import signin from './en-US/signin';
 
 export default {
   'navBar.lang': 'Languages',
@@ -16,6 +16,6 @@ export default {
   ...menu,
   ...settingDrawer,
   ...settings,
-  ...pwa,
   ...component,
+  ...signin,
 };

@@ -3,34 +3,34 @@ import React, { useState } from 'react';
 import useMergeValue from 'use-merge-value';
 import classNames from 'classnames';
 import { FormInstance } from 'antd/es/form';
-import { LoginParamsType } from '@/services/login';
+import { SigninParamsType } from '@/services/signin';
 
-import LoginContext from './LoginContext';
-import LoginItem, { LoginItemProps } from './LoginItem';
-import LoginSubmit from './LoginSubmit';
-import LoginTab from './LoginTab';
+import SigninContext from './SigninContext';
+import SigninItem, { SigninItemProps } from './SigninItem';
+import SigninSubmit from './SigninSubmit';
+import SigninTab from './SigninTab';
 import styles from './index.less';
 
-export interface LoginProps {
+export interface SigninProps {
   activeKey?: string;
   onTabChange?: (key: string) => void;
   style?: React.CSSProperties;
-  onSubmit?: (values: LoginParamsType) => void;
+  onSubmit?: (values: SigninParamsType) => void;
   className?: string;
   from?: FormInstance;
-  children: React.ReactElement<typeof LoginTab>[];
+  children: React.ReactElement<typeof SigninTab>[];
 }
 
-interface LoginType extends React.FC<LoginProps> {
-  Tab: typeof LoginTab;
-  Submit: typeof LoginSubmit;
-  UserName: React.FunctionComponent<LoginItemProps>;
-  Password: React.FunctionComponent<LoginItemProps>;
-  Mobile: React.FunctionComponent<LoginItemProps>;
-  Captcha: React.FunctionComponent<LoginItemProps>;
+interface SigninType extends React.FC<SigninProps> {
+  Tab: typeof SigninTab;
+  Submit: typeof SigninSubmit;
+  Username: React.FunctionComponent<SigninItemProps>;
+  Password: React.FunctionComponent<SigninItemProps>;
+  Mobile: React.FunctionComponent<SigninItemProps>;
+  Captcha: React.FunctionComponent<SigninItemProps>;
 }
 
-const Login: LoginType = props => {
+const Signin: SigninType = props => {
   const { className } = props;
   const [tabs, setTabs] = useState<string[]>([]);
   const [active, setActive] = useState({});
@@ -38,27 +38,29 @@ const Login: LoginType = props => {
     value: props.activeKey,
     onChange: props.onTabChange,
   });
-  const TabChildren: React.ReactComponentElement<typeof LoginTab>[] = [];
+  const TabChildren: React.ReactComponentElement<typeof SigninTab>[] = [];
   const otherChildren: React.ReactElement<unknown>[] = [];
   React.Children.forEach(
     props.children,
     (
       child:
-        | React.ReactComponentElement<typeof LoginTab>
+        | React.ReactComponentElement<typeof SigninTab>
         | React.ReactElement<unknown>,
     ) => {
       if (!child) {
         return;
       }
-      if ((child.type as { typeName: string }).typeName === 'LoginTab') {
-        TabChildren.push(child as React.ReactComponentElement<typeof LoginTab>);
+      if ((child.type as { typeName: string }).typeName === 'SigninTab') {
+        TabChildren.push(
+          child as React.ReactComponentElement<typeof SigninTab>,
+        );
       } else {
         otherChildren.push(child);
       }
     },
   );
   return (
-    <LoginContext.Provider
+    <SigninContext.Provider
       value={{
         tabUtil: {
           addTab: id => {
@@ -84,7 +86,7 @@ const Login: LoginType = props => {
           form={props.from}
           onFinish={values => {
             if (props.onSubmit) {
-              props.onSubmit(values as LoginParamsType);
+              props.onSubmit(values as SigninParamsType);
             }
           }}
         >
@@ -107,16 +109,16 @@ const Login: LoginType = props => {
           )}
         </Form>
       </div>
-    </LoginContext.Provider>
+    </SigninContext.Provider>
   );
 };
 
-Login.Tab = LoginTab;
-Login.Submit = LoginSubmit;
+Signin.Tab = SigninTab;
+Signin.Submit = SigninSubmit;
 
-Login.UserName = LoginItem.UserName;
-Login.Password = LoginItem.Password;
-Login.Mobile = LoginItem.Mobile;
-Login.Captcha = LoginItem.Captcha;
+Signin.Username = SigninItem.Username;
+Signin.Password = SigninItem.Password;
+Signin.Mobile = SigninItem.Mobile;
+Signin.Captcha = SigninItem.Captcha;
 
-export default Login;
+export default Signin;

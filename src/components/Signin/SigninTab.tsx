@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { TabPaneProps } from 'antd/es/tabs';
+import { TabsProps as TabPaneProps } from 'antd/es/tabs';
 import { Tabs } from 'antd';
-import LoginContext, { LoginContextProps } from './LoginContext';
+import SigninContext, { SigninContextProps } from './SigninContext';
 
 const { TabPane } = Tabs;
 
@@ -13,12 +13,12 @@ const generateId = (() => {
   };
 })();
 
-interface LoginTabProps extends TabPaneProps {
-  tabUtil: LoginContextProps['tabUtil'];
+interface SigninTabProps extends TabPaneProps {
+  tabUtil: SigninContextProps['tabUtil'];
   active?: boolean;
 }
 
-const LoginTab: React.FC<LoginTabProps> = props => {
+const SigninTab: React.FC<SigninTabProps> = props => {
   useEffect(() => {
     const uniqueId = generateId('login-tab-');
     const { tabUtil } = props;
@@ -33,12 +33,12 @@ const LoginTab: React.FC<LoginTabProps> = props => {
 const WrapContext: React.FC<TabPaneProps> & {
   typeName: string;
 } = props => (
-  <LoginContext.Consumer>
-    {value => <LoginTab tabUtil={value.tabUtil} {...props} />}
-  </LoginContext.Consumer>
+  <SigninContext.Consumer>
+    {value => <SigninTab tabUtil={value.tabUtil} {...props} />}
+  </SigninContext.Consumer>
 );
 
 // 标志位 用来判断是不是自定义组件
-WrapContext.typeName = 'LoginTab';
+WrapContext.typeName = 'SigninTab';
 
 export default WrapContext;
