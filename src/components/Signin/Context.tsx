@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-export interface SigninContextProps {
+export interface ContextProps {
   tabUtil?: {
     addTab: (id: string) => void;
     removeTab: (id: string) => void;
@@ -8,6 +8,6 @@ export interface SigninContextProps {
   updateActive?: (activeItem: { [key: string]: string } | string) => void;
 }
 
-const SigninContext: React.Context<SigninContextProps> = createContext({});
+const ContextProps: React.Context<ContextProps> = createContext({});
 
-export default SigninContext;
+export default ContextProps;

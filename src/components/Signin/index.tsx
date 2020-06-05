@@ -3,12 +3,16 @@ import React, { useState } from 'react';
 import useMergeValue from 'use-merge-value';
 import classNames from 'classnames';
 import { FormInstance } from 'antd/es/form';
+
 import { SigninParamsType } from '@/services/signin';
 
-import SigninContext from './SigninContext';
-import SigninItem, { SigninItemProps } from './SigninItem';
-import SigninSubmit from './SigninSubmit';
-import SigninTab from './SigninTab';
+import Context from './Context';
+import Submit from './Submit';
+import Tab from './Tab';
+import Password, { PasswordProps } from './Password';
+import Captcha, { CaptchaProps } from './Captcha';
+import Account, { AccountProps } from './Account';
+
 import styles from './index.less';
 
 export interface SigninProps {
@@ -18,49 +22,46 @@ export interface SigninProps {
   onSubmit?: (values: SigninParamsType) => void;
   className?: string;
   from?: FormInstance;
-  children: React.ReactElement<typeof SigninTab>[];
+  children: React.ReactElement<typeof Tab>[];
 }
 
 interface SigninType extends React.FC<SigninProps> {
-  Tab: typeof SigninTab;
-  Submit: typeof SigninSubmit;
-  Username: React.FunctionComponent<SigninItemProps>;
-  Password: React.FunctionComponent<SigninItemProps>;
-  Mobile: React.FunctionComponent<SigninItemProps>;
-  Captcha: React.FunctionComponent<SigninItemProps>;
+  Tab: typeof Tab;
+  Submit: typeof Submit;
+  Account: React.FunctionComponent<AccountProps>;
+  Password: React.FunctionComponent<PasswordProps>;
+  Captcha: React.FunctionComponent<CaptchaProps>;
 }
 
 const Signin: SigninType = props => {
   const { className } = props;
   const [tabs, setTabs] = useState<string[]>([]);
-  const [active, setActive] = useState({});
+  const [active, setActive] = useState<any>({});
   const [type, setType] = useMergeValue('', {
     value: props.activeKey,
     onChange: props.onTabChange,
   });
-  const TabChildren: React.ReactComponentElement<typeof SigninTab>[] = [];
+  const TabChildren: React.ReactComponentElement<typeof Tab>[] = [];
   const otherChildren: React.ReactElement<unknown>[] = [];
   React.Children.forEach(
     props.children,
     (
       child:
-        | React.ReactComponentElement<typeof SigninTab>
+        | React.ReactComponentElement<typeof Tab>
         | React.ReactElement<unknown>,
     ) => {
       if (!child) {
         return;
       }
       if ((child.type as { typeName: string }).typeName === 'SigninTab') {
-        TabChildren.push(
-          child as React.ReactComponentElement<typeof SigninTab>,
-        );
+        TabChildren.push(child as React.ReactComponentElement<typeof Tab>);
       } else {
         otherChildren.push(child);
       }
     },
   );
   return (
-    <SigninContext.Provider
+    <Context.Provider
       value={{
         tabUtil: {
           addTab: id => {
@@ -109,16 +110,14 @@ const Signin: SigninType = props => {
           )}
         </Form>
       </div>
-    </SigninContext.Provider>
+    </Context.Provider>
   );
 };
 
-Signin.Tab = SigninTab;
-Signin.Submit = SigninSubmit;
-
-Signin.Username = SigninItem.Username;
-Signin.Password = SigninItem.Password;
-Signin.Mobile = SigninItem.Mobile;
-Signin.Captcha = SigninItem.Captcha;
+Signin.Tab = Tab;
+Signin.Submit = Submit;
+Signin.Account = Account;
+Signin.Password = Password;
+Signin.Captcha = Captcha;
 
 export default Signin;

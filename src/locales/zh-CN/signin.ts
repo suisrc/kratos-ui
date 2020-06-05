@@ -20,7 +20,7 @@ export default {
   'page.auth.signin.tabs.mobile.mobile.2.message': '手机号格式错误！',
   'page.auth.signin.tabs.mobile.captcha.placeholder': '验证码',
   'page.auth.signin.tabs.mobile.captcha.message': '请输入验证码！',
-  'page.auth.signin.tabs.mobile.captcha.getCaptchaButtonText': '',
+  'page.auth.signin.tabs.mobile.captcha.getCaptchaButtonText': '获取验证码',
   'page.auth.signin.tabs.mobile.captcha.getCaptchaSecondText': '秒',
 
   'page.auth.signin.check.auto-signin.title': '自动登录',

@@ -1,25 +1,34 @@
 import {
+  MobileOutlined,
   TeamOutlined,
-  DingdingOutlined,
   WechatOutlined,
+  DingdingOutlined,
+  AliyunOutlined,
   GithubOutlined,
-  CoffeeOutlined,
+  GitlabOutlined,
+  //createFromIconfontCN
 } from '@ant-design/icons';
 
 import { Alert, Checkbox, message } from 'antd';
 import React, { useState } from 'react';
-import { Link, SelectLang, history, useModel, useIntl } from 'umi';
+import { Link, SelectLang, history, useModel, useIntl as i18n } from 'umi';
 
 import { getPageQuery } from '@/utils/utils';
 import { SigninParamsType, SigninType, signin } from '@/services/signin';
 import SigninFrom from '@/components/Signin';
 
-import { oauth2, getIconNode, App3rdType } from '@/services/oauth2';
+import { oauth2, App3rdType } from '@/services/oauth2';
 
 import styles from './style.less';
 import logo from '@/assets/logo.svg';
+import defaultSettings from '../../../../config/defaultSettings';
 
-const { Tab, Username, Password, Mobile, Captcha, Submit } = SigninFrom;
+// https://www.iconfont.cn/
+// const IconFont = createFromIconfontCN({
+//   scriptUrl: '//at.alicdn.com/t/font_1866669_dpebghh60di.js',
+// });
+
+const { Tab, Account, Password, Captcha, Submit } = SigninFrom;
 
 const SigninMessage: React.FC<{
   content: string;
@@ -65,17 +74,16 @@ const Signin: React.FC<{}> = () => {
   const { refresh } = useModel('@@initialState');
   const [autoSignin, setAutoSignin] = useState(false);
   const [type, setType] = useState<string>('account');
-
-  const i18n = useIntl();
+  const [use3rdApps, setUse3rdApps] = useState<App3rdType[]>([]);
 
   const handleSubmit = async (values: SigninParamsType) => {
     setSubmitting(true);
     try {
       // 登录
-      const msg = await signin({ ...values, type });
+      const msg = await signin({ ...values, type: SigninType[type] });
       if (msg.status === 'ok') {
         message.success(
-          i18n.formatMessage({ id: 'page.auth.signin.func.submit.success' }),
+          i18n().formatMessage({ id: 'page.auth.signin.func.submit.success' }),
         );
         replaceGoto();
         setTimeout(() => refresh(), 0);
@@ -85,7 +93,7 @@ const Signin: React.FC<{}> = () => {
       setUserSigninState(msg);
     } catch (error) {
       message.error(
-        i18n.formatMessage({ id: 'page.auth.signin.func.submit.error' }),
+        i18n().formatMessage({ id: 'page.auth.signin.func.submit.error' }),
       );
     }
     setSubmitting(false);
@@ -93,34 +101,37 @@ const Signin: React.FC<{}> = () => {
 
   const { status, type: loginType } = userSigninState;
 
-  // 第三方登陆应用
-  const use3rdApp: {
-    [key: string]: App3rdType;
-  } = {
-    alipay: {
-      platform: 'alipay',
-      appid: '10000',
-      name: '支付宝登陆',
-      title: '支付宝',
-      signature: '10000',
-    },
-    wechat: {
-      platform: 'wechat',
-      appid: '10001',
-      name: '微信登陆',
-      title: '微信',
-      signature: '10001',
-    },
-  };
-
-  // {getIconNode(app.platform)}
-  const get3rdAppNode = (app: App3rdType) => {
-    return (
-      //<a className={styles.icon} onClick={v => oauth2(app.appid, app.signature)}>
-      <TeamOutlined className={styles.icon} />
-      //</a>
+  // 第三方登陆
+  const App3rdChildren: React.ReactComponentElement<any>[] = [];
+  use3rdApps.map((app, index) => {
+    let child;
+    switch (app.platform) {
+      case 'wechat':
+        child = <WechatOutlined className={styles.icon} />;
+        break;
+      case 'dingding':
+        child = <DingdingOutlined className={styles.icon} />;
+        break;
+      case 'aliyun':
+        child = <AliyunOutlined className={styles.icon} />;
+        break;
+      case 'github':
+        child = <GithubOutlined className={styles.icon} />;
+        break;
+      case 'gitlab':
+        child = <GitlabOutlined className={styles.icon} />;
+        break;
+      default:
+        child = <TeamOutlined className={styles.icon} />;
+    }
+    App3rdChildren.push(
+      // 由于三方登录会直接跳转,所以不再单独处理
+      <a key={app.appid} onClick={e => oauth2(app.appid, app.signature, '')}>
+        {child}
+      </a>,
     );
-  };
+  });
+
   return (
     <div className={styles.container}>
       <div className={styles.lang}>
@@ -132,12 +143,12 @@ const Signin: React.FC<{}> = () => {
             <Link to="/">
               <img alt="logo" className={styles.logo} src={logo} />
               <span className={styles.title}>
-                {i18n.formatMessage({ id: 'page.auth.signin.logo.title' })}
+                {i18n().formatMessage({ id: 'page.auth.signin.logo.title' })}
               </span>
             </Link>
           </div>
           <div className={styles.desc}>
-            {i18n.formatMessage({ id: 'page.auth.signin.logo.desc' })}
+            {i18n().formatMessage({ id: 'page.auth.signin.logo.desc' })}
           </div>
         </div>
 
@@ -149,27 +160,27 @@ const Signin: React.FC<{}> = () => {
           >
             <Tab
               key="account"
-              tab={i18n.formatMessage({
+              tab={i18n().formatMessage({
                 id: 'page.auth.signin.tabs.user.title',
               })}
             >
               {status === 'error' && loginType === 'account' && !submitting && (
                 <SigninMessage
-                  content={i18n.formatMessage({
+                  content={i18n().formatMessage({
                     id: 'page.auth.signin.tabs.user.error',
                   })}
                 />
               )}
 
-              <Username
+              <Account
                 name="username"
-                placeholder={i18n.formatMessage({
+                placeholder={i18n().formatMessage({
                   id: 'page.auth.signin.tabs.user.username.placeholder',
                 })}
                 rules={[
                   {
                     required: true,
-                    message: i18n.formatMessage({
+                    message: i18n().formatMessage({
                       id: 'page.auth.signin.tabs.user.username.message',
                     }),
                   },
@@ -177,13 +188,13 @@ const Signin: React.FC<{}> = () => {
               />
               <Password
                 name="password"
-                placeholder={i18n.formatMessage({
+                placeholder={i18n().formatMessage({
                   id: 'page.auth.signin.tabs.user.password.placeholder',
                 })}
                 rules={[
                   {
                     required: true,
-                    message: i18n.formatMessage({
+                    message: i18n().formatMessage({
                       id: 'page.auth.signin.tabs.user.password.message',
                     }),
                   },
@@ -192,32 +203,40 @@ const Signin: React.FC<{}> = () => {
             </Tab>
             <Tab
               key="mobile"
-              tab={i18n.formatMessage({
+              tab={i18n().formatMessage({
                 id: 'page.auth.signin.tabs.mobile.title',
               })}
             >
               {status === 'error' && loginType === 'mobile' && !submitting && (
                 <SigninMessage
-                  content={i18n.formatMessage({
+                  content={i18n().formatMessage({
                     id: 'page.auth.signin.tabs.mobile.error',
                   })}
                 />
               )}
-              <Mobile
+              <Account
                 name="mobile"
-                placeholder={i18n.formatMessage({
+                prefix={
+                  <MobileOutlined
+                    style={{
+                      color: defaultSettings.primaryColor,
+                    }}
+                    className={styles.prefixIcon}
+                  />
+                }
+                placeholder={i18n().formatMessage({
                   id: 'page.auth.signin.tabs.mobile.mobile.placeholder',
                 })}
                 rules={[
                   {
                     required: true,
-                    message: i18n.formatMessage({
+                    message: i18n().formatMessage({
                       id: 'page.auth.signin.tabs.mobile.mobile.1.message',
                     }),
                   },
                   {
                     pattern: /^1\d{10}$/,
-                    message: i18n.formatMessage({
+                    message: i18n().formatMessage({
                       id: 'page.auth.signin.tabs.mobile.mobile.2.message',
                     }),
                   },
@@ -225,22 +244,22 @@ const Signin: React.FC<{}> = () => {
               />
               <Captcha
                 name="captcha"
-                placeholder={i18n.formatMessage({
+                placeholder={i18n().formatMessage({
                   id: 'page.auth.signin.tabs.mobile.captcha.placeholder',
                 })}
                 countDown={120}
-                getCaptchaButtonText={i18n.formatMessage({
+                getCaptchaButtonText={i18n().formatMessage({
                   id:
                     'page.auth.signin.tabs.mobile.captcha.getCaptchaButtonText',
                 })}
-                getCaptchaSecondText={i18n.formatMessage({
+                getCaptchaSecondText={i18n().formatMessage({
                   id:
                     'page.auth.signin.tabs.mobile.captcha.getCaptchaSecondText',
                 })}
                 rules={[
                   {
                     required: true,
-                    message: i18n.formatMessage({
+                    message: i18n().formatMessage({
                       id: 'page.auth.signin.tabs.mobile.captcha.message',
                     }),
                   },
@@ -252,35 +271,24 @@ const Signin: React.FC<{}> = () => {
                 checked={autoSignin}
                 onChange={e => setAutoSignin(e.target.checked)}
               >
-                {i18n.formatMessage({
+                {i18n().formatMessage({
                   id: 'page.auth.signin.check.auto-signin.title',
                 })}
               </Checkbox>
               <a style={{ float: 'right' }} href="">
-                {i18n.formatMessage({
+                {i18n().formatMessage({
                   id: 'page.auth.signin.check.forget-password.title',
                 })}
               </a>
             </div>
             <Submit loading={submitting}>
-              {i18n.formatMessage({
+              {i18n().formatMessage({
                 id: 'page.auth.signin.func.submit.button',
               })}
             </Submit>
             <div className={styles.other}>
-              {i18n.formatMessage({ id: 'page.auth.signin.other.title' })}
-              <a
-                className={styles.icon}
-                onClick={v => oauth2(app.appid, app.signature)}
-              >
-                <TeamOutlined className={styles.icon} />
-              </a>
-              {get3rdAppNode(use3rdApp[0])}
-              {use3rdApp.map((v, i) => {
-                get3rdAppNode(v);
-              })}
-              {/*<Link className={styles.register} to="/user/register">注册账户</Link>*/}
-              {/*作为管理平台，不提供自我注册方式*/}
+              {i18n().formatMessage({ id: 'page.auth.signin.other.title' })}
+              {App3rdChildren}
             </div>
           </SigninFrom>
         </div>
