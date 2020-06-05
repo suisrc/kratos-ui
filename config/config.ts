@@ -30,11 +30,11 @@ export default defineConfig({
     '@primary-color': defaultSettings.primaryColor,
   },
   // 左侧菜单 https://umijs.org/zh-CN/plugins/plugin-layout
-  layout: {
-    name: defaultSettings.title,
-    locale: true,
-    logo: '/icons/logo-192x192.png',
-  },
+  // layout: {
+  //   name: defaultSettings.title,
+  //   locale: true,
+  //   logo: '/icons/logo-192x192.png',
+  // },
   title: defaultSettings.title,
   // favicon: '/assets/favicon.ico',
   ignoreMomentLocale: true,

@@ -1,14 +1,27 @@
+import BasicLayout, {
+  SettingDrawer,
+  BasicLayoutProps,
+  Settings,
+} from '@ant-design/pro-layout';
 import React, { useState } from 'react';
-import { SettingDrawer } from '@ant-design/pro-layout';
 
-import { IRouteComponentProps } from 'umi';
+import GlobalHeaderRight from '@/components/GlobalHeader/RightContent';
+import Footer from '@/components/Footer';
+import defaultSettings from '../../config/defaultSettings';
 
-export default function(props: IRouteComponentProps) {
-  const [settings, setSettings] = useState({});
+// https://pro.ant.design/blog/new-pro-use-cn
+const Layout = (props: BasicLayoutProps) => {
+  const [settings, setSettings] = useState<any>({ ...defaultSettings });
   return (
     <>
-      {props.children}
+      <BasicLayout
+        {...settings}
+        rightContentRender={() => <GlobalHeaderRight />}
+        footerRender={() => <Footer />}
+        disableContentMargin={false}
+      />
       <SettingDrawer settings={settings} onSettingChange={setSettings} />
     </>
   );
-}
+};
+export default Layout;

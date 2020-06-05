@@ -1,24 +1,47 @@
 import request from '@/utils/request';
 
+/**
+ * 登陆使用的参数
+ */
 export interface SigninParamsType {
-  userName: string;
-  password: string;
-  mobile: string;
-  captcha: string;
+  username?: string;
+  password?: string;
+  mobile?: string;
+  captcha?: string;
+  code?: string; // 一种特殊的登陆方式，比如JWT的值， 或者可以存放验证码信息
   type: string;
+  // <系统>:<类型>:<备注>, 如果不区分系统，可以直接使用 :user: 代替
+  // 账户登陆：xxx:user:zzz 手机登陆：xxx:mobile:zzz 编码登陆：xxx:code:zzz
 }
 
-export async function fakeAccountSignin(params: SigninParamsType) {
-  return request('/api/login/account', {
+export const SigninType: API.StringMap = {
+  account: ':account:',
+  mobile: ':mobile:',
+  code: ':code:',
+};
+
+/**
+ * 登陆
+ * @param params
+ */
+export async function signin(params: SigninParamsType): Promise<any> {
+  return request('/api/v1/signin/account', {
     method: 'POST',
     data: params,
   });
 }
 
-export async function getFakeCaptcha(mobile: string) {
-  return request(`/api/login/captcha?mobile=${mobile}`);
+/**
+ * 获取手机验证码（验证码不一定必须使用手机短信发送，也可以是其他方式
+ * @param mobile
+ */
+export async function getCaptcha(mobile: string): Promise<any> {
+  return request(`/api/v1/signin/captcha?mobile=${mobile}`);
 }
 
-export async function signout() {
-  return request('/api/login/signout');
+/**
+ * 登出
+ */
+export async function signout(): Promise<any> {
+  return request('/api/v1/signin/signout');
 }

@@ -1,12 +1,12 @@
 // 💩 https://preview.pro.ant.design/
 
 // 默认主题
-import { Settings as LayoutSettings } from '@ant-design/pro-layout';
+import { Settings } from '@ant-design/pro-layout';
 export interface DefaultSettings {
   [key: string]: any;
 }
 
-const defaultSettings: LayoutSettings = {
+const defaultSettings: Settings = {
   navTheme: 'light',
   primaryColor: '#13C2C2',
   layout: 'sidemenu',

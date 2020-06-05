@@ -13,14 +13,15 @@ const generateId = (() => {
   };
 })();
 
-interface SigninTabProps extends TabPaneProps {
-  tabUtil: SigninContextProps['tabUtil'];
+export interface SigninTabProps extends TabPaneProps {
+  tabUtil?: SigninContextProps['tabUtil'];
   active?: boolean;
+  tab: string;
 }
 
 const SigninTab: React.FC<SigninTabProps> = props => {
   useEffect(() => {
-    const uniqueId = generateId('login-tab-');
+    const uniqueId = generateId('signin-tab-');
     const { tabUtil } = props;
     if (tabUtil) {
       tabUtil.addTab(uniqueId);
@@ -30,7 +31,7 @@ const SigninTab: React.FC<SigninTabProps> = props => {
   return <TabPane {...props}>{props.active && children}</TabPane>;
 };
 
-const WrapContext: React.FC<TabPaneProps> & {
+const WrapContext: React.FC<SigninTabProps> & {
   typeName: string;
 } = props => (
   <SigninContext.Consumer>

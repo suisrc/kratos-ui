@@ -1,13 +1,16 @@
 import request from '@/utils/request';
 
-export async function query(): Promise<any> {
-  return request('/api/users');
+/**
+ * 查询当前用户信息
+ * 一般在用户收起登陆，或者首次打开页面时候触发
+ */
+export async function getCurrentUser(): Promise<any> {
+  return request('/api/v1/user/current');
 }
 
-export async function queryCurrent(): Promise<any> {
-  return request('/api/currentUser');
-}
-
+/**
+ * 查询当前用户消息
+ */
 export async function queryNotices(): Promise<any> {
-  return request('/api/notices');
+  return request('/api/v1/user/notices');
 }

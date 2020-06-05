@@ -1,6 +1,6 @@
 import { Effect, Reducer } from 'umi';
 
-import { queryCurrent, query as queryUsers } from '@/services/user';
+import { getCurrentUser } from '@/services/user';
 
 export interface CurrentUser {
   avatar?: string;
@@ -42,14 +42,14 @@ const UserModel: UserModelType = {
 
   effects: {
     *fetch(_, { call, put }) {
-      const response = yield call(queryUsers);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
+      //const response = yield call(queryUsers);
+      //yield put({
+      //  type: 'save',
+      //  payload: response,
+      //});
     },
     *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
+      const response = yield call(getCurrentUser);
       yield put({
         type: 'saveCurrentUser',
         payload: response,

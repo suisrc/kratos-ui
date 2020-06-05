@@ -2,7 +2,7 @@ import { Button, Col, Input, Row, Form, message } from 'antd';
 import React, { useState, useCallback, useEffect } from 'react';
 import omit from 'omit.js';
 import { FormItemProps } from 'antd/es/form/FormItem';
-import { getFakeCaptcha } from '@/services/signin';
+import { getCaptcha } from '@/services/signin';
 
 import ItemMap from './map';
 import SigninContext, { SigninContextProps } from './SigninContext';
@@ -76,7 +76,7 @@ const SigninItem: React.FC<SigninItemProps> = props => {
   } = props;
 
   const onGetCaptcha = useCallback(async (mobile: string) => {
-    const result = await getFakeCaptcha(mobile);
+    const result = await getCaptcha(mobile);
     if (result === false) {
       return;
     }

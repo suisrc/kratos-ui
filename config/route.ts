@@ -41,7 +41,8 @@ const demo = [
 const routes = [
   {
     path: '/',
-    component: './',
+    component: '@/layouts/BasicLayout',
+    //component: './',
     name: 'home',
     access: 'isSignin',
   },
