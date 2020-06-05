@@ -17,7 +17,7 @@ import { getPageQuery } from '@/utils/utils';
 import { SigninParamsType, SigninType, signin } from '@/services/signin';
 import SigninFrom from '@/components/Signin';
 
-import { oauth2, App3rdType } from '@/services/oauth2';
+import { sign3rd, Sign3rdType } from '@/services/sign3rd';
 
 import styles from './style.less';
 import logo from '@/assets/logo.svg';
@@ -74,7 +74,7 @@ const Signin: React.FC<{}> = () => {
   const { refresh } = useModel('@@initialState');
   const [autoSignin, setAutoSignin] = useState(false);
   const [type, setType] = useState<string>('account');
-  const [use3rdApps, setUse3rdApps] = useState<App3rdType[]>([]);
+  const [use3rdApps, setUse3rdApps] = useState<Sign3rdType[]>([]);
 
   const handleSubmit = async (values: SigninParamsType) => {
     setSubmitting(true);
@@ -126,7 +126,7 @@ const Signin: React.FC<{}> = () => {
     }
     App3rdChildren.push(
       // 由于三方登录会直接跳转,所以不再单独处理
-      <a key={app.appid} onClick={e => oauth2(app.appid, app.signature, '')}>
+      <a key={app.appid} onClick={e => sign3rd(app.appid, app.signature, '')}>
         {child}
       </a>,
     );

@@ -1,20 +1,9 @@
 // 第三方登陆方式
 import request from '@/utils/request';
-import {
-  TeamOutlined,
-  DingdingOutlined,
-  TaobaoOutlined,
-  AlipayOutlined,
-  AliyunOutlined,
-  WechatOutlined,
-  GithubOutlined,
-  CoffeeOutlined,
-} from '@ant-design/icons';
-import React from 'react';
 /**
  * 返回到平台的第三方Oauth2登陆平台
  */
-export interface App3rdType {
+export interface Sign3rdType {
   platform: string; // 平台, 用于决定显示的图标
   appid: string; // 应用id, 对于同一平台，可能出现多ID问题
   name: string; // 应用名称， 主要用于悬浮显示
@@ -25,20 +14,20 @@ export interface App3rdType {
 /**
  * 获取允许的第三方登陆方式
  */
-export async function query3rdOauth2(): Promise<any> {
-  return request('/api/v1/oauth2/list');
+export async function querySign3rdList(): Promise<any> {
+  return request('/api/v1/3rd/list');
 }
 
 /**
  * 完成登陆认证
  */
-export async function oauth2(
+export async function sign3rd(
   appid: string,
   signature: string,
   redirect?: string,
 ): Promise<any> {
   return request(
-    `/api/v1/oauth2/account?appid=${appid}&signature=${signature}&redirect=${redirect}`,
+    `/api/v1/3rd/account?appid=${appid}&signature=${signature}&redirect=${redirect}`,
   );
 }
 
