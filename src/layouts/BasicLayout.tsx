@@ -6,6 +6,8 @@ import React, { useState } from 'react';
 
 import LogoIcon from '@/assets/LogoIcon';
 
+import { useIntl as i18n } from 'umi';
+
 import GlobalHeaderRight from '@/components/GlobalHeader/RightContent';
 import Footer from '@/components/Footer';
 
@@ -20,6 +22,10 @@ const Layout = (props: BasicLayoutProps) => {
       <BasicLayout
         {...settings}
         logo={<LogoIcon style={{ height: '64px', width: '64px' }} />}
+        title={i18n().formatMessage({
+          id: 'app.layout.basic.title',
+          defaultMessage: settings.title,
+        })}
         rightContentRender={() => <GlobalHeaderRight />}
         footerRender={() => <Footer />}
         disableContentMargin={false}

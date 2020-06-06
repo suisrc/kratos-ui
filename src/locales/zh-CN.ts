@@ -6,7 +6,8 @@ import settings from './zh-CN/settings';
 import signin from './zh-CN/signin';
 
 export default {
-  'site.title': '站点 - 标题',
+  'site.title': 'Kratos',
+  'app.layout.basic.title': 'Kratos',
   'about.title': '关于 - 标题',
   'navBar.lang': '语言',
   'layout.user.link.help': '帮助',

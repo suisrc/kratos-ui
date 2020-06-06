@@ -193,7 +193,7 @@ const getThemeList = () => {
   if (list.find(item => item.theme === 'dark')) {
     themeList.push({
       key: 'realDark',
-      url: 'assets/settingdrawer/realDark.svg',
+      url: '/icons/setting/realDark.svg',
       title: i18n().formatMessage({
         id: 'app.setting.pagestyle.dark',
         defaultMessage: '',
