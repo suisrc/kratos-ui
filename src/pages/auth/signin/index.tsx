@@ -19,8 +19,9 @@ import SigninFrom from '@/components/Signin';
 
 import { sign3rd, Sign3rdType } from '@/services/sign3rd';
 
+import LogoIcon from '@/assets/LogoIcon';
+
 import styles from './style.less';
-import logo from '@/assets/logo.svg';
 import defaultSettings from '../../../../config/defaultSettings';
 
 // https://www.iconfont.cn/
@@ -135,7 +136,7 @@ const Signin: React.FC<{}> = () => {
         <div className={styles.top}>
           <div className={styles.header}>
             <Link to="/">
-              <img alt="logo" className={styles.logo} src={logo} />
+              <LogoIcon className={styles.logo} />
               <span className={styles.title}>
                 {i18n().formatMessage({ id: 'page.auth.signin.logo.title' })}
               </span>

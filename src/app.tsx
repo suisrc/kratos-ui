@@ -7,11 +7,10 @@ import {
 
 import { history } from 'umi';
 
-import GlobalHeaderRight from '@/components/GlobalHeader/RightContent';
-import Footer from '@/components/Footer';
+//import GlobalHeaderRight from '@/components/GlobalHeader/RightContent';
+//import Footer from '@/components/Footer';
 
 import { getCurrentUser } from './services/user';
-
 import defaultSettings from '../config/defaultSettings';
 
 // 全局配置

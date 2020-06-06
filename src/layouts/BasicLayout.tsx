@@ -4,10 +4,12 @@ import BasicLayout, {
 } from '@ant-design/pro-layout';
 import React, { useState } from 'react';
 
+import LogoIcon from '@/assets/LogoIcon';
+
 import GlobalHeaderRight from '@/components/GlobalHeader/RightContent';
 import Footer from '@/components/Footer';
-import defaultSettings from '../../config/defaultSettings';
 
+import defaultSettings from '../../config/defaultSettings';
 import SettingDrawer from '../components/SettingDrawer';
 
 // https://pro.ant.design/blog/new-pro-use-cn
@@ -17,6 +19,7 @@ const Layout = (props: BasicLayoutProps) => {
     <>
       <BasicLayout
         {...settings}
+        logo={<LogoIcon style={{ height: '64px', width: '64px' }} />}
         rightContentRender={() => <GlobalHeaderRight />}
         footerRender={() => <Footer />}
         disableContentMargin={false}
