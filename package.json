@@ -73,6 +73,5 @@
       "create-umi"
     ]
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

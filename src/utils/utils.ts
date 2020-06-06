@@ -8,3 +8,13 @@ const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(
 export const isUrl = (path: string): boolean => reg.test(path);
 
 export const getPageQuery = () => parse(window.location.href.split('?')[1]);
+
+const isNode =
+  typeof process !== 'undefined' &&
+  process.versions != null &&
+  process.versions.node != null;
+
+export const isBrowser = () =>
+  typeof window !== 'undefined' &&
+  typeof window.document !== 'undefined' &&
+  !isNode;

@@ -1,13 +1,14 @@
 import BasicLayout, {
-  SettingDrawer,
+  //SettingDrawer,
   BasicLayoutProps,
-  Settings,
 } from '@ant-design/pro-layout';
 import React, { useState } from 'react';
 
 import GlobalHeaderRight from '@/components/GlobalHeader/RightContent';
 import Footer from '@/components/Footer';
 import defaultSettings from '../../config/defaultSettings';
+
+import SettingDrawer from '../components/SettingDrawer';
 
 // https://pro.ant.design/blog/new-pro-use-cn
 const Layout = (props: BasicLayoutProps) => {

@@ -104,26 +104,20 @@ const Signin: React.FC<{}> = () => {
   // 第三方登陆
   const App3rdChildren: React.ReactComponentElement<any>[] = [];
   use3rdApps.map((app, index) => {
-    let child;
-    switch (app.platform) {
-      case 'wechat':
-        child = <WechatOutlined className={styles.icon} />;
-        break;
-      case 'dingding':
-        child = <DingdingOutlined className={styles.icon} />;
-        break;
-      case 'aliyun':
-        child = <AliyunOutlined className={styles.icon} />;
-        break;
-      case 'github':
-        child = <GithubOutlined className={styles.icon} />;
-        break;
-      case 'gitlab':
-        child = <GitlabOutlined className={styles.icon} />;
-        break;
-      default:
-        child = <TeamOutlined className={styles.icon} />;
-    }
+    let child =
+      app.platform === 'wechat' ? (
+        <WechatOutlined className={styles.icon} />
+      ) : app.platform == 'dingding' ? (
+        <DingdingOutlined className={styles.icon} />
+      ) : app.platform == 'aliyun' ? (
+        <AliyunOutlined className={styles.icon} />
+      ) : app.platform == 'github' ? (
+        <GithubOutlined className={styles.icon} />
+      ) : app.platform == 'gitlab' ? (
+        <GitlabOutlined className={styles.icon} />
+      ) : (
+        <TeamOutlined className={styles.icon} />
+      );
     App3rdChildren.push(
       // 由于三方登录会直接跳转,所以不再单独处理
       <a key={app.appid} onClick={e => sign3rd(app.appid, app.signature, '')}>
