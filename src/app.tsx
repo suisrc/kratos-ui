@@ -7,11 +7,11 @@ import {
 
 import { history } from 'umi';
 
-//import GlobalHeaderRight from '@/components/GlobalHeader/RightContent';
-//import Footer from '@/components/Footer';
-
 import { getCurrentUser } from './services/user';
 import defaultSettings from '../config/defaultSettings';
+
+//import GlobalHeaderRight from '@/components/GlobalHeader/RightContent';
+//import Footer from '@/components/Footer';
 
 // 全局配置
 // https://umijs.org/zh-CN/plugins/plugin-initial-state
@@ -19,17 +19,17 @@ export async function getInitialState(): Promise<{
   currentUser?: API.CurrentUser;
   settings?: LayoutSettings;
 }> {
-  if (!new String(history.location.pathname).startsWith('/auth')) {
+  if (!new String(history.location.pathname).startsWith('/auth/')) {
     // 登录页面，不执行(登陆页面可能会有多种情况)
     try {
-      const currentUser = await getCurrentUser();
+      const res: API.ErrorInfo<API.CurrentUser> = await getCurrentUser();
       return {
-        currentUser,
+        currentUser: res.data,
         settings: defaultSettings,
       };
     } catch (error) {
       // 发生意外，跳转到登陆首页
-      history.push('/auth');
+      history.push('/auth/signin');
     }
   }
   return {

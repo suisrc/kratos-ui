@@ -16,6 +16,24 @@ declare namespace API {
     unreadCount?: number; // 未读消息计数
   }
 
+  export interface ErrorInfo<T> {
+    success: boolean; // 请求成功
+    data?: T; // 响应数据
+    errorCode?: string; // 错误代码
+    errorMessage?: string; // 向用户显示消息
+    showType?: number; //错误显示类型：0静音； 1条消息警告； 2消息错误； 4通知； 9页
+    traceId?: string; // 方便进行后端故障排除：唯一的请求ID
+    host?: string; // 方便后端故障排除：当前访问服务器的主机
+  }
+
+  export enum ErrorShowType {
+    SILENT = 0, // 不提示错误
+    WARN_MESSAGE = 1, // 警告信息提示
+    ERROR_MESSAGE = 2, // 错误信息提示
+    NOTIFICATION = 4, // 通知提示
+    REDIRECT = 9, // 页面跳转
+  }
+
   /**
    * 登陆返回结果
    */

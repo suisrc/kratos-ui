@@ -24,7 +24,7 @@ export default {
     res.send(
       getResult({
         name: 'Demo User',
-        avatar: 'https://at.alicdn.com/t/font_1866669_dpebghh60di.svg',
+        avatar: '/icons/logo-192x192.png',
         userid: '00000001',
         email: 'user@quay.run',
         signature: '家天下',
@@ -39,7 +39,7 @@ export default {
         notifyCount: 12,
         unreadCount: 11,
         access: getAccess(),
-        country: 'China',
+        country: '中国',
         geographic: {
           province: {
             label: '辽宁省',

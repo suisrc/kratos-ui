@@ -227,60 +227,71 @@ const SettingDrawer: React.FC<SettingDrawerProps> = props => {
   }, [JSON.stringify(settingState)]);
 
   return (
-    <Drawer
-      visible={show}
-      width={300}
-      onClose={() => setShow(false)}
-      placement="right"
-      getContainer={getContainer}
-      handler={
-        <div
-          className="ant-pro-setting-drawer-handle"
-          onClick={() => setShow(!show)}
-        >
-          {show ? (
-            <CloseOutlined
-              style={{
-                color: '#fff',
-                fontSize: 20,
-              }}
-            />
-          ) : (
-            <SettingOutlined
-              style={{
-                color: '#fff',
-                fontSize: 20,
-              }}
-            />
-          )}
-        </div>
-      }
-      style={{
-        zIndex: 999,
-      }}
-    >
-      <div className="ant-pro-setting-drawer-content">
-        <Body title={i18n().formatMessage({ id: 'app.setting.pagestyle' })}>
-          <BlockCheckbox
-            list={themeList}
-            value={navTheme}
-            onChange={value => changeSetting('navTheme', value)}
-          />
-        </Body>
-        <Divider />
-        <Body
-          title={i18n().formatMessage({ id: 'app.setting.navigationmode' })}
-        >
-          <BlockCheckbox
-            list={layoutList}
-            value={layout}
-            onChange={value => changeSetting('layout', value)}
-          />
-        </Body>
-        <Divider />
-        <LayoutSetting settings={settingState} changeSetting={changeSetting} />
+    <>
+      <div
+        className="ant-pro-setting-drawer-handle2"
+        onClick={() => setShow(!show)}
+      >
+        <SettingOutlined style={{ color: '#fff', fontSize: 20 }} />
       </div>
-    </Drawer>
+      <Drawer
+        visible={show}
+        width={300}
+        onClose={() => setShow(false)}
+        placement="right"
+        getContainer={getContainer}
+        //handler={
+        //  <div
+        //    className="ant-pro-setting-drawer-handle"
+        //    onClick={() => setShow(!show)}
+        //  >
+        //    {show ? (
+        //      <CloseOutlined
+        //        style={{
+        //          color: '#fff',
+        //          fontSize: 20,
+        //        }}
+        //      />
+        //    ) : (
+        //      <SettingOutlined
+        //        style={{
+        //          color: '#fff',
+        //          fontSize: 20,
+        //        }}
+        //      />
+        //    )}
+        //  </div>
+        //}
+        style={{
+          zIndex: 999,
+        }}
+      >
+        <div className="ant-pro-setting-drawer-content">
+          <Body title={i18n().formatMessage({ id: 'app.setting.pagestyle' })}>
+            <BlockCheckbox
+              list={themeList}
+              value={navTheme}
+              onChange={value => changeSetting('navTheme', value)}
+            />
+          </Body>
+          <Divider />
+          <Body
+            title={i18n().formatMessage({ id: 'app.setting.navigationmode' })}
+          >
+            <BlockCheckbox
+              list={layoutList}
+              value={layout}
+              onChange={value => changeSetting('layout', value)}
+            />
+          </Body>
+          <Divider />
+          <LayoutSetting
+            settings={settingState}
+            changeSetting={changeSetting}
+          />
+        </div>
+      </Drawer>
+    </>
   );
 };
 

@@ -58,7 +58,7 @@ const routes = [
   {
     path: '/',
     component: '@/layouts/BasicLayout',
-    access: 'isSignin',
+    //access: 'isSignin',
     routes: [
       {
         name: 'home',
@@ -82,10 +82,10 @@ const routes = [
         ],
       },
       // 异常
-      { exact: true, path: '401', component: '@/exceptions/401' },
-      { exact: true, path: '403', component: '@/exceptions/403' },
-      { exact: true, path: '404', component: '@/exceptions/404' },
-      { exact: true, path: '500', component: '@/exceptions/500' },
+      { exact: true, path: '/401', component: '@/exceptions/401' },
+      { exact: true, path: '/403', component: '@/exceptions/403' },
+      { exact: true, path: '/404', component: '@/exceptions/404' },
+      { exact: true, path: '/500', component: '@/exceptions/500' },
     ],
   },
 ];

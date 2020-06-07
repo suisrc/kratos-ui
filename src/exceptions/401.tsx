@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Result, Button } from 'antd';
-import { history, useIntl } from 'umi';
+import { history, useIntl as i18n } from 'umi';
 
 /**
  * 401: 用户没有权限（令牌、用户名、密码错误）
@@ -15,10 +15,10 @@ export default () => (
     style={{
       background: 'none',
     }}
-    subTitle={useIntl().formatMessage({ id: 'exception.401.subTitle' })}
+    subTitle={i18n().formatMessage({ id: 'exception.401.subTitle' })}
     extra={
       <Button type="primary" onClick={() => history.push('/')}>
-        {useIntl().formatMessage({ id: 'exception.401.button' })}
+        {i18n().formatMessage({ id: 'exception.401.button' })}
       </Button>
     }
   />

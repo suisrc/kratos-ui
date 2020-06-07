@@ -1,20 +1,20 @@
 import React from 'react';
 
 import { Result, Button } from 'antd';
-import { formatMessage, Link } from 'umi';
+import { useIntl as i18n, Link } from 'umi';
 
 export default () => (
   <Result
-    status="403"
+    status="error"
     title="403"
     style={{
       background: 'none',
     }}
-    subTitle={formatMessage({ id: 'exception.403.subTitle' })}
+    subTitle={i18n().formatMessage({ id: 'exception.403.subTitle' })}
     extra={
       <Link to="/">
         <Button type="primary">
-          {formatMessage({ id: 'exception.403.button' })}
+          {i18n().formatMessage({ id: 'exception.403.button' })}
         </Button>
       </Link>
     }
