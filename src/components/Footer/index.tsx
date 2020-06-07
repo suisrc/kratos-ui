@@ -4,25 +4,25 @@ import { DefaultFooter } from '@ant-design/pro-layout';
 
 export default () => (
   <DefaultFooter
-    copyright="2020 quay.run"
+    copyright="2020 kratos.quarkus.org"
     links={[
       {
         key: 'Kratos',
         title: 'Kratos',
-        href: 'https://kratos.quay.run',
-        blankTarget: true,
+        href: 'https://kratos.quarkus.org',
+        //blankTarget: true,
       },
       {
-        key: 'github',
+        key: 'GitHub',
         title: <GithubOutlined />,
         href: 'https://github.com/suisrc/kratos',
-        blankTarget: true,
+        //blankTarget: true,
       },
       {
-        key: 'AntDesign',
-        title: 'AntDesign',
+        key: 'Ant Design',
+        title: 'Design',
         href: 'https://ant.design',
-        blankTarget: true,
+        //blankTarget: true,
       },
     ]}
   />

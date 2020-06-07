@@ -56,27 +56,26 @@ const routes = [
     ],
   },
   {
+    name: 'main',
     path: '/',
     component: '@/layouts/BasicLayout',
-    //access: 'isSignin',
     routes: [
       {
-        name: 'home',
-        path: '/',
+        name: 'welcome',
+        path: '/welcome',
         component: './',
       },
       {
-        name: '个人中心',
-        path: '/',
+        name: 'account',
         routes: [
           {
-            name: '个人中心',
+            name: 'center',
             path: '/account/center',
             component: './Account/Center',
           },
           {
-            name: '个人设置',
-            path: '/settings',
+            name: 'settings',
+            path: '/account/settings',
             component: './Account/Settings',
           },
         ],
