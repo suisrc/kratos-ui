@@ -64,3 +64,8 @@ const request = extend({
 });
 
 export default request;
+
+// import { useRequest } from 'umi';
+// const { data, error, loading } = useRequest(() => {
+//   return services.getList('/api/test');
+// });

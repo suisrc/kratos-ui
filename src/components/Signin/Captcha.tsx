@@ -5,6 +5,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import omit from 'omit.js';
 import { FormItemProps } from 'antd/es/form/FormItem';
 
+//import { useRequest } from 'umi';
 import { getCaptcha } from '@/services/signin';
 
 import Context, { ContextProps } from './Context';
@@ -71,9 +72,11 @@ const Captcha: React.FC<CaptchaProps> = props => {
 
   const onGetCaptcha = useCallback(async (mobile: string) => {
     const result = await getCaptcha(mobile);
-    if (result === false) {
+    if (result.success === false) {
       return;
     }
+    //const { error } = useRequest(() => getCaptcha(mobile));
+    //if (!error) { return; }
     setTiming(true);
   }, []);
 

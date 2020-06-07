@@ -40,6 +40,23 @@ const demo = [
 // const routes: IBestAFSRoute[] =  [
 const routes = [
   {
+    path: '/auth/signin',
+    component: './Auth/Signin',
+    menu: false,
+    layout: false,
+  },
+  {
+    //path: 'exceptions',
+    menu: false,
+    //layout: false,
+    routes: [
+      { exact: true, path: '401', component: '@/exceptions/401' },
+      { exact: true, path: '403', component: '@/exceptions/403' },
+      { exact: true, path: '404', component: '@/exceptions/404' },
+      { exact: true, path: '500', component: '@/exceptions/500' },
+    ],
+  },
+  {
     name: 'home',
     path: '/',
     component: '@/layouts/BasicLayout',
@@ -61,24 +78,6 @@ const routes = [
           },
         ],
       },
-    ],
-  },
-  //----其他
-  {
-    path: '/auth/signin',
-    component: './Auth/Signin',
-    menu: false,
-    layout: false,
-  },
-  {
-    //path: 'exceptions',
-    menu: false,
-    //layout: false,
-    routes: [
-      { exact: true, path: '401', component: '@/exceptions/401' },
-      { exact: true, path: '403', component: '@/exceptions/403' },
-      { exact: true, path: '404', component: '@/exceptions/404' },
-      { exact: true, path: '500', component: '@/exceptions/500' },
     ],
   },
 ];

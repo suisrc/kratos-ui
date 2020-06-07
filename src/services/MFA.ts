@@ -1,4 +1,8 @@
 /**
+ * 😢这里的方法没有实现
+ */
+
+/**
  * 执行绑定，一般返回是一个二维码和一个签名
  */
 export async function postMfaBinding(): Promise<any> {}

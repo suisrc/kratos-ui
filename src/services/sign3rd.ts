@@ -14,8 +14,8 @@ export interface Sign3rdType {
 /**
  * 获取允许的第三方登陆方式
  */
-export async function querySign3rdList(): Promise<any> {
-  return request('/api/v1/3rd/list');
+export async function querySign3rdApp(): Promise<any> {
+  return request('/api/v1/3rd/apps');
 }
 
 /**
@@ -27,7 +27,7 @@ export async function sign3rd(
   redirect?: string,
 ): Promise<any> {
   return request(
-    `/api/v1/3rd/account?appid=${appid}&signature=${signature}&redirect=${redirect}`,
+    `/api/v1/3rd/signin?appid=${appid}&signature=${signature}&redirect=${redirect}`,
   );
 }
 

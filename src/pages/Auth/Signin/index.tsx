@@ -10,15 +10,14 @@ import {
 } from '@ant-design/icons';
 
 import { Alert, Checkbox, message } from 'antd';
-import React, { useState } from 'react';
-import { Link, SelectLang, history, useModel, useIntl as i18n } from 'umi';
+import React, { useState, useEffect } from 'react';
+import { Link, SelectLang, history, useModel, useIntl } from 'umi';
+
+import { Sign3rdType, sign3rd, querySign3rdApp } from '@/services/sign3rd';
+import { SigninParamsType, SigninType, signin } from '@/services/signin';
 
 import { getPageQuery } from '@/utils/utils';
-import { SigninParamsType, SigninType, signin } from '@/services/signin';
 import SigninFrom from '@/components/Signin';
-
-import { sign3rd, Sign3rdType } from '@/services/sign3rd';
-
 import LogoIcon from '@/assets/LogoIcon';
 
 import styles from './style.less';
@@ -67,39 +66,64 @@ const replaceGoto = () => {
 };
 
 const Signin: React.FC<{}> = () => {
+  const { refresh } = useModel('@@initialState');
+  const [autoSignin, setAutoSignin] = useState(false);
+  const [type, setType] = useState<string>('account');
+
   const [userSigninState, setUserSigninState] = useState<API.SigninStateType>(
     {},
   );
   const [submitting, setSubmitting] = useState(false);
 
-  const { refresh } = useModel('@@initialState');
-  const [autoSignin, setAutoSignin] = useState(false);
-  const [type, setType] = useState<string>('account');
   const [use3rdApps, setUse3rdApps] = useState<Sign3rdType[]>([]);
+
+  const i18n = useIntl();
+
+  useEffect(() => {
+    initSign3rd();
+  }, []);
+
+  const initSign3rd = async () => {
+    try {
+      // 初始化第三方登录
+      const res = await querySign3rdApp();
+      if (res.success) {
+        setUse3rdApps([...res.data]);
+      }
+    } catch (error) {
+      // do nothing
+    }
+  };
 
   const handleSubmit = async (values: SigninParamsType) => {
     setSubmitting(true);
     try {
       // 登录
       const msg = await signin({ ...values, type: SigninType[type] });
-      if (msg.status === 'ok') {
+      //const {data} = useRequest(() => signin({ ...values, type: SigninType[type] }));
+      if (msg.success && msg.data?.status === 'ok') {
         message.success(
-          i18n().formatMessage({ id: 'page.auth.signin.func.submit.success' }),
+          i18n.formatMessage({ id: 'page.auth.signin.func.submit.success' }),
         );
         replaceGoto();
         setTimeout(() => refresh(), 0);
         return;
       }
-      // 如果失败去设置用户错误信息
-      setUserSigninState(msg);
+      if (!msg.success) {
+        message.error(
+          i18n.formatMessage({ id: 'page.auth.signin.func.submit.error' }),
+        );
+      } else {
+        // 如果失败去设置用户错误信息
+        setUserSigninState({ ...msg.data, type });
+      }
     } catch (error) {
       message.error(
-        i18n().formatMessage({ id: 'page.auth.signin.func.submit.error' }),
+        i18n.formatMessage({ id: 'page.auth.signin.func.submit.error' }),
       );
     }
     setSubmitting(false);
   };
-
   const { status, type: loginType } = userSigninState;
 
   // 第三方登陆
@@ -138,12 +162,12 @@ const Signin: React.FC<{}> = () => {
             <Link to="/">
               <LogoIcon className={styles.logo} />
               <span className={styles.title}>
-                {i18n().formatMessage({ id: 'page.auth.signin.logo.title' })}
+                {i18n.formatMessage({ id: 'page.auth.signin.logo.title' })}
               </span>
             </Link>
           </div>
           <div className={styles.desc}>
-            {i18n().formatMessage({ id: 'page.auth.signin.logo.desc' })}
+            {i18n.formatMessage({ id: 'page.auth.signin.logo.desc' })}
           </div>
         </div>
 
@@ -155,134 +179,141 @@ const Signin: React.FC<{}> = () => {
           >
             <Tab
               key="account"
-              tab={i18n().formatMessage({
+              tab={i18n.formatMessage({
                 id: 'page.auth.signin.tabs.user.title',
               })}
             >
               {status === 'error' && loginType === 'account' && !submitting && (
                 <SigninMessage
-                  content={i18n().formatMessage({
+                  content={i18n.formatMessage({
                     id: 'page.auth.signin.tabs.user.error',
                   })}
                 />
               )}
-
-              <Account
-                name="username"
-                placeholder={i18n().formatMessage({
-                  id: 'page.auth.signin.tabs.user.username.placeholder',
-                })}
-                rules={[
-                  {
-                    required: true,
-                    message: i18n().formatMessage({
-                      id: 'page.auth.signin.tabs.user.username.message',
-                    }),
-                  },
-                ]}
-              />
-              <Password
-                name="password"
-                placeholder={i18n().formatMessage({
-                  id: 'page.auth.signin.tabs.user.password.placeholder',
-                })}
-                rules={[
-                  {
-                    required: true,
-                    message: i18n().formatMessage({
-                      id: 'page.auth.signin.tabs.user.password.message',
-                    }),
-                  },
-                ]}
-              />
+              {type === 'account' && (
+                <>
+                  <Account
+                    name="username"
+                    placeholder={i18n.formatMessage({
+                      id: 'page.auth.signin.tabs.user.username.placeholder',
+                    })}
+                    rules={[
+                      {
+                        required: true,
+                        message: i18n.formatMessage({
+                          id: 'page.auth.signin.tabs.user.username.message',
+                        }),
+                      },
+                    ]}
+                  />
+                  <Password
+                    name="password"
+                    placeholder={i18n.formatMessage({
+                      id: 'page.auth.signin.tabs.user.password.placeholder',
+                    })}
+                    rules={[
+                      {
+                        required: true,
+                        message: i18n.formatMessage({
+                          id: 'page.auth.signin.tabs.user.password.message',
+                        }),
+                      },
+                    ]}
+                  />
+                </>
+              )}
             </Tab>
             <Tab
               key="mobile"
-              tab={i18n().formatMessage({
+              tab={i18n.formatMessage({
                 id: 'page.auth.signin.tabs.mobile.title',
               })}
             >
               {status === 'error' && loginType === 'mobile' && !submitting && (
                 <SigninMessage
-                  content={i18n().formatMessage({
+                  content={i18n.formatMessage({
                     id: 'page.auth.signin.tabs.mobile.error',
                   })}
                 />
               )}
-              <Account
-                name="mobile"
-                prefix={
-                  <MobileOutlined
-                    style={{
-                      color: defaultSettings.primaryColor,
-                    }}
-                    className={styles.prefixIcon}
+              {type === 'mobile' && (
+                <>
+                  <Account
+                    name="mobile"
+                    prefix={
+                      <MobileOutlined
+                        style={{
+                          color: defaultSettings.primaryColor,
+                        }}
+                        className={styles.prefixIcon}
+                      />
+                    }
+                    placeholder={i18n.formatMessage({
+                      id: 'page.auth.signin.tabs.mobile.mobile.placeholder',
+                    })}
+                    rules={[
+                      {
+                        required: true,
+                        message: i18n.formatMessage({
+                          id: 'page.auth.signin.tabs.mobile.mobile.1.message',
+                        }),
+                      },
+                      {
+                        pattern: /^1\d{10}$/,
+                        message: i18n.formatMessage({
+                          id: 'page.auth.signin.tabs.mobile.mobile.2.message',
+                        }),
+                      },
+                    ]}
                   />
-                }
-                placeholder={i18n().formatMessage({
-                  id: 'page.auth.signin.tabs.mobile.mobile.placeholder',
-                })}
-                rules={[
-                  {
-                    required: true,
-                    message: i18n().formatMessage({
-                      id: 'page.auth.signin.tabs.mobile.mobile.1.message',
-                    }),
-                  },
-                  {
-                    pattern: /^1\d{10}$/,
-                    message: i18n().formatMessage({
-                      id: 'page.auth.signin.tabs.mobile.mobile.2.message',
-                    }),
-                  },
-                ]}
-              />
-              <Captcha
-                name="captcha"
-                placeholder={i18n().formatMessage({
-                  id: 'page.auth.signin.tabs.mobile.captcha.placeholder',
-                })}
-                countDown={120}
-                getCaptchaButtonText={i18n().formatMessage({
-                  id:
-                    'page.auth.signin.tabs.mobile.captcha.getCaptchaButtonText',
-                })}
-                getCaptchaSecondText={i18n().formatMessage({
-                  id:
-                    'page.auth.signin.tabs.mobile.captcha.getCaptchaSecondText',
-                })}
-                rules={[
-                  {
-                    required: true,
-                    message: i18n().formatMessage({
-                      id: 'page.auth.signin.tabs.mobile.captcha.message',
-                    }),
-                  },
-                ]}
-              />
+                  <Captcha
+                    name="captcha"
+                    placeholder={i18n.formatMessage({
+                      id: 'page.auth.signin.tabs.mobile.captcha.placeholder',
+                    })}
+                    countDown={120}
+                    getCaptchaButtonText={i18n.formatMessage({
+                      id:
+                        'page.auth.signin.tabs.mobile.captcha.getCaptchaButtonText',
+                    })}
+                    getCaptchaSecondText={i18n.formatMessage({
+                      id:
+                        'page.auth.signin.tabs.mobile.captcha.getCaptchaSecondText',
+                    })}
+                    rules={[
+                      {
+                        required: true,
+                        message: i18n.formatMessage({
+                          id: 'page.auth.signin.tabs.mobile.captcha.message',
+                        }),
+                      },
+                    ]}
+                  />
+                </>
+              )}
             </Tab>
             <div>
               <Checkbox
                 checked={autoSignin}
                 onChange={e => setAutoSignin(e.target.checked)}
               >
-                {i18n().formatMessage({
+                {i18n.formatMessage({
                   id: 'page.auth.signin.check.auto-signin.title',
                 })}
               </Checkbox>
               <a style={{ float: 'right' }} href="">
-                {i18n().formatMessage({
+                {i18n.formatMessage({
                   id: 'page.auth.signin.check.forget-password.title',
                 })}
               </a>
             </div>
             <Submit loading={submitting}>
-              {i18n().formatMessage({
+              {i18n.formatMessage({
                 id: 'page.auth.signin.func.submit.button',
               })}
             </Submit>
             <div className={styles.other}>
-              {i18n().formatMessage({ id: 'page.auth.signin.other.title' })}
+              {i18n.formatMessage({ id: 'page.auth.signin.other.title' })}
               {App3rdChildren}
             </div>
           </SigninFrom>

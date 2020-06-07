@@ -8,12 +8,17 @@ export interface SigninParamsType {
   password?: string;
   mobile?: string;
   captcha?: string;
-  code?: string; // 一种特殊的登陆方式，比如JWT的值， 或者可以存放验证码信息
-  type: string;
+  // 一种特殊的登陆方式，比如JWT的值， 或者可以存放验证码信息
+  code?: string;
   // <系统>:<类型>:<备注>, 如果不区分系统，可以直接使用 :user: 代替
   // 账户登陆：xxx:user:zzz 手机登陆：xxx:mobile:zzz 编码登陆：xxx:code:zzz
+  type: string;
+  reset?: boolean;
 }
 
+/**
+ * 运行登录系统的类型
+ */
 export const SigninType: API.StringMap = {
   account: ':account:',
   mobile: ':mobile:',
