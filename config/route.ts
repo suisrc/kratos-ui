@@ -40,15 +40,33 @@ const demo = [
 // const routes: IBestAFSRoute[] =  [
 const routes = [
   {
+    name: 'home',
     path: '/',
     component: '@/layouts/BasicLayout',
-    //component: './',
-    name: 'home',
     access: 'isSignin',
+    routes: [
+      {
+        name: '个人中心',
+        path: '/account',
+        routes: [
+          {
+            name: '个人中心',
+            path: '/center',
+            component: './Account/Center',
+          },
+          {
+            name: '个人设置',
+            path: '/settings',
+            component: './Account/Settings',
+          },
+        ],
+      },
+    ],
   },
+  //----其他
   {
     path: '/auth/signin',
-    component: './auth/signin',
+    component: './Auth/Signin',
     menu: false,
     layout: false,
   },
