@@ -1,7 +1,4 @@
-import BasicLayout, {
-  //SettingDrawer,
-  BasicLayoutProps,
-} from '@ant-design/pro-layout';
+import ProLayout, { BasicLayoutProps } from '@ant-design/pro-layout';
 import React, { useState } from 'react';
 
 import LogoIcon from '@/assets/LogoIcon';
@@ -18,20 +15,25 @@ import SettingDrawer from '../components/SettingDrawer';
 const Layout = (props: BasicLayoutProps) => {
   const [settings, setSettings] = useState<any>({ ...defaultSettings });
   return (
-    <>
-      <BasicLayout
+    <div>
+      <ProLayout
         {...settings}
-        logo={<LogoIcon style={{ height: '64px', width: '64px' }} />}
+        logo={<LogoIcon style={{ width: '54px', padding: '10px 0px' }} />}
         title={i18n().formatMessage({
           id: 'app.layout.basic.title',
           defaultMessage: settings.title,
         })}
-        rightContentRender={() => <GlobalHeaderRight />}
+        rightContentRender={() => (
+          <GlobalHeaderRight
+            theme={settings.navTheme}
+            layout={settings.layout}
+          />
+        )}
         footerRender={() => <Footer />}
-        disableContentMargin={false}
+        disableContentMargin={true}
       />
       <SettingDrawer settings={settings} onSettingChange={setSettings} />
-    </>
+    </div>
   );
 };
 export default Layout;

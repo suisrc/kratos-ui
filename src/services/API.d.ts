@@ -4,7 +4,7 @@ declare namespace API {
     name?: string; // 名称
     title?: string; // 标题， 备用
     group?: string; // 分组， 备用
-    signature?: string; // 签名, 登陆用户唯一
+    signature?: string; // 签名, 备用
     tags?: {
       // 标签
       key: string;

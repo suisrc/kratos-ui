@@ -10,7 +10,11 @@ import defaultSettings from './defaultSettings';
 
 export default defineConfig({
   locale: {
+    default: 'zh-CN',
     antd: true,
+    //title: false,
+    //baseNavigator: true,
+    //baseSeparator: '-',
   },
   antd: {
     //dark: true, // 开启暗色主题

@@ -46,9 +46,8 @@ const routes = [
     layout: false,
   },
   {
-    //path: 'exceptions',
+    path: '/exceptions',
     menu: false,
-    //layout: false,
     routes: [
       { exact: true, path: '401', component: '@/exceptions/401' },
       { exact: true, path: '403', component: '@/exceptions/403' },
@@ -57,18 +56,22 @@ const routes = [
     ],
   },
   {
-    name: 'home',
     path: '/',
     component: '@/layouts/BasicLayout',
     access: 'isSignin',
     routes: [
       {
+        name: 'home',
+        path: '/',
+        component: './',
+      },
+      {
         name: '个人中心',
-        path: '/account',
+        path: '/',
         routes: [
           {
             name: '个人中心',
-            path: '/center',
+            path: '/account/center',
             component: './Account/Center',
           },
           {
@@ -78,6 +81,11 @@ const routes = [
           },
         ],
       },
+      // 异常
+      { exact: true, path: '401', component: '@/exceptions/401' },
+      { exact: true, path: '403', component: '@/exceptions/403' },
+      { exact: true, path: '404', component: '@/exceptions/404' },
+      { exact: true, path: '500', component: '@/exceptions/500' },
     ],
   },
 ];

@@ -2,6 +2,14 @@
 
 @pro-header-hover-bg: rgba(0, 0, 0, 0.025);
 
+@pro-layout-fixed-header-prefix-cls: ~'@{ant-prefix}-pro-fixed-header';
+
+.@{pro-layout-fixed-header-prefix-cls} {
+  z-index: 9;
+  width: 100%;
+  transition: width 0.2s;
+}
+
 .menu {
   :global(.anticon) {
     margin-right: 8px;
@@ -14,7 +22,7 @@
 .right {
   display: flex;
   float: right;
-  height: 48px;
+  //height: 48px;
   margin-left: auto;
   overflow: hidden;
   .action {
@@ -49,6 +57,7 @@
 }
 
 .dark {
+  color: #f0f0f0;
   .action {
     &:hover {
       background: #252a3d;

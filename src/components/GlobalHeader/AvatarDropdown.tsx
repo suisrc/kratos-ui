@@ -25,9 +25,9 @@ const loginOut = async () => {
   await signout();
   const { redirect } = getPageQuery();
   // Note: There may be security issues, please note
-  if (window.location.pathname !== '/user/login' && !redirect) {
+  if (window.location.pathname !== '/auth/signin' && !redirect) {
     history.replace({
-      pathname: '/user/login',
+      pathname: '/auth/signin',
       search: stringify({
         redirect: window.location.href,
       }),

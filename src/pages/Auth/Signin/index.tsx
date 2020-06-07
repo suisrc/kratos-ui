@@ -11,14 +11,15 @@ import {
 
 import { Alert, Checkbox, message } from 'antd';
 import React, { useState, useEffect } from 'react';
-import { Link, SelectLang, history, useModel, useIntl } from 'umi';
+import { Link, history, useModel, useIntl } from 'umi';
 
 import { Sign3rdType, sign3rd, querySign3rdApp } from '@/services/sign3rd';
 import { SigninParamsType, SigninType, signin } from '@/services/signin';
 
 import { getPageQuery } from '@/utils/utils';
-import SigninFrom from '@/components/Signin';
 import LogoIcon from '@/assets/LogoIcon';
+import SigninFrom from '@/components/Signin';
+import SelectLang from '@/components/SelectLang';
 
 import styles from './style.less';
 import defaultSettings from '../../../../config/defaultSettings';
