@@ -10,7 +10,7 @@ import { getCaptcha } from '@/services/signin';
 
 import Context, { ContextProps } from './Context';
 import styles from './index.less';
-import defaultSettings from '../../../config/defaultSettings';
+import gstyle from '@/global.less';
 
 export interface CaptchaProps extends Partial<FormItemProps> {
   name?: string;
@@ -142,14 +142,7 @@ export default (props: CaptchaProps) => (
       <Captcha
         customProps={{
           size: 'large',
-          prefix: (
-            <MailOutlined
-              style={{
-                color: defaultSettings.primaryColor,
-              }}
-              className={styles.prefixIcon}
-            />
-          ),
+          prefix: <MailOutlined className={gstyle.prefixIcon} />,
         }}
         {...props}
         {...context}

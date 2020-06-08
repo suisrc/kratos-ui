@@ -6,7 +6,7 @@ import { FormItemProps } from 'antd/es/form/FormItem';
 
 import Context, { ContextProps } from './Context';
 import styles from './index.less';
-import defaultSettings from '../../../config/defaultSettings';
+import gstyle from '@/global.less';
 
 export interface AccountProps extends Partial<FormItemProps> {
   name?: string;
@@ -86,14 +86,7 @@ export default (props: AccountProps) => (
       <SigninItem
         customProps={{
           size: 'large',
-          prefix: (
-            <UserOutlined
-              style={{
-                color: defaultSettings.primaryColor,
-              }}
-              className={styles.prefixIcon}
-            />
-          ),
+          prefix: <UserOutlined className={gstyle.prefixIcon} />,
         }}
         {...props}
         {...context}

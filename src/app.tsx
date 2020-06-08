@@ -1,14 +1,13 @@
 import React from 'react';
 
-import {
-  BasicLayoutProps,
-  Settings as LayoutSettings,
-} from '@ant-design/pro-layout';
+import { MenuDataItem, Settings } from '@ant-design/pro-layout';
 
 import { history } from 'umi';
 
 import { getCurrentUser } from './services/user';
+import { initKeysFromMenuData } from './utils/utils';
 import defaultSettings from '../config/defaultSettings';
+import defaultMenus from '../config/menu';
 
 //import GlobalHeaderRight from '@/components/GlobalHeader/RightContent';
 //import Footer from '@/components/Footer';
@@ -17,15 +16,20 @@ import defaultSettings from '../config/defaultSettings';
 // https://umijs.org/zh-CN/plugins/plugin-initial-state
 export async function getInitialState(): Promise<{
   currentUser?: API.CurrentUser;
-  settings?: LayoutSettings;
+  defaultSettings?: Settings;
+  defaultMenus?: MenuDataItem[];
+  defaultMenuMap?: API.ObjectMap<MenuDataItem>;
 }> {
+  const defaultMenuMap = initKeysFromMenuData(defaultMenus);
   if (!new String(history.location.pathname).startsWith('/auth/')) {
     // 登录页面，不执行(登陆页面可能会有多种情况)
     try {
       const res: API.ErrorInfo<API.CurrentUser> = await getCurrentUser();
       return {
         currentUser: res.data,
-        settings: defaultSettings,
+        defaultSettings: defaultSettings,
+        defaultMenus: defaultMenus,
+        defaultMenuMap: defaultMenuMap,
       };
     } catch (error) {
       // 发生意外，跳转到登陆首页
@@ -33,7 +37,9 @@ export async function getInitialState(): Promise<{
     }
   }
   return {
-    settings: defaultSettings,
+    defaultSettings: defaultSettings,
+    defaultMenus: defaultMenus,
+    defaultMenuMap: defaultMenuMap,
   };
 }
 

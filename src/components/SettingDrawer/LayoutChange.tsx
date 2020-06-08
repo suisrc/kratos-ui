@@ -1,10 +1,8 @@
 import React from 'react';
 import { List, Tooltip, Select, Switch } from 'antd';
 
-import { useIntl as i18n } from 'umi';
-
+import { useIntl } from 'umi';
 import { Settings } from '@ant-design/pro-layout';
-import defaultSettings from '../../../config/defaultSettings';
 
 export interface SettingItemProps {
   title: React.ReactNode;
@@ -27,16 +25,17 @@ export const renderLayoutSettingItem = (item: SettingItemProps) => {
 };
 const LayoutSetting: React.FC<{
   settings: Partial<Settings>;
-  changeSetting: (key: string, value: any, hideLoading?: boolean) => void;
+  changeSetting: (key: string, value: any) => void;
 }> = ({ settings = {}, changeSetting }) => {
-  const { contentWidth, fixedHeader, layout, fixSiderbar } =
-    settings || defaultSettings;
+  const i18n = useIntl();
+  //const { initialState: { settings } } = useModel('@@initialState');
+  const { contentWidth, fixedHeader, layout, fixSiderbar } = settings || {};
   return (
     <List
       split={false}
       dataSource={[
         {
-          title: i18n().formatMessage({
+          title: i18n.formatMessage({
             id: 'app.setting.content-width',
             defaultMessage: 'Content Width',
           }),
@@ -49,14 +48,14 @@ const LayoutSetting: React.FC<{
             >
               {layout === 'sidemenu' ? null : (
                 <Select.Option value="Fixed">
-                  {i18n().formatMessage({
+                  {i18n.formatMessage({
                     id: 'app.setting.content-width.fixed',
                     defaultMessage: 'Fixed',
                   })}
                 </Select.Option>
               )}
               <Select.Option value="Fluid">
-                {i18n().formatMessage({
+                {i18n.formatMessage({
                   id: 'app.setting.content-width.fluid',
                   defaultMessage: 'Fluid',
                 })}
@@ -65,7 +64,7 @@ const LayoutSetting: React.FC<{
           ),
         },
         {
-          title: i18n().formatMessage({
+          title: i18n.formatMessage({
             id: 'app.setting.fixedheader',
             defaultMessage: 'Fixed Header',
           }),
@@ -78,12 +77,12 @@ const LayoutSetting: React.FC<{
           ),
         },
         {
-          title: i18n().formatMessage({
+          title: i18n.formatMessage({
             id: 'app.setting.fixedsidebar',
             defaultMessage: 'Fixed Sidebar',
           }),
           disabled: layout === 'topmenu',
-          disabledReason: i18n().formatMessage({
+          disabledReason: i18n.formatMessage({
             id: 'app.setting.fixedsidebar.hint',
             defaultMessage: 'Works on Side Menu Layout',
           }),

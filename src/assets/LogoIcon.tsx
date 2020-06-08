@@ -1,5 +1,6 @@
 import Icon from '@ant-design/icons';
 
+// width="1em" height="1em"
 const LogoSvg = () => (
   <svg viewBox="0 0 100 73.9" fill="currentColor">
     <g>

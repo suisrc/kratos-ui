@@ -6,15 +6,14 @@ import { stringify, parse } from 'qs';
 import React, { useEffect, useRef } from 'react';
 import useMergeValue from 'use-merge-value';
 
-import { useIntl as i18n } from 'umi';
-
+import { useIntl, IntlShape } from 'umi';
 import { Settings } from '@ant-design/pro-layout';
-
-import defaultSettings from '../../../config/defaultSettings';
-import { isBrowser } from '../../utils/utils';
 
 import BlockCheckbox from './BlockCheckbox';
 import LayoutSetting from './LayoutChange';
+
+import { isBrowser } from '../../utils/utils';
+import defaultSettings from '../../../config/defaultSettings';
 
 import './index.less';
 
@@ -35,13 +34,27 @@ export interface SettingDrawerProps {
   publicPath?: string;
   onCollapseChange?: (collapse: boolean) => void;
   onSettingChange?: (settings: Partial<Settings>) => void;
+  onDiffUriParams?: (search: any) => void;
 }
 
 let oldSetting: Partial<Settings> = {};
 const getDifferentSetting = (state: Partial<Settings>) => {
   const stateObj: Partial<Settings> = {};
   Object.keys(state).forEach(key => {
-    if (state[key] !== oldSetting[key] && key !== 'collapse') {
+    if (
+      [
+        'navTheme',
+        'layout',
+        'contentWidth',
+        'fixedHeader',
+        'fixSiderbar',
+        'primaryColor',
+        'colorWeak',
+      ].indexOf(key) < 0
+    ) {
+      return;
+    }
+    if (state[key] !== oldSetting[key] /*&& key !== 'collapse'*/) {
       stateObj[key] = state[key];
     }
   });
@@ -52,17 +65,17 @@ const getDifferentSetting = (state: Partial<Settings>) => {
 /**
  * 导航模式
  */
-const getLayoutList = () => {
+const getLayoutList = (i18n: IntlShape) => {
   const list = [
     {
       key: 'sidemenu',
       url: '/icons/setting/sidemenu.svg',
-      title: i18n().formatMessage({ id: 'app.setting.sidemenu' }),
+      title: i18n.formatMessage({ id: 'app.setting.sidemenu' }),
     },
     {
       key: 'topmenu',
       url: '/icons/setting/topmenu.svg',
-      title: i18n().formatMessage({ id: 'app.setting.topmenu' }),
+      title: i18n.formatMessage({ id: 'app.setting.topmenu' }),
     },
   ];
   return list;
@@ -71,7 +84,7 @@ const getLayoutList = () => {
 /**
  * 整体模式
  */
-const getThemeList = () => {
+const getThemeList = (i18n: IntlShape) => {
   const list: {
     key: string;
     fileName: string;
@@ -84,12 +97,12 @@ const getThemeList = () => {
     {
       key: 'light',
       url: '/icons/setting/light.svg',
-      title: i18n().formatMessage({ id: 'app.setting.pagestyle.light' }),
+      title: i18n.formatMessage({ id: 'app.setting.pagestyle.light' }),
     },
     {
       key: 'dark',
       url: '/icons/setting/dark.svg',
-      title: i18n().formatMessage({
+      title: i18n.formatMessage({
         id: 'app.setting.pagestyle.dark',
         defaultMessage: '',
       }),
@@ -152,6 +165,8 @@ const getParamsFromUrl = (settings: Partial<Settings>) => {
  * @param props
  */
 const SettingDrawer: React.FC<SettingDrawerProps> = props => {
+  const i18n = useIntl();
+
   const { settings: propsSettings = {}, getContainer, onSettingChange } = props;
   const firstRender = useRef<boolean>(true);
 
@@ -185,8 +200,8 @@ const SettingDrawer: React.FC<SettingDrawerProps> = props => {
     setSettingState(nextState);
   };
 
-  const themeList = getThemeList();
-  const layoutList = getLayoutList();
+  const themeList = getThemeList(i18n);
+  const layoutList = getLayoutList(i18n);
 
   useEffect(() => {
     // 记住默认的选择，方便做 diff，然后保存到 url 参数中
@@ -220,7 +235,9 @@ const SettingDrawer: React.FC<SettingDrawerProps> = props => {
     if (Object.keys(settingState).length < 1) {
       return;
     }
-
+    if (props.onDiffUriParams) {
+      props.onDiffUriParams(stringify(diffParams));
+    }
     browserHistory.replace({
       search: stringify(diffParams),
     });
@@ -267,7 +284,7 @@ const SettingDrawer: React.FC<SettingDrawerProps> = props => {
         }}
       >
         <div className="ant-pro-setting-drawer-content">
-          <Body title={i18n().formatMessage({ id: 'app.setting.pagestyle' })}>
+          <Body title={i18n.formatMessage({ id: 'app.setting.pagestyle' })}>
             <BlockCheckbox
               list={themeList}
               value={navTheme}
@@ -276,7 +293,7 @@ const SettingDrawer: React.FC<SettingDrawerProps> = props => {
           </Body>
           <Divider />
           <Body
-            title={i18n().formatMessage({ id: 'app.setting.navigationmode' })}
+            title={i18n.formatMessage({ id: 'app.setting.navigationmode' })}
           >
             <BlockCheckbox
               list={layoutList}

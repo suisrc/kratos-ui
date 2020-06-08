@@ -26,7 +26,7 @@ const defaultSettings: Settings = {
     locale: true,
   },
   title: 'Kratos',
-  iconfontUrl: '',
+  iconfontUrl: '//at.alicdn.com/t/font_1866669_dpebghh60di.js',
 };
 
 export default defaultSettings;

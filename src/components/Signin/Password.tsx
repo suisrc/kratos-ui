@@ -6,7 +6,7 @@ import { FormItemProps } from 'antd/es/form/FormItem';
 
 import Context, { ContextProps } from './Context';
 import styles from './index.less';
-import defaultSettings from '../../../config/defaultSettings';
+import gstyle from '@/global.less';
 
 export interface PasswordProps extends Partial<FormItemProps> {
   name?: string;
@@ -83,14 +83,7 @@ export default (props: PasswordProps) => (
       <SigninItem
         customProps={{
           size: 'large',
-          prefix: (
-            <LockOutlined
-              style={{
-                color: defaultSettings.primaryColor,
-              }}
-              className={styles.prefixIcon}
-            />
-          ),
+          prefix: <LockOutlined className={gstyle.prefixIcon} />,
         }}
         {...props}
         {...context}

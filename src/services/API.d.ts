@@ -56,4 +56,23 @@ declare namespace API {
   export interface ObjectMap<T> {
     [key: string]: T;
   }
+
+  /**
+   * 菜单数据类型
+   */
+  // import { MenuDataItem } from '@ant-design/pro-layout';
+  // export interface MenuDataItem {
+  //   authority?: string[] | string;
+  //   children?: MenuDataItem[]; // 子菜单
+  //   hideChildrenInMenu?: boolean;
+  //   hideInMenu?: boolean;
+  //   icon?: string; // | React.ReactNode; // 使用icon1替换
+  //   icon1?: string;
+  //   locale?: string | false; // menu.welcome, 可以直接抽取i18n对应的内容,如果不配置,可以通过name抽取
+  //   name?: string; // 必须字段,如果不存在,内容会被隐藏
+  //   key?: string; // 全局唯一标识符,在当前系统中, 层级结构,每层使用3个字符
+  //   path?: string; // 和route.ts路由对应
+  //   [key: string]: any;
+  //   parentKeys?: string[]; // 在使用openkeys内容时候,很重要,必须存在, 当前系统不用给出,会使用getKeysFromMenuData函数重建
+  // }
 }

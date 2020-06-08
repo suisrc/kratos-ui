@@ -10,4 +10,15 @@ export default {
   'menu.account.center': '个人中心',
   'menu.account.settings': '个人设置',
   'menu.account.logout': '退出登录',
+
+  // 以下测试使用
+  'menu.t2': '一级菜单',
+  'menu.t2.t21': '二级菜单',
+  'menu.t2.t21.t211': '三级菜单',
+  'menu.t2.t21.t211.t2111': '四级菜单',
+  'menu.t2.t21.t211.t2111.t21111': '子菜单',
+  'menu.t2.t21.t211.t21112': '子菜单',
+  'menu.t2.t22': '子菜单',
+  'menu.t3': '菜单测试',
+  'menu.t3.t31': '子菜单测试',
 };

@@ -22,7 +22,7 @@ import SigninFrom from '@/components/Signin';
 import SelectLang from '@/components/SelectLang';
 
 import styles from './style.less';
-import defaultSettings from '../../../../config/defaultSettings';
+import gstyle from '@/global.less';
 
 // https://www.iconfont.cn/
 // const IconFont = createFromIconfontCN({
@@ -241,14 +241,7 @@ const Signin: React.FC<{}> = () => {
                 <>
                   <Account
                     name="mobile"
-                    prefix={
-                      <MobileOutlined
-                        style={{
-                          color: defaultSettings.primaryColor,
-                        }}
-                        className={styles.prefixIcon}
-                      />
-                    }
+                    prefix={<MobileOutlined className={gstyle.prefixIcon} />}
                     placeholder={i18n.formatMessage({
                       id: 'page.auth.signin.tabs.mobile.mobile.placeholder',
                     })}

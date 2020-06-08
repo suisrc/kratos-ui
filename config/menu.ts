@@ -5,61 +5,114 @@
  */
 
 // authority?: string[] | string;
-// children?: MenuDataItem[];
+// children?: MenuDataItem[]; // 子菜单
 // hideChildrenInMenu?: boolean;
 // hideInMenu?: boolean;
-// icon?: React.ReactNode;
-// locale?: string | false;
-// name?: string;
-// key?: string;
-// path?: string;
+// icon?: React.ReactNode; // 使用icon1替换
+// locale?: string | false; // menu.welcome, 可以直接抽取i18n对应的内容,如果不配置,可以通过name抽取
+// name: string; // 必须字段,如果不存在,内容会被隐藏
+// key?: string; // 全局唯一标识符,在当前系统中, 层级结构,每层使用3个字符
+// path?: string; // 和route.ts路由对应
 // [key: string]: any;
-// parentKeys?: string[];
+// parentKeys?: string[]; // 在使用openkeys内容时候,很重要,必须存在, 当前系统不用给出,会使用getKeysFromMenuData函数重建
 
 //import { MenuDataItem } from 'antd/es/menu/MenuItem';
 import { MenuDataItem } from '@ant-design/pro-layout';
 
+/**
+ * 🍔特别注意,如果使用Menu的openkey, 请在指定菜单叶子节点的时候,指定parentKeys内容
+ * 🌈实际操作发现,初始化页面,Menu被加载4次,导致初始化的openkey无法使用
+ *
+ * 🍉 icon1: ant@4对icon不在支持,这里用icon1代替icon, 在layouts/FixIcon中处理
+ * 🍉 parentKeys中存放其所有的上级目录.
+ */
 const menus: MenuDataItem[] = [
   {
-    name: '欢迎',
-    path: '/welcome',
+    name: 'welcome',
+    path: '/welcome?mm=1',
+    key: '000',
+    icon1: 'icondingding',
   },
   {
-    name: '个人中心',
+    name: 'account',
+    //locale: 'menu.account',
+    key: '001',
+    icon1: 'icondingding',
     children: [
       {
-        name: '个人中心',
+        name: 'center',
+        //locale: 'menu.account.center',
         path: '/account/center',
+        key: '001001',
+        parentKeys: ['001'],
+        icon1: 'icondingding',
       },
       {
-        name: '个人配置',
+        name: 'settings',
+        //locale: 'menu.account.settings',
         path: '/account/settings',
+        key: '001002',
+        parentKeys: ['001'],
+        icon1: 'icondingding',
       },
     ],
   },
   {
-    name: '个人中心2',
+    name: 't2',
+    key: '002',
+    icon1: 'icondingding',
     children: [
       {
-        name: '个人中心',
-        path: '/account2/center',
+        name: 't21',
+        key: '002001',
+        icon1: 'icondingding',
+        children: [
+          {
+            name: 't211',
+            key: '002001001',
+            icon1: 'icondingding',
+            children: [
+              {
+                name: 't2111',
+                key: '002001001001',
+                icon1: 'icondingding',
+                children: [
+                  {
+                    name: 't21111',
+                    path: '/t21111',
+                    key: '002001001001001',
+                    icon1: 'icondingding',
+                  },
+                ],
+              },
+              {
+                name: 't21112',
+                path: '/t21112',
+                key: '002001001002',
+                icon1: 'icondingding',
+              },
+            ],
+          },
+        ],
       },
       {
-        name: '个人配置',
-        path: '/account2/settings',
+        name: 't22',
+        path: '/t22',
+        key: '002002',
+        icon1: 'icondingding',
       },
     ],
   },
   {
-    name: '个人中心3',
+    name: 't3',
+    key: '003',
+    icon1: 'icondingding',
     children: [
       {
-        name: '个人中心',
-        path: '/account3/center',
-      },
-      {
-        name: '个人配置',
-        path: '/account3/settings',
+        name: 't31',
+        path: '/t31',
+        key: '003001',
+        icon1: 'icondingding',
       },
     ],
   },
