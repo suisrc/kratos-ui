@@ -7,10 +7,7 @@ import {
 import { Avatar, Menu, Spin } from 'antd';
 import { ClickParam } from 'antd/es/menu';
 import { history, useModel } from 'umi';
-import { getPageQuery } from '@/utils/utils';
-import { signout } from '@/services/signin';
 
-import { stringify } from 'querystring';
 import HeaderDropdown from './HeaderDropdown';
 import styles from './index.less';
 
@@ -18,61 +15,35 @@ export interface GlobalHeaderRightProps {
   menu?: boolean;
 }
 
-/**
- * 退出登录，并且将当前的 url 保存
- */
-const loginOut = async () => {
-  await signout();
-  const { redirect } = getPageQuery();
-  // Note: There may be security issues, please note
-  if (window.location.pathname !== '/auth/signin' && !redirect) {
-    history.replace({
-      pathname: '/auth/signin',
-      search: stringify({
-        redirect: window.location.href,
-      }),
-    });
-  }
-};
-
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const { currentUser, loading, signout } = useModel('AuthUser');
 
   const onMenuClick = useCallback((event: ClickParam) => {
     const { key } = event;
     if (key === 'logout') {
-      setInitialState({ ...initialState, currentUser: undefined });
-      loginOut();
+      // await signout();
+      signout();
       return;
     }
     history.push(`/account/${key}`);
   }, []);
 
-  const loading = (
-    <span className={`${styles.action} ${styles.account}`}>
-      <Spin
-        size="small"
-        style={{
-          marginLeft: 8,
-          marginRight: 8,
-        }}
-      />
-    </span>
-  );
-
-  if (!initialState) {
-    return loading;
-  }
-
-  const { currentUser } = initialState;
-
-  if (!currentUser || !currentUser.name) {
-    return loading;
+  if (loading || !currentUser?.name) {
+    return (
+      <span className={`${styles.action} ${styles.account}`}>
+        <Spin
+          size="small"
+          style={{
+            marginLeft: 8,
+            marginRight: 8,
+          }}
+        />
+      </span>
+    );
   }
 
   const menuHeaderDropdown = (
     <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
-      {/*
       {menu && (
         <Menu.Item key="center">
           <UserOutlined />
@@ -85,7 +56,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
           个人设置
         </Menu.Item>
       )}
-      {menu && <Menu.Divider />}*/}
+      {menu && <Menu.Divider />}
 
       <Menu.Item key="logout">
         <LogoutOutlined />

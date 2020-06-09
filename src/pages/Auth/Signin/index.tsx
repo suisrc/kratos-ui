@@ -14,7 +14,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, history, useModel, useIntl } from 'umi';
 
 import { Sign3rdType, sign3rd, querySign3rdApp } from '@/services/sign3rd';
-import { SigninParamsType, SigninType, signin } from '@/services/signin';
+import { SigninParamsType, SigninType } from '@/services/signin';
 
 import { getPageQuery } from '@/utils/utils';
 import LogoIcon from '@/assets/LogoIcon';
@@ -67,7 +67,9 @@ const replaceGoto = () => {
 };
 
 const Signin: React.FC<{}> = () => {
-  const { refresh } = useModel('@@initialState');
+  // const { refresh } = useModel('@@initialState');
+  const { signin } = useModel('AuthUser');
+
   const [autoSignin, setAutoSignin] = useState(false);
   const [type, setType] = useState<string>('account');
 
@@ -107,7 +109,7 @@ const Signin: React.FC<{}> = () => {
           i18n.formatMessage({ id: 'page.auth.signin.func.submit.success' }),
         );
         replaceGoto();
-        setTimeout(() => refresh(), 0);
+        // setTimeout(() => refresh(), 0);
         return;
       }
       if (!msg.success) {

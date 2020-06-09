@@ -56,9 +56,10 @@ const routes = [
     ],
   },
   {
-    name: 'main',
+    name: 'basic',
     path: '/',
     component: '@/layouts/BasicLayout',
+    wrappers: ['@/wrappers/auth'],
     routes: [
       {
         name: 'welcome',

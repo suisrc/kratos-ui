@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 import ProLayout, {
   MenuDataItem,
-  Settings,
+  //Settings,
   //PageHeaderWrapper,
 } from '@ant-design/pro-layout';
 
@@ -16,9 +16,12 @@ import Footer from '@/components/Footer';
 import SettingDrawer from '@/components/SettingDrawer';
 
 import fixIcon from './FixIcon';
-//import SearchMenu, { filterByMenuDate } from './SearchMenu';
+import SearchMenu, { filterByMenuDate } from './SearchMenu';
 
-import defaultSettings from '../../config/defaultSettings';
+import defaultSettings, {
+  DefaultSettings,
+  UsedUrlParams,
+} from '../../config/defaultSettings';
 import './layouts.less';
 
 /**
@@ -28,18 +31,36 @@ import './layouts.less';
  * @param keys
  */
 const fixOpenKeysByMenuData = (
-  menus: API.ObjectMap<MenuDataItem>,
   keys: string[],
+  menus?: API.ObjectMap<MenuDataItem>,
 ): string[] => {
   if (!menus || !keys || keys.length !== 1) {
     return keys ? keys : [];
   }
   let item: MenuDataItem = menus[keys[0]];
-  if (item?.children) {
+  if (!item || item.children?.length != 0) {
     return keys;
   }
-  return item?.parentKeys ? item.parentKeys : [];
+  //console.log(item);
+  if (!item.parentKeys) {
+    item.parentKeys = ((item?.pro_layout_parentKeys
+      ? item.pro_layout_parentKeys
+      : []) as string[]).reduce<string[]>((pre, cur) => {
+      cur.startsWith('/') ? pre.push(cur.substr(1)) : pre.push(cur);
+      return pre;
+    }, [] as string[]);
+  }
+  return item.parentKeys;
 };
+
+const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
+  menuList.map(item => {
+    let localItem = {
+      ...item,
+      children: item.children ? menuDataRender(item.children) : [],
+    };
+    return localItem;
+  });
 
 /**
  * 修正UrlPath内容
@@ -57,20 +78,10 @@ const getPath = (path: string, param?: string) => {
  * 获取主题风格的URL地址
  * @param state
  */
-const getDifferentSettingPath = (state: Partial<Settings>) => {
-  const stateObj: Partial<Settings> = {};
+const getDifferentSettingPath = (state: Partial<DefaultSettings>) => {
+  const stateObj: Partial<DefaultSettings> = {};
   Object.keys(state).forEach(key => {
-    if (
-      [
-        'navTheme',
-        'layout',
-        'contentWidth',
-        'fixedHeader',
-        'fixSiderbar',
-        'primaryColor',
-        'colorWeak',
-      ].indexOf(key) < 0
-    ) {
+    if (UsedUrlParams.indexOf(key) < 0) {
       return;
     }
     if (state[key] !== defaultSettings[key]) {
@@ -93,23 +104,29 @@ const Layout = (props: IRouteComponentProps) => {
   const { initialState, setInitialState } = useModel('@@initialState');
   //const [settings, setSettings] = useState<any>({ ...initialState?.settings });
   // 全局风格配置
-  const settings: Settings = initialState?.defaultSettings || defaultSettings;
+  const settings: DefaultSettings =
+    initialState?.defaultSettings || defaultSettings;
   const setSettings: (settings: any) => void = settings =>
     setInitialState({ ...initialState, defaultSettings: settings });
 
   const uriParams = getDifferentSettingPath({ ...settings });
   // const [uriParams, setUriParams] = useState<string>(); // => SettingDrawer.onDiffUriParams
 
-  // const [keyWord, setKeyWord] = useState('');
+  const [keyWord, setKeyWord] = useState('');
   // 可以每次都重新计算,但是这里图方面,使用缓存
+  // 应用中存在 pro_layout_parentKeys, 可以使用该内容代替parentKeys
+  // const menuMap = initialState?.defaultMenuMap || {};
+  const menuMap = useRef<API.ObjectMap<MenuDataItem>>({});
   // 菜单数据
-  const menuMap = initialState?.defaultMenuMap || {};
   const [menuData, setMenuData] = useState<MenuDataItem[]>([
     ...(initialState?.defaultMenus || []),
   ]);
+
   // 默认展开的内容
   const [openKeys, setOpenKeys] = useState<string[]>([]);
   //const openKeys = useRef<string[]>([]);
+  const [collapsed, setCollapsed] = useState<boolean>(false);
+
   //const firstRender = useRef<boolean>(true);
   return (
     <div>
@@ -123,22 +140,28 @@ const Layout = (props: IRouteComponentProps) => {
         })}
         openKeys={openKeys}
         onOpenChange={data => {
-          setOpenKeys(fixOpenKeysByMenuData(menuMap, data as string[]));
+          setOpenKeys(fixOpenKeysByMenuData(data || [], menuMap.current));
           //console.log(data);
         }}
+        collapsed={collapsed}
+        onCollapse={setCollapsed}
         //menu={{ locale: true }}
         formatMessage={msg => i18n.formatMessage(msg)}
-        //menuData={menuData}
-        menuDataRender={() => menuData}
-        menuItemRender={(item, dom) =>
-          item.isUrl || item.children || !item.path
+        // menuData={menuData}
+        menuDataRender={menus => menuData}
+        // path => itemPath, parentKeys => pro_layout_parentKeys
+        menuItemRender={(item, dom) => {
+          if (typeof item.key === 'string') menuMap.current[item.key] = item;
+          return !item.itemPath
             ? fixIcon(item, dom)
             : fixIcon(
                 item,
-                <NavLink to={getPath(item.path, uriParams)}>{dom}</NavLink>,
-              )
-        }
+                <NavLink to={getPath(item.itemPath, uriParams)}>{dom}</NavLink>,
+              );
+        }}
         subMenuItemRender={(item, dom) => fixIcon(item, dom)}
+        focusable={true}
+        forceSubMenuRender={true}
         children={props.children}
         rightContentRender={() => (
           <GlobalHeaderRight
@@ -147,16 +170,29 @@ const Layout = (props: IRouteComponentProps) => {
           />
         )}
         footerRender={() => <Footer />}
+        menuHeaderRender={(logo, title, props) => (
+          <>
+            <NavLink to="/" replace={true}>
+              {logo}
+              {title}
+            </NavLink>
+            {settings.searchMenu && settings.layout === 'sidemenu' && (
+              <SearchMenu {...{ setKeyWord: setKeyWord }} />
+            )}
+          </>
+        )}
+        postMenuData={menus => filterByMenuDate(menus || [], keyWord)}
         disableContentMargin={true}
-        //menuHeaderRender={(logo, title, props = { collapsed: false }) =>
-        //  <SearchMenu {...{logo: logo, title: title, collapsed: props.collapsed, setKeyWord: setKeyWord}}/>
-        //}
-        //postMenuData={menus => filterByMenuDate(menus || [], keyWord)}
+        route={{
+          routes: [],
+        }}
         //pure={false}
         //{...props}
         //{...settings}
       />
-      <SettingDrawer settings={settings} onSettingChange={setSettings} />
+      {!collapsed && (
+        <SettingDrawer settings={settings} onSettingChange={setSettings} />
+      )}
     </div>
   );
 };

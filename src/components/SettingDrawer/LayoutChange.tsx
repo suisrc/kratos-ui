@@ -24,12 +24,18 @@ export const renderLayoutSettingItem = (item: SettingItemProps) => {
   );
 };
 const LayoutSetting: React.FC<{
-  settings: Partial<Settings>;
+  settings: Partial<
+    Settings & {
+      searchMenu?: boolean;
+    }
+  >;
   changeSetting: (key: string, value: any) => void;
 }> = ({ settings = {}, changeSetting }) => {
   const i18n = useIntl();
   //const { initialState: { settings } } = useModel('@@initialState');
-  const { contentWidth, fixedHeader, layout, fixSiderbar } = settings || {};
+  const { contentWidth, fixedHeader, layout, fixSiderbar, searchMenu } =
+    settings || {};
+
   return (
     <List
       split={false}
@@ -91,6 +97,20 @@ const LayoutSetting: React.FC<{
               size="small"
               checked={!!fixSiderbar}
               onChange={checked => changeSetting('fixSiderbar', checked)}
+            />
+          ),
+        },
+        {
+          title: i18n.formatMessage({
+            id: 'app.setting.searchmenu',
+            defaultMessage: 'Search Menu',
+          }),
+          disabled: layout === 'topmenu',
+          action: (
+            <Switch
+              size="small"
+              checked={!!searchMenu}
+              onChange={checked => changeSetting('searchMenu', checked)}
             />
           ),
         },

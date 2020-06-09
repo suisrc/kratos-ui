@@ -13,7 +13,9 @@ import BlockCheckbox from './BlockCheckbox';
 import LayoutSetting from './LayoutChange';
 
 import { isBrowser } from '../../utils/utils';
-import defaultSettings from '../../../config/defaultSettings';
+import defaultSettings, {
+  UsedUrlParams,
+} from '../../../config/defaultSettings';
 
 import './index.less';
 
@@ -41,17 +43,7 @@ let oldSetting: Partial<Settings> = {};
 const getDifferentSetting = (state: Partial<Settings>) => {
   const stateObj: Partial<Settings> = {};
   Object.keys(state).forEach(key => {
-    if (
-      [
-        'navTheme',
-        'layout',
-        'contentWidth',
-        'fixedHeader',
-        'fixSiderbar',
-        'primaryColor',
-        'colorWeak',
-      ].indexOf(key) < 0
-    ) {
+    if (UsedUrlParams.indexOf(key) < 0) {
       return;
     }
     if (state[key] !== oldSetting[key] /*&& key !== 'collapse'*/) {

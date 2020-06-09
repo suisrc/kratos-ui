@@ -1,6 +1,7 @@
-import { parse } from 'querystring';
+import { parse, stringify } from 'querystring';
 import pathRegexp from 'path-to-regexp';
 import { MenuDataItem } from '@ant-design/pro-layout';
+import { history } from 'umi';
 
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
@@ -49,4 +50,20 @@ export const initKeysFromMenuData = (
     }
   });
   return res;
+};
+
+export const gotoSigninPage = () => {
+  const { redirect } = getPageQuery();
+  if (
+    !window.location.pathname.startsWith('/auth/') &&
+    !redirect &&
+    window.location.pathname !== '/'
+  ) {
+    history.replace({
+      pathname: '/auth/signin',
+      search: stringify({ redirect: window.location.href }),
+    });
+  } else {
+    history.replace({ pathname: '/auth/signin' });
+  }
 };

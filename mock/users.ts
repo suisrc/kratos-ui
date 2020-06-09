@@ -10,49 +10,51 @@ const getAccess = () => {
 export default {
   // 支持值为 Object 和 Array
   'GET /api/v1/user/current': (req: Request, res: Response) => {
-    if (!getAccess()) {
-      res.status(401).send({
-        data: {
-          isLogin: false,
-        },
-        errorCode: '401',
-        errorMessage: '请先登录！',
-        success: true,
-      });
-      return;
-    }
-    res.send(
-      getResult({
-        name: 'Demo User',
-        avatar: '/icons/logo-192x192.png',
-        userid: '00000001',
-        email: 'user@quay.run',
-        signature: '家天下',
-        title: '技术专家',
-        group: '技术部－XXX',
-        tags: [
-          {
-            key: '0',
-            label: '很有想法的',
+    setTimeout(() => {
+      if (!getAccess()) {
+        res.status(401).send({
+          data: {
+            //userid: null,
           },
-        ],
-        notifyCount: 12,
-        unreadCount: 11,
-        access: getAccess(),
-        country: '中国',
-        geographic: {
-          province: {
-            label: '辽宁省',
-            key: '110000',
+          errorCode: '401',
+          errorMessage: '请先登录！',
+          success: true,
+        });
+        return;
+      }
+      res.send(
+        getResult({
+          name: 'Demo User',
+          avatar: '/icons/logo-192x192.png',
+          userid: '00000001',
+          email: 'user@quay.run',
+          signature: '家天下',
+          title: '技术专家',
+          group: '技术部－XXX',
+          tags: [
+            {
+              key: '0',
+              label: '很有想法的',
+            },
+          ],
+          notifyCount: 12,
+          unreadCount: 11,
+          access: getAccess(),
+          country: '中国',
+          geographic: {
+            province: {
+              label: '辽宁省',
+              key: '110000',
+            },
+            city: {
+              label: '大连市',
+              key: '116000',
+            },
           },
-          city: {
-            label: '大连市',
-            key: '116000',
-          },
-        },
-        address: '高新园区 99 号',
-        phone: '0411-99999999',
-      }),
-    );
+          address: '高新园区 99 号',
+          phone: '0411-99999999',
+        }),
+      );
+    }, 300);
   },
 };

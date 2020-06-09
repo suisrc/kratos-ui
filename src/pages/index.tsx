@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { useModel } from 'umi';
+
 export default (): React.ReactNode => {
   //console.log('run');
   return (
