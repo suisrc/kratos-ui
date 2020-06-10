@@ -1,7 +1,7 @@
 import { parse, stringify } from 'querystring';
 import pathRegexp from 'path-to-regexp';
 import { MenuDataItem } from '@ant-design/pro-layout';
-import { history } from 'umi';
+import { history, IRoute } from 'umi';
 
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
@@ -101,4 +101,53 @@ export const getRedirectPage = (): string => {
   const params = getPageQuery();
   let { redirect } = params as { redirect: string };
   return redirect;
+};
+
+/**
+ * 过滤节点上的数据
+ * @param data
+ * @param filter
+ */
+export const filterThreeData = (
+  data: { children?: any }[],
+  filter: (item: any) => boolean,
+): any[] =>
+  data
+    .map(item => {
+      if (!item.children?.length) {
+        // 叶子节点,直接返回
+        return item;
+      }
+      // 父节点, 如果没有叶子节点,也会被移除
+      let children = filterThreeData(item.children || [], filter);
+      return !children.length ? undefined : { ...item, children: children };
+    })
+    .filter(item => !!item && filter(item));
+
+/**
+ * 获取匹配的路由, 主要用于上层节点预判匹配的路由节点
+ * @param path
+ * @param routeData
+ */
+export const getPrejudgeRoute = (
+  path: string,
+  routeData: IRoute[],
+): IRoute | undefined => {
+  let result: IRoute | undefined = undefined;
+  routeData.find(route => {
+    // match prefix
+    // console.log(`${route.path}->${path}`);
+    if (
+      route.path === '/' ||
+      pathRegexp(`${route.path}/(.*)`).test(`${path}/`)
+    ) {
+      if (route.routes) {
+        result = getPrejudgeRoute(path, route.routes);
+      }
+      if (!result && route.path === path) {
+        result = route;
+      }
+    }
+  });
+  return result;
 };

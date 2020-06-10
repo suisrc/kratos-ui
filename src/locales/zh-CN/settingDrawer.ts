@@ -14,5 +14,5 @@ export default {
   'app.setting.fixedsidebar.hint': '侧边菜单布局时可配置',
   'app.setting.hideheader': '下滑时隐藏 Header',
   'app.setting.hideheader.hint': '固定 Header 时可配置',
-  'app.setting.searchmenu': '目录搜索',
+  'app.setting.searchmenu': '导航菜单搜索',
 };

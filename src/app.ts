@@ -1,3 +1,7 @@
+/**
+ * 动态配置文件
+ * 当前文件可以是ts, 也可以是tsx文件
+ */
 import React from 'react';
 
 import { MenuDataItem } from '@ant-design/pro-layout';

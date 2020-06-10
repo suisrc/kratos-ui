@@ -26,14 +26,14 @@ export const renderLayoutSettingItem = (item: SettingItemProps) => {
 const LayoutSetting: React.FC<{
   settings: Partial<
     Settings & {
-      searchMenu?: boolean;
+      menuSearch?: boolean;
     }
   >;
   changeSetting: (key: string, value: any) => void;
 }> = ({ settings = {}, changeSetting }) => {
   const i18n = useIntl();
   //const { initialState: { settings } } = useModel('@@initialState');
-  const { contentWidth, fixedHeader, layout, fixSiderbar, searchMenu } =
+  const { contentWidth, fixedHeader, layout, fixSiderbar, menuSearch } =
     settings || {};
 
   return (
@@ -109,8 +109,8 @@ const LayoutSetting: React.FC<{
           action: (
             <Switch
               size="small"
-              checked={!!searchMenu}
-              onChange={checked => changeSetting('searchMenu', checked)}
+              checked={!!menuSearch}
+              onChange={checked => changeSetting('menuSearch', checked)}
             />
           ),
         },

@@ -18,7 +18,7 @@ export default defineConfig({
   },
   antd: {
     //dark: true, // 开启暗色主题
-    compact: true, // 开启紧凑主题
+    //compact: true, // 开启紧凑主题
   },
   dva: {
     hmr: true,
@@ -29,18 +29,18 @@ export default defineConfig({
   dynamicImport: {
     loading: '@/components/PageLoading/index',
   },
-  routes: route,
+  routes: [...route],
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
     // ...darkTheme,
     '@primary-color': defaultSettings.primaryColor,
   },
   // 左侧菜单 https://umijs.org/zh-CN/plugins/plugin-layout
-  // layout: {
-  //   name: defaultSettings.title,
-  //   locale: true,
-  //   logo: '/icons/logo-192x192.png',
-  // },
+  //layout: {
+  //name: defaultSettings.title,
+  //locale: true,
+  //logo: '/icons/logo-192x192.png',
+  //},
   // 请求 @umijs/plugin-request
   // request: {
   //   dataField: 'data',
@@ -52,4 +52,7 @@ export default defineConfig({
   manifest: {
     basePath: '/',
   },
+  plugins: [
+    //'umi-plugin-setting-drawer'
+  ],
 });

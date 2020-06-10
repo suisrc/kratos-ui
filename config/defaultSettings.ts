@@ -6,7 +6,8 @@ import { Settings } from '@ant-design/pro-layout';
 //  [key: string]: any;
 //}
 export type DefaultSettings = Settings & {
-  searchMenu?: boolean;
+  menuSearch?: boolean;
+  menuAccess?: boolean;
   //[key: string]: any;
 };
 
@@ -26,7 +27,8 @@ const defaultSettings: DefaultSettings = {
   contentWidth: 'Fluid', // Fluid, Fixed
   fixedHeader: true,
   fixSiderbar: true,
-  searchMenu: false,
+  menuSearch: false,
+  menuAccess: true,
   menu: {
     locale: true,
   },
@@ -47,7 +49,7 @@ export const UsedUrlParams: string[] = [
   'fixSiderbar',
   'primaryColor',
   'colorWeak',
-  'searchMenu',
+  'menuSearch',
 ];
 
 // https://ant.design/docs/react/customize-theme-cn

@@ -1,12 +1,20 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 
 import ProLayout, {
   MenuDataItem,
+  BasicLayoutProps,
   //Settings,
   //PageHeaderWrapper,
 } from '@ant-design/pro-layout';
 
-import { useIntl, IRouteComponentProps, NavLink, useModel } from 'umi';
+import {
+  useIntl,
+  IRouteComponentProps,
+  NavLink,
+  useModel,
+  useRouteMatch,
+  IRoute,
+} from 'umi';
 import { stringify } from 'qs';
 //import useMergeValue from 'use-merge-value'
 
@@ -14,8 +22,10 @@ import LogoIcon from '@/assets/LogoIcon';
 import GlobalHeaderRight from '@/components/GlobalHeader/RightContent';
 import Footer from '@/components/Footer';
 import SettingDrawer from '@/components/SettingDrawer';
-
 import { fixIcon } from '@/components/IconFont';
+import { filterThreeData, getPrejudgeRoute } from '@/utils/utils';
+import Error403 from '@/exceptions/403';
+
 import SearchMenu, { filterByMenuDate } from './SearchMenu';
 
 import defaultSettings, {
@@ -32,16 +42,17 @@ import './layouts.less';
  */
 const fixOpenKeysByMenuData = (
   keys: string[],
-  menus?: API.ObjectMap<MenuDataItem>,
+  menus?: Map<string, any>,
 ): string[] => {
-  if (!menus || !keys || keys.length !== 1) {
+  if (!menus || !keys || keys.length > 1) {
     return keys ? keys : [];
   }
-  let item: MenuDataItem = menus[keys[0]];
-  if (!item || item.children?.length != 0) {
+  let item: MenuDataItem = menus.get(keys[0]);
+  if (!item || item.children?.length) {
     return keys;
   }
-  //console.log(item);
+  // console.log(keys);
+  // console.log(item);
   if (!item.parentKeys) {
     item.parentKeys = ((item?.pro_layout_parentKeys
       ? item.pro_layout_parentKeys
@@ -52,6 +63,15 @@ const fixOpenKeysByMenuData = (
   }
   return item.parentKeys;
 };
+
+//const filterAccessByMenuDate = (
+//  data: MenuDataItem[],
+//  filter: (item: MenuDataItem) => boolean,
+//): MenuDataItem[] =>
+//  filterThreeData(
+//    data,
+//    filter
+//  ) as MenuDataItem[];
 
 const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
   menuList.map(item => {
@@ -98,7 +118,9 @@ const getDifferentSettingPath = (state: Partial<DefaultSettings>) => {
   return stringify(stateObj);
 };
 
-const Layout = (props: IRouteComponentProps) => {
+const Layout = (
+  props: IRouteComponentProps /*IRouteComponentProps BasicLayoutProps*/,
+) => {
   const i18n = useIntl();
 
   const { initialState, setInitialState } = useModel('@@initialState');
@@ -106,28 +128,44 @@ const Layout = (props: IRouteComponentProps) => {
   // 全局风格配置
   const settings: DefaultSettings =
     initialState?.defaultSettings || defaultSettings;
-  const setSettings: (settings: any) => void = settings =>
-    setInitialState({ ...initialState, defaultSettings: settings });
+  const setSettings = useCallback(
+    settings => setInitialState({ ...initialState, defaultSettings: settings }),
+    [],
+  );
 
   const uriParams = getDifferentSettingPath({ ...settings });
   // const [uriParams, setUriParams] = useState<string>(); // => SettingDrawer.onDiffUriParams
 
-  const [keyWord, setKeyWord] = useState('');
-  // 可以每次都重新计算,但是这里图方面,使用缓存
-  // 应用中存在 pro_layout_parentKeys, 可以使用该内容代替parentKeys
-  // const menuMap = initialState?.defaultMenuMap || {};
-  const menuMap = useRef<API.ObjectMap<MenuDataItem>>({});
   // 菜单数据
   const [menuData, setMenuData] = useState<MenuDataItem[]>([
     ...(initialState?.defaultMenus || []),
   ]);
 
-  // 默认展开的内容
+  const [keyword, setKeyword] = useState('');
+
+  // 主要给openKey使用
+  const menuMap = useRef(new Map<string, any>());
+  // 默认展开的内容 & 缓存
   const [openKeys, setOpenKeys] = useState<string[]>([]);
   //const openKeys = useRef<string[]>([]);
   const [collapsed, setCollapsed] = useState<boolean>(false);
 
-  //const firstRender = useRef<boolean>(true);
+  // 配置路由权限 & 缓存
+  const routeMap = useRef(new Map<string, any>());
+  const routeAcc = useCallback(key => {
+    let route = routeMap.current.get(key);
+    if (!route) {
+      let iroute = getPrejudgeRoute(key, [props.route as IRoute]);
+      routeMap.current.set(
+        key,
+        (route = { unaccessible: iroute?.unaccessible || false }),
+      );
+    }
+    return route.unaccessible;
+  }, []);
+  const unaccessible = settings.menuAccess && routeAcc(props.location.pathname);
+
+  //console.log(routeMap.current);
   return (
     <div>
       <ProLayout
@@ -148,10 +186,16 @@ const Layout = (props: IRouteComponentProps) => {
         //menu={{ locale: true }}
         formatMessage={msg => i18n.formatMessage(msg)}
         // menuData={menuData}
+        // route={[]}
         menuDataRender={menus => menuData}
         // path => itemPath, parentKeys => pro_layout_parentKeys
         menuItemRender={(item, dom) => {
-          if (typeof item.key === 'string') menuMap.current[item.key] = item;
+          if (typeof item.key === 'string')
+            menuMap.current.set(item.key, {
+              path: item.path,
+              parentKeys: item.parentKeys,
+              pro_layout_parentKeys: item.pro_layout_parentKeys,
+            });
           return !item.itemPath
             ? fixIcon(item, dom)
             : fixIcon(
@@ -162,7 +206,6 @@ const Layout = (props: IRouteComponentProps) => {
         subMenuItemRender={(item, dom) => fixIcon(item, dom)}
         focusable={true}
         forceSubMenuRender={true}
-        children={props.children}
         rightContentRender={() => (
           <GlobalHeaderRight
             theme={settings.navTheme}
@@ -176,16 +219,14 @@ const Layout = (props: IRouteComponentProps) => {
               {logo}
               {title}
             </NavLink>
-            {settings.searchMenu && settings.layout === 'sidemenu' && (
-              <SearchMenu {...{ setKeyWord: setKeyWord }} />
+            {settings.menuSearch && settings.layout === 'sidemenu' && (
+              <SearchMenu setKeyword={setKeyword} />
             )}
           </>
         )}
-        postMenuData={menus => filterByMenuDate(menus || [], keyWord)}
+        postMenuData={menus => filterByMenuDate(menus || [], keyword)}
         disableContentMargin={true}
-        route={{
-          routes: [],
-        }}
+        children={unaccessible ? <Error403 /> : props.children}
         //pure={false}
         //{...props}
         //{...settings}

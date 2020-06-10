@@ -1,4 +1,7 @@
-// 返回权限
+/**
+ * 获取当前用户权限
+ * 该文件必须是access.ts😥, 当我配置为access.tsx时候,无法处理
+ */
 
 //export default function(param: any) {
 //  console.log(param);
@@ -6,11 +9,11 @@
 //    canAdmin: false,
 //  };
 //}
-export default function(initialState: any) {
-  console.log(initialState);
+export default function(initialState: { currentUser?: API.CurrentUser }) {
+  const { currentUser } = initialState || {};
+  //console.log(currentUser);
   return {
-    canAdmin: false,
-    canReadFoo: true,
-    canUpdateFoo: false,
+    canAdmin: true,
+    canAccess: false,
   };
 }

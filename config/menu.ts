@@ -25,6 +25,10 @@ import { MenuDataItem } from '@ant-design/pro-layout';
  *
  * 🍉 icon1: ant@4对icon不在支持,这里用icon1代替icon, 在 components/IconFont 中处理
  * 🍉 parentKeys中存放其所有的上级目录.
+ *
+ * 🍉 path => umijs重新处理 => itemPath
+ * 🍉 parentKeys => umijs重新处理 => pro_layout_parentKeys
+ * 🍉 locale => umijs重新处理(menu + 名称合并) => menu.account.center
  */
 const menus: MenuDataItem[] = [
   {
