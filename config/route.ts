@@ -40,10 +40,19 @@ const demo = [
 // const routes: IBestAFSRoute[] =  [
 const routes = [
   {
-    path: '/auth/signin',
-    component: './Auth/Signin',
+    name: 'auth',
+    path: '/auth',
+    component: '@/layouts/BlankLayout',
+    wrappers: ['@/wrappers/noauth'],
     menu: false,
     layout: false,
+    routes: [
+      {
+        name: 'signin',
+        path: '/auth/signin',
+        component: './Auth/Signin',
+      },
+    ],
   },
   {
     path: '/exceptions',

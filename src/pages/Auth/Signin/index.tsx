@@ -11,15 +11,19 @@ import {
 
 import { Alert, Checkbox, message } from 'antd';
 import React, { useState, useEffect } from 'react';
-import { Link, history, useModel, useIntl } from 'umi';
+import { Link, history, useModel, useIntl, useRequest } from 'umi';
 
 import { Sign3rdType, sign3rd, querySign3rdApp } from '@/services/sign3rd';
 import { SigninParamsType, SigninType } from '@/services/signin';
 
-import { getPageQuery } from '@/utils/utils';
 import LogoIcon from '@/assets/LogoIcon';
 import SigninFrom from '@/components/Signin';
 import SelectLang from '@/components/SelectLang';
+
+import { getIcon } from '@/components/IconFont';
+
+import { replaceGoto, getRedirectPage } from '@/utils/utils';
+import PageLoading from '@/components/PageLoading';
 
 import styles from './style.less';
 import gstyle from '@/global.less';
@@ -44,59 +48,22 @@ const SigninMessage: React.FC<{
   />
 );
 
-/**
- * 此方法会跳转到 redirect 参数所在的位置
- */
-const replaceGoto = () => {
-  const urlParams = new URL(window.location.href);
-  const params = getPageQuery();
-  let { redirect } = params as { redirect: string };
-  if (redirect) {
-    const redirectUrlParams = new URL(redirect);
-    if (redirectUrlParams.origin === urlParams.origin) {
-      redirect = redirect.substr(urlParams.origin.length);
-      if (redirect.match(/^\/.*#/)) {
-        redirect = redirect.substr(redirect.indexOf('#') + 1);
-      }
-    } else {
-      window.location.href = '/';
-      return;
-    }
-  }
-  history.replace(redirect || '/');
-};
-
 const Signin: React.FC<{}> = () => {
   // const { refresh } = useModel('@@initialState');
-  const { signin } = useModel('AuthUser');
+  const { signin, isSignin } = useModel('AuthUser');
 
   const [autoSignin, setAutoSignin] = useState(false);
   const [type, setType] = useState<string>('account');
 
-  const [userSigninState, setUserSigninState] = useState<API.SigninStateType>(
-    {},
-  );
+  const [userSigninState, setUserSigninState] = useState<any>({});
   const [submitting, setSubmitting] = useState(false);
-
-  const [use3rdApps, setUse3rdApps] = useState<Sign3rdType[]>([]);
 
   const i18n = useIntl();
 
-  useEffect(() => {
-    initSign3rd();
-  }, []);
-
-  const initSign3rd = async () => {
-    try {
-      // 初始化第三方登录
-      const res = await querySign3rdApp();
-      if (res.success) {
-        setUse3rdApps([...res.data]);
-      }
-    } catch (error) {
-      // do nothing
-    }
-  };
+  // if (!submitting && /*autoSignin &&*/ isSignin) {
+  //   replaceGoto();
+  //   //return <PageLoading />;
+  // }
 
   const handleSubmit = async (values: SigninParamsType) => {
     setSubmitting(true);
@@ -108,19 +75,24 @@ const Signin: React.FC<{}> = () => {
         message.success(
           i18n.formatMessage({ id: 'page.auth.signin.func.submit.success' }),
         );
-        replaceGoto();
-        // setTimeout(() => refresh(), 0);
+        //TODO 🍜🍜🍜 一碗热汤面,来压压惊
+        //TODO 🍜🍜🍜 一碗热汤面,来压压惊
+        //TODO 🍜🍜🍜 一碗热汤面,来压压惊
+        // replaceGoto(); 重定向内容在/wrappers/noauth中完成
+        // setTimeout(() => refresh(), 0); // 使用initialState模式,刷新全局用户信息
         return;
       }
       if (!msg.success) {
+        setUserSigninState({});
         message.error(
           i18n.formatMessage({ id: 'page.auth.signin.func.submit.error' }),
         );
       } else {
         // 如果失败去设置用户错误信息
-        setUserSigninState({ ...msg.data, type });
+        setUserSigninState(msg.data ? { ...msg.data, type } : {});
       }
     } catch (error) {
+      setUserSigninState({});
       message.error(
         i18n.formatMessage({ id: 'page.auth.signin.func.submit.error' }),
       );
@@ -131,25 +103,26 @@ const Signin: React.FC<{}> = () => {
 
   // 第三方登陆
   const App3rdChildren: React.ReactComponentElement<any>[] = [];
-  use3rdApps.map((app, index) => {
-    let child =
-      app.platform === 'wechat' ? (
-        <WechatOutlined className={styles.icon} />
-      ) : app.platform == 'dingding' ? (
-        <DingdingOutlined className={styles.icon} />
-      ) : app.platform == 'aliyun' ? (
-        <AliyunOutlined className={styles.icon} />
-      ) : app.platform == 'github' ? (
-        <GithubOutlined className={styles.icon} />
-      ) : app.platform == 'gitlab' ? (
-        <GitlabOutlined className={styles.icon} />
-      ) : (
-        <TeamOutlined className={styles.icon} />
-      );
+  //const [use3rdApps, setUse3rdApps] = useState<Sign3rdType[]>([]);
+  const { data: use3rdApps, loading: loading3rd } = useRequest(
+    querySign3rdApp,
+    {
+      cacheKey: 'signin-use-3rd-apps',
+    },
+  );
+  const { run: goto3rd } = useRequest(sign3rd, { manual: true });
+  (use3rdApps as Sign3rdType[])?.map((app, index) => {
     App3rdChildren.push(
       // 由于三方登录会直接跳转,所以不再单独处理
-      <a key={app.appid} onClick={e => sign3rd(app.appid, app.signature, '')}>
-        {child}
+      <a
+        key={app.appid}
+        onClick={e =>
+          goto3rd(app.appid, app.signature, getRedirectPage() || '')
+        }
+      >
+        {getIcon(app.icon, styles.icon) || (
+          <TeamOutlined className={styles.icon} />
+        )}
       </a>,
     );
   });

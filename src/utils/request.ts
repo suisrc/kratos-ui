@@ -4,10 +4,19 @@
  * 更详细的 api 文档:
  * https://github.com/umijs/umi-request
  * https://umijs.org/zh-CN/plugins/plugin-request
+ * https://umijs.org/plugins/plugin-request#request
+ * https://hooks.umijs.org/zh-CN/hooks/async#options
  *
+ * 通过 import { request } from 'umi'; 你可以使用内置的请求方法。
+ * request 接收两个参数，第一个参数是 url，第二个参数是请求的 options。
+ * options 具体格式参考 umi-request。
+ * request 的大部分用法等同于 umi-request，一个不同的是 options 扩展了一个配置 skipErrorHandler，
+ * 该配置为 true 是会跳过默认的错误处理，用于项目中部分特殊的接口。
  * 注意，使用useRequest，包含异常处理
+ * 另外你可以通过 Error.name 是否是 BizError 来判断是否是因为 success 为 false 抛出的错误。
  */
 import { extend } from 'umi-request';
+import { request as requmi } from 'umi';
 import { notification } from 'antd';
 
 interface CodeMessage {
@@ -58,12 +67,22 @@ const errorHandler = (error: { response: Response }): Response => {
 /**
  * 配置request请求时的默认参数
  */
-const request = extend({
-  errorHandler, // 默认错误处理(注意，这是网络上的异常)
-  credentials: 'include', // 默认请求是否带上cookie
-});
+//const request = extend({
+//  errorHandler, // 默认错误处理(注意，这是网络上的异常)
+//  credentials: 'include', // 默认请求是否带上cookie
+//});
+const request = requmi;
 
 export default request;
+
+/**
+ * 忽略警告
+ * @param url
+ * @param options
+ */
+export const requestskip = (url: any, options?: any) => {
+  return requmi(url, { ...options, skipErrorHandler: true });
+};
 
 // import { useRequest } from 'umi';
 // const { data, error, loading } = useRequest(() => {

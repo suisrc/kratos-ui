@@ -1,11 +1,13 @@
 import React from 'react';
 
-import { IRouteComponentProps } from 'umi';
+//import { IRouteComponentProps } from 'umi';
 
 // https://umijs.org/zh-CN/plugins/plugin-layout
 // https://pro.ant.design/blog/new-pro-use-cn
-const Layout: React.FC<IRouteComponentProps> = (
-  props: IRouteComponentProps,
-) => <>{props.children}</>;
+// const Layout: React.FC<IRouteComponentProps> = (
+//   props: IRouteComponentProps,
+// ) => <>{props.children}</>;
+//
+// export default Layout;
 
-export default Layout;
+export default (props: any) => <>{props.children}</>;

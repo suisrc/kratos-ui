@@ -1,6 +1,6 @@
 export default {
   'page.auth.signin.func.submit.success': '登录成功！',
-  'page.auth.signin.func.submit.error': '登录失败，请重试！',
+  'page.auth.signin.func.submit.error': '登录失败，请稍后重试！',
   'page.auth.signin.func.submit.button': '登录',
 
   'page.auth.signin.logo.title': 'Kratos',

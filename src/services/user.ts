@@ -1,11 +1,11 @@
-import request from '@/utils/request';
+import request, { requestskip } from '@/utils/request';
 
 /**
  * 查询当前用户信息
  * 一般在用户收起登陆，或者首次打开页面时候触发
  */
 export async function getCurrentUser(): Promise<any> {
-  return request('/api/v1/user/current');
+  return requestskip('/api/v1/user/current');
 }
 
 /**

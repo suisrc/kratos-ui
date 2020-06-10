@@ -2,6 +2,12 @@ import { Request, Response } from 'express';
 import { getResult } from './result';
 
 export default {
+  '/api/v1/signin/ipad': (req: Request, res: Response) => {
+    console.log(req.headers.cookie);
+    res.send({
+      cookie: req.headers.cookie,
+    });
+  },
   'POST  /api/v1/signin/account': (req: Request, res: Response) => {
     const { password, username, type, mobile, captcha } = req.body;
     if (password === '123456' && username === 'admin') {
@@ -25,7 +31,7 @@ export default {
     if (type === ':account:' && username === 'a') {
       res.send(
         getResult({
-          status: 'error',
+          status: 'error', // 登陆失败
         }),
       );
       return;
@@ -43,7 +49,7 @@ export default {
       getResult(null, {
         success: false,
         errorCode: 'SIGNIN-ERROR',
-        errorMessage: '未知异常',
+        errorMessage: '未知异常', // 位置异常
       }),
     );
   },
@@ -68,6 +74,7 @@ export default {
         name: '钉钉10',
         title: '钉钉11',
         signature: '20001',
+        icon: 'icondingding',
       },
       {
         platform: 'wechat',
@@ -75,6 +82,7 @@ export default {
         name: '微信10',
         title: '微信11',
         signature: '10001',
+        icon: 'icondingding',
       },
       {
         platform: 'github',
@@ -82,6 +90,7 @@ export default {
         name: 'GitHub10',
         title: 'GitHub11',
         signature: '30001',
+        icon: 'icongithub',
       },
     ],
   },
@@ -91,6 +100,7 @@ export default {
         success: false,
         errorCode: 'SIGNIN-3rd',
         errorMessage: '未知异常',
+        showType: 3,
       }),
     );
   },

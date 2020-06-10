@@ -1,7 +1,7 @@
-export default function(initialState: {
+export default function(AuthUser: {
   currentUser?: API.CurrentUser | undefined;
 }) {
-  const { currentUser } = initialState || {};
+  const { currentUser } = AuthUser || {};
   return {
     canAdmin: currentUser && currentUser.access === 'admin',
   };

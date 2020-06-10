@@ -41,6 +41,10 @@ export default defineConfig({
   //   locale: true,
   //   logo: '/icons/logo-192x192.png',
   // },
+  // 请求 @umijs/plugin-request
+  // request: {
+  //   dataField: 'data',
+  // },
   title: defaultSettings.title,
   // favicon: '/assets/favicon.ico',
   ignoreMomentLocale: true,

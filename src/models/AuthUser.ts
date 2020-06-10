@@ -1,7 +1,23 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+/**
+ * 权限控制应用服务器
+ * https://hooks.umijs.org/zh-CN/hooks/async
+ */
 
-import { message } from 'antd';
-import { useModel, useRequest } from 'umi';
+// export default () => {
+//   const { data, error, loading } = useRequest(getUsername)
+//   if (error) {
+//     return <div>failed to load</div>
+//   }
+//   if (loading) {
+//     return <div>loading...</div>
+//   }
+//   return <div>Username: {data}</div>
+// }
+
+import { useState, useCallback, useEffect } from 'react';
+
+//import { message } from 'antd';
+import { useRequest } from 'umi';
 import { gotoSigninPage } from '@/utils/utils';
 
 import {
@@ -17,28 +33,29 @@ export default function AuthUser(): {
   loading: boolean;
   currentUser?: API.CurrentUser;
   isSignin: boolean;
-  signin: (params: SigninParamsType) => any;
+  signin: (params: SigninParamsType) => Promise<any>;
   signout: () => void;
-  refresh: () => void;
+  refresh: () => Promise<any>;
 } {
-  const [currentUser, setCurrentUser] = useState<API.CurrentUser | undefined>(
-    undefined,
-  );
-  const [loading, setLoading] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState<any>();
 
   /**
    * 获取当前用户信息
    */
-  useEffect(() => {
-    refresh();
-    return () => setCurrentUser(undefined);
-  }, []);
-
-  //https://hooks.umijs.org/zh-CN/hooks/async
+  //const { loading, run: refresh} = useRequest(getCurrentUser, {
+  //  manual: true,
+  //  onSuccess: (result, params) => {
+  //    setCurrentUser(result);
+  //  },
+  //  onError: (error, params) => {
+  //    setCurrentUser(undefined);
+  //  },
+  //  //formatResult: result => result?.data,
+  //});
+  const [loading, setLoading] = useState<boolean>(false);
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
-      //const res: API.ErrorInfo<API.CurrentUser> =  await useRequest(() => getCurrentUser());
       const res: API.ErrorInfo<API.CurrentUser> = await getCurrentUser();
       if (res.success) {
         setCurrentUser(res.data);
@@ -74,17 +91,20 @@ export default function AuthUser(): {
     gotoSigninPage();
   }, []);
 
+  /**
+   * 初始化， 返回值如果是方法，表示回收初始化的内容
+   */
+  useEffect(() => {
+    refresh();
+    return () => setCurrentUser(undefined);
+  }, []);
+
   return {
     loading: loading,
-    currentUser,
+    currentUser: currentUser,
     isSignin: !!currentUser?.userid,
     signin,
     signout,
     refresh,
   };
 }
-
-// const signoutAsync = async () => {
-//   await logout();
-//   gotoSigninPage();
-// };

@@ -52,6 +52,9 @@ export const initKeysFromMenuData = (
   return res;
 };
 
+/**
+ * 调整登录页
+ */
 export const gotoSigninPage = () => {
   const { redirect } = getPageQuery();
   if (
@@ -66,4 +69,36 @@ export const gotoSigninPage = () => {
   } else {
     history.replace({ pathname: '/auth/signin' });
   }
+};
+
+/**
+ * 此方法会跳转到 redirect 参数所在的位置
+ */
+export const replaceGoto = () => {
+  const urlParams = new URL(window.location.href);
+  const params = getPageQuery();
+  let { redirect } = params as { redirect: string };
+  if (redirect) {
+    const redirectUrlParams = new URL(redirect);
+    if (redirectUrlParams.origin === urlParams.origin) {
+      redirect = redirect.substr(urlParams.origin.length);
+      if (redirect.match(/^\/.*#/)) {
+        redirect = redirect.substr(redirect.indexOf('#') + 1);
+      }
+    } else {
+      window.location.href = '/';
+      return;
+    }
+  }
+  history.replace(redirect || '/');
+};
+
+/**
+ * 获取重定向地址
+ */
+export const getRedirectPage = (): string => {
+  const urlParams = new URL(window.location.href);
+  const params = getPageQuery();
+  let { redirect } = params as { redirect: string };
+  return redirect;
 };

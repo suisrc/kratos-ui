@@ -23,7 +23,7 @@ import { MenuDataItem } from '@ant-design/pro-layout';
  * 🍔特别注意,如果使用Menu的openkey, 请在指定菜单叶子节点的时候,指定parentKeys内容
  * 🌈实际操作发现,初始化页面,Menu被加载4次,导致初始化的openkey无法使用
  *
- * 🍉 icon1: ant@4对icon不在支持,这里用icon1代替icon, 在layouts/FixIcon中处理
+ * 🍉 icon1: ant@4对icon不在支持,这里用icon1代替icon, 在 components/IconFont 中处理
  * 🍉 parentKeys中存放其所有的上级目录.
  */
 const menus: MenuDataItem[] = [

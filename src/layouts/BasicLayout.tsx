@@ -15,7 +15,7 @@ import GlobalHeaderRight from '@/components/GlobalHeader/RightContent';
 import Footer from '@/components/Footer';
 import SettingDrawer from '@/components/SettingDrawer';
 
-import fixIcon from './FixIcon';
+import { fixIcon } from '@/components/IconFont';
 import SearchMenu, { filterByMenuDate } from './SearchMenu';
 
 import defaultSettings, {
@@ -198,3 +198,21 @@ const Layout = (props: IRouteComponentProps) => {
 };
 
 export default Layout;
+
+// const fixOpenKeysByMenuData = (
+//   menuMap: API.ObjectMap<MenuDataItem>,
+//   keys: string[],
+// ) => {
+//   if (!keys || keys.length !== 1) {
+//     return keys;
+//   }
+//   // 当keys的lenght=1时候,会发生勾选叶子节点,二无法正确展开的问题
+//   let res = {};
+//   return Object.keys(res);
+// };
+
+// const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] => // menuList;
+//  menuList.map((item) => {
+//    const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
+//    return Authorized.check(item.authority, localItem, null) as MenuDataItem;
+//});

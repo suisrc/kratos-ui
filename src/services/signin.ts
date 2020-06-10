@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import request, { requestskip } from '@/utils/request';
 
 /**
  * 登陆使用的参数
@@ -30,7 +30,7 @@ export const SigninType: API.StringMap = {
  * @param params
  */
 export async function signin(params: SigninParamsType): Promise<any> {
-  return request('/api/v1/signin/account', {
+  return requestskip('/api/v1/signin/account', {
     method: 'POST',
     data: params,
   });

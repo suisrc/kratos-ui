@@ -2,25 +2,30 @@ import React from 'react';
 
 import { MenuDataItem } from '@ant-design/pro-layout';
 import defaultSettings, { DefaultSettings } from '../config/defaultSettings';
+
+import { history, RequestConfig } from 'umi';
+import { getCurrentUser } from './services/user';
 import defaultMenus from '../config/menu';
 
-//import { history } from 'umi';
-//import { getCurrentUser } from './services/user';
-//import GlobalHeaderRight from '@/components/GlobalHeader/RightContent';
-//import Footer from '@/components/Footer';
-
-// 全局配置
+/**
+ * 应用初次加载,进行初始化配置
+ * @umijs/plugin-initial-state
+ */
 // https://umijs.org/zh-CN/plugins/plugin-initial-state
 export async function getInitialState(): Promise<{
   defaultSettings?: DefaultSettings;
   defaultMenus?: MenuDataItem[];
 }> {
+  return {
+    defaultSettings: defaultSettings,
+    defaultMenus: defaultMenus,
+  };
   //if (!history.location.pathname.startsWith('/auth/')) {
   //  // 登录页面，不执行(登陆页面可能会有多种情况)
   //  try {
-  //    const res: API.ErrorInfo<API.CurrentUser> = await getCurrentUser();
+  //    const res: any = await getCurrentUser();
   //    return {
-  //      currentUser: res.data,
+  //      currentUser: res?.data,
   //      defaultSettings: defaultSettings,
   //      defaultMenus: defaultMenus,
   //      //defaultMenuMap: defaultMenuMap,
@@ -30,12 +35,12 @@ export async function getInitialState(): Promise<{
   //    history.replace('/auth/signin');
   //  }
   //}
-  return {
-    defaultSettings: defaultSettings,
-    defaultMenus: defaultMenus,
-  };
 }
 
+/**
+ * 应用布局配置,只有在config.ts中启用layout才有效
+ * @umijs/plugin-layout
+ */
 // https://umijs.org/zh-CN/plugins/plugin-layout
 // https://pro.ant.design/blog/new-pro-use-cn
 // https://pro.ant.design/docs/router-and-nav-cn
@@ -53,4 +58,18 @@ export async function getInitialState(): Promise<{
 //     // menuDataRender: () => [],
 //     ...initialState?.settings,
 //   };
+// };
+
+/**
+ * 请求全局配置
+ * @umijs/plugin-request
+ */
+// https://umijs.org/plugins/plugin-request
+// 该配置返回一个对象。除了 errorConfig 和 middlewares 以外其它配置都是直接透传 umi-request 的全局配置。
+// export const request: RequestConfig = {
+//   timeout: 1000,
+//   errorConfig: {},
+//   middlewares: [],
+//   requestInterceptors: [],
+//   responseInterceptors: [],
 // };
