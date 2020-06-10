@@ -19,26 +19,30 @@ import defaultMenus from '../config/menu';
 export async function getInitialState(): Promise<{
   defaultSettings?: DefaultSettings;
   defaultMenus?: MenuDataItem[];
+  currentUser?: API.CurrentUser;
+  isSignin?: boolean;
+  // [key: string]: any;
 }> {
+  //if (!history.location.pathname.startsWith('/auth/')) {
+  try {
+    const res: API.ErrorInfo<API.CurrentUser> = await getCurrentUser();
+    if (res.success) {
+      return {
+        currentUser: res?.data,
+        isSignin: !!res?.data?.userid,
+        defaultSettings: defaultSettings,
+        defaultMenus: defaultMenus,
+      };
+    }
+  } catch (error) {
+    // do nothing
+    // history.replace('/auth/signin');
+  }
+  //}
   return {
     defaultSettings: defaultSettings,
     defaultMenus: defaultMenus,
   };
-  //if (!history.location.pathname.startsWith('/auth/')) {
-  //  // 登录页面，不执行(登陆页面可能会有多种情况)
-  //  try {
-  //    const res: any = await getCurrentUser();
-  //    return {
-  //      currentUser: res?.data,
-  //      defaultSettings: defaultSettings,
-  //      defaultMenus: defaultMenus,
-  //      //defaultMenuMap: defaultMenuMap,
-  //    };
-  //  } catch (error) {
-  //    // 发生意外，跳转到登陆首页
-  //    history.replace('/auth/signin');
-  //  }
-  //}
 }
 
 /**

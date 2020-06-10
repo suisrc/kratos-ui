@@ -4,12 +4,12 @@ import { gotoSigninPage } from '@/utils/utils';
 import PageLoading from '@/components/PageLoading';
 
 export default (props: any) => {
-  const { isSignin, loading } = useModel('AuthUser');
-
+  // const { currentUser, loading, signout } = useModel('AuthUser');
+  const { initialState, loading } = useModel('@@initialState');
   if (loading) {
     return <PageLoading />;
   }
-  if (isSignin) {
+  if (initialState?.isSignin) {
     return <div>{props.children}</div>;
   } else {
     gotoSigninPage();

@@ -4,11 +4,11 @@ import { gotoSigninPage, replaceGoto } from '@/utils/utils';
 import PageLoading from '@/components/PageLoading';
 
 export default (props: any) => {
-  const { isSignin, loading } = useModel('AuthUser');
+  const { initialState, loading } = useModel('@@initialState');
   if (loading) {
     return <PageLoading />;
   }
-  if (isSignin) {
+  if (initialState?.isSignin) {
     replaceGoto();
     return <PageLoading />;
   } else {

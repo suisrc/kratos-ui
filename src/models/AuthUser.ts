@@ -14,10 +14,15 @@
 //   return <div>Username: {data}</div>
 // }
 
-import { useState, useCallback, useEffect } from 'react';
+/**
+ * 本来想把所有CurrentUser的内容封装到该Model中完成，
+ * 但是，目前无法做到initialState和当前环境中的currentUser内容联动
+ * 所以，目前只能保留signin和signout的两个方法
+ */
+import { useState, useCallback, useEffect, useMemo } from 'react';
 
 //import { message } from 'antd';
-import { useRequest } from 'umi';
+import { useRequest, useModel } from 'umi';
 import { gotoSigninPage } from '@/utils/utils';
 
 import {
@@ -29,44 +34,20 @@ import { getCurrentUser } from '@/services/user';
 
 // https://umijs.org/plugins/plugin-model
 // 用于完成用户权限认证和获取用户
-export default function AuthUser(): {
-  loading: boolean;
-  currentUser?: API.CurrentUser;
-  isSignin: boolean;
+export default function(): {
   signin: (params: SigninParamsType) => Promise<any>;
   signout: () => void;
-  refresh: () => Promise<any>;
 } {
-  const [currentUser, setCurrentUser] = useState<any>();
+  const { initialState, setInitialState, refresh, loading } = useModel(
+    '@@initialState',
+  );
 
-  /**
-   * 获取当前用户信息
-   */
-  //const { loading, run: refresh} = useRequest(getCurrentUser, {
-  //  manual: true,
-  //  onSuccess: (result, params) => {
-  //    setCurrentUser(result);
-  //  },
-  //  onError: (error, params) => {
-  //    setCurrentUser(undefined);
-  //  },
-  //  //formatResult: result => result?.data,
-  //});
-  const [loading, setLoading] = useState<boolean>(false);
-  const refresh = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res: API.ErrorInfo<API.CurrentUser> = await getCurrentUser();
-      if (res.success) {
-        setCurrentUser(res.data);
-      } else {
-        setCurrentUser(undefined);
-      }
-    } catch (error) {
-      setCurrentUser(undefined);
-    }
-    setLoading(false);
-  }, []);
+  //const [currentUser, setCurrentUser] = useState();
+  //const { currentUser } = initialState || {};
+  const setCurrentUser = useCallback(
+    currentUser => setInitialState({ ...initialState, currentUser }),
+    [],
+  );
 
   /**
    * 登陆
@@ -91,20 +72,9 @@ export default function AuthUser(): {
     gotoSigninPage();
   }, []);
 
-  /**
-   * 初始化， 返回值如果是方法，表示回收初始化的内容
-   */
-  useEffect(() => {
-    refresh();
-    return () => setCurrentUser(undefined);
-  }, []);
-
+  //console.log(`access=> ${JSON.stringify(initialState?.currentUser)}`);
   return {
-    loading: loading,
-    currentUser: currentUser,
-    isSignin: !!currentUser?.userid,
     signin,
     signout,
-    refresh,
   };
 }

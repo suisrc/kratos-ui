@@ -16,7 +16,8 @@ export interface GlobalHeaderRightProps {
 }
 
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
-  const { currentUser, loading, signout } = useModel('AuthUser');
+  const { initialState, loading } = useModel('@@initialState');
+  const { signout } = useModel('AuthUser');
 
   const onMenuClick = useCallback((event: ClickParam) => {
     const { key } = event;
@@ -28,7 +29,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
     history.push(`/account/${key}`);
   }, []);
 
-  if (loading || !currentUser?.name) {
+  if (loading || !initialState?.currentUser?.name) {
     return (
       <span className={`${styles.action} ${styles.account}`}>
         <Spin
@@ -41,6 +42,8 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       </span>
     );
   }
+
+  const { currentUser } = initialState;
 
   const menuHeaderDropdown = (
     <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>

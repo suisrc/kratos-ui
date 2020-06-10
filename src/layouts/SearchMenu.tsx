@@ -30,7 +30,7 @@ export const filterByMenuDate = (
 //    || (children = filterByMenuDate(item.children || [], keyword)).length > 0) {
 //      // 递归初始化children
 //      children = children || filterByMenuDate(item.children || [], keyword);
-//      //return children.length == 0 ? item : { ...item,  children: children };
+//      //return children.length === 0 ? item : { ...item,  children: children };
 //      return { ...item, children: children };
 //    }
 //    return undefined;
