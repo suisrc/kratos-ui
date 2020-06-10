@@ -77,6 +77,7 @@ const routes = [
       },
       {
         name: 'account',
+        access: 'canAdmin',
         routes: [
           {
             name: 'center',

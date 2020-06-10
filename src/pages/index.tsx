@@ -1,13 +1,20 @@
 import React from 'react';
 
-import { useModel } from 'umi';
+import { useModel, useAccess, Access } from 'umi';
 
 export default (): React.ReactNode => {
   //console.log('run');
+  const access = useAccess();
+
   return (
     <div style={{ textAlign: 'center', minHeight: '80vh' }}>
       Want to add more pages? Please refer to{' '}
-      <a href="https://pro.ant.design/docs/block-cn">use block</a>。
+      {access.canAdmin ? (
+        <a href="https://pro.ant.design/docs/block-cn">use block</a>
+      ) : (
+        <div>use block</div>
+      )}
+      。
     </div>
   );
 };
