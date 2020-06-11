@@ -128,11 +128,6 @@ const routes = [
             path: 'center',
             component: './Account/Center',
           },
-          {
-            name: 'settings',
-            path: 'settings',
-            component: './Account/Settings',
-          },
         ],
       },
       { exact: true, path: '401', component: '@/exceptions/401' },

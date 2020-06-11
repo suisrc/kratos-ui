@@ -74,7 +74,7 @@ export default {
         name: '钉钉10',
         title: '钉钉11',
         signature: '20001',
-        icon: 'icondingding',
+        icon: 'icondingtalk',
       },
       {
         platform: 'wechat',
@@ -82,7 +82,7 @@ export default {
         name: '微信10',
         title: '微信11',
         signature: '10001',
-        icon: 'icondingding',
+        icon: 'iconwechat-fill',
       },
       {
         platform: 'github',
@@ -90,7 +90,7 @@ export default {
         name: 'GitHub10',
         title: 'GitHub11',
         signature: '30001',
-        icon: 'icongithub',
+        icon: 'icongithub-fill',
       },
     ],
   },

@@ -36,13 +36,13 @@ const menus: MenuDataItem[] = [
     path: '/welcome',
     locale: false,
     key: '000',
-    icon1: 'icondingding',
+    icon1: 'iconhome',
   },
   {
     name: 'account',
     //locale: 'menu.account', // 通过name字段合并
     key: '001',
-    icon1: 'icondingding',
+    icon1: 'iconuser',
     children: [
       {
         name: 'center',
@@ -50,7 +50,7 @@ const menus: MenuDataItem[] = [
         path: '/account/center',
         key: '001001',
         //parentKeys: ['001'], // 通过pro_layout_parentKeys合成
-        icon1: 'icondingding',
+        icon1: 'iconcontrol',
       },
       {
         name: 'settings',
@@ -58,26 +58,20 @@ const menus: MenuDataItem[] = [
         path: '/account/settings',
         key: '001002',
         //parentKeys: ['001'],
-        icon1: 'icondingding',
+        icon1: 'iconsetting',
       },
     ],
   },
   {
     name: 'system',
     key: '002',
-    icon1: 'icondingding',
+    icon1: 'iconsliders',
     children: [
       {
         name: 'center',
         path: '/system/center',
         key: '002001',
-        icon1: 'icondingding',
-      },
-      {
-        name: 'settings',
-        path: 'system/settings',
-        key: '002002',
-        icon1: 'icondingding',
+        icon1: 'iconcontrol',
       },
     ],
   },
