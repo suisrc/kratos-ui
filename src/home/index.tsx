@@ -2,12 +2,18 @@ import React from 'react';
 import { Link, useIntl } from 'umi';
 
 import LogoIcon from '@/assets/LogoIcon';
-import styles from '@/home/style.less';
+import SelectLang from '@/components/SelectLang';
+import Footer from '@/components/Footer';
+
+import styles from './style.less';
 
 export default () => {
   const i18n = useIntl();
   return (
-    <div className={styles.container} style={{ height: '80vh' }}>
+    <div className={styles.container}>
+      <div className={styles.lang}>
+        <SelectLang />
+      </div>
       <div className={styles.content}>
         <div className={styles.top}>
           <div className={styles.header}>
@@ -22,6 +28,9 @@ export default () => {
             {i18n.formatMessage({ id: 'page.auth.signin.logo.desc' })}
           </div>
         </div>
+      </div>
+      <div className={styles.footer}>
+        <Footer />
       </div>
     </div>
   );

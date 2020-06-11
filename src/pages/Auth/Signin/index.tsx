@@ -1,11 +1,11 @@
 import {
   MobileOutlined,
   TeamOutlined,
-  WechatOutlined,
-  DingdingOutlined,
-  AliyunOutlined,
-  GithubOutlined,
-  GitlabOutlined,
+  //WechatOutlined,
+  //DingdingOutlined,
+  //AliyunOutlined,
+  //GithubOutlined,
+  //GitlabOutlined,
   //createFromIconfontCN
 } from '@ant-design/icons';
 
@@ -49,8 +49,10 @@ const SigninMessage: React.FC<{
 );
 
 const Signin: React.FC<{}> = () => {
-  // const { refresh } = useModel('@@initialState');
-  const { signin, isSignin } = useModel('AuthUser');
+  //const { initialState } = useModel('@@initialState');
+  //console.log(initialState?.isSignin);
+
+  const { signin } = useModel('AuthUser');
 
   const [autoSignin, setAutoSignin] = useState(false);
   const [type, setType] = useState<string>('account');

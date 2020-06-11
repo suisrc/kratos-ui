@@ -32,8 +32,9 @@ import { MenuDataItem } from '@ant-design/pro-layout';
  */
 const menus: MenuDataItem[] = [
   {
-    name: 'home',
-    path: '/home',
+    name: 'welcome',
+    path: '/welcome',
+    locale: false,
     key: '000',
     icon1: 'icondingding',
   },

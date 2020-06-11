@@ -160,7 +160,7 @@ const Layout = (
         (route = { unaccessible: croute?.unaccessible || false }),
       );
     }
-    console.log(routeMap);
+    //console.log(routeMap);
     return route.unaccessible;
   }, [props.location.pathname, props.route]);
   const unaccessible = settings.menuAccess && routeAcc();
@@ -184,7 +184,9 @@ const Layout = (
         collapsed={collapsed}
         onCollapse={setCollapsed}
         //menu={{ locale: true }}
-        formatMessage={msg => i18n.formatMessage(msg)}
+        formatMessage={msg =>
+          msg.id ? i18n.formatMessage(msg) : msg.defaultMessage || ''
+        }
         // menuData={menuData}
         // route={[]}
         menuDataRender={old => menus}

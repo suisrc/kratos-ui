@@ -62,6 +62,11 @@ const demo = [
 // const routes: IBestAFSRoute[] =  [
 const routes = [
   {
+    path: '/home',
+    component: '@/home',
+    exact: true,
+  },
+  {
     // 认证的内容没有权限
     path: '/auth',
     component: '@/layouts/BlankLayout',
