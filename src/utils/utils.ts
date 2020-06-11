@@ -59,7 +59,7 @@ export const gotoSigninPage = () => {
   if (window.location.pathname.startsWith('/auth/signin')) {
     return;
   }
-  console.log(window.location.pathname);
+  // console.log(window.location.pathname);
   const { redirect } = getPageQuery();
   if (redirect || window.location.pathname === '/') {
     // 已经包含了重定向，或者是跟目录，不在执行重定向

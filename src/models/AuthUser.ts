@@ -60,9 +60,21 @@ export default function(): {
   });
   const [menus, setMenus] = useState<MenuDataItem[]>([...defaultMenus]);
 
-  // https://github.com/umijs/umi-request#interceptor
-  // useEffect(() =>{
-  // }, [initialState?.currentUser]);
+  // https://hooks.umijs.org/zh-CN/hooks/async#%E8%BD%AE%E8%AF%A2
+  // 令牌生命周期放到服务器上处理
+  // const {
+  //   data: pollingData,
+  //   loading: pollingLoading,
+  //   run: pollingRun,
+  //   cancel: pollingCancel
+  // } = useRequest(() => {
+  //   // 轮询, 主要是防止令牌过期，用于更新令牌
+  //   console.log("123");
+  // }, {
+  //   pollingInterval: 10 * 60 * 1000, // 轮询间隔, 10分钟确认一次
+  //   pollingWhenHidden: false, //  在页面隐藏时会暂时停止轮询
+  //   manual: true,
+  // });
 
   /**
    * 登陆
@@ -72,6 +84,7 @@ export default function(): {
     if (res.success && res.data?.status === 'ok') {
       if (res.data?.token) {
         localStorage.setItem('kratos-token', res.data?.token);
+        //pollingRun();
       }
       await refresh();
       // setTimeout(() => refresh(), 0);
@@ -85,6 +98,7 @@ export default function(): {
   const signout = useCallback(async () => {
     const res: any = await logout();
     if (res.success) {
+      //pollingCancel();
       localStorage.removeItem('kratos-token');
       setCurrentUser(undefined);
     }
@@ -103,7 +117,9 @@ export default function(): {
 }
 
 /**
- * 请求拦截器，用于增加访问权限等， authorization
+ * 请求拦截器，用于增加访问权限，比如在header中增加jwt token[authorization]
+ *
+ * https://github.com/umijs/umi-request#interceptor
  * @param url
  * @param options
  */
@@ -121,6 +137,9 @@ export const authorization = (url: string, options: any) => {
 };
 /**
  * 请求拦截器，用于重定向无访问权限的请求
+ * 只要服务器发生无访问权限，直接跳转到登录页面
+ *
+ * https://github.com/umijs/umi-request#interceptor
  * @param url
  * @param options
  */
