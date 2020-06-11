@@ -32,6 +32,7 @@ import defaultSettings, {
   DefaultSettings,
   UsedUrlParams,
 } from '../../config/defaultSettings';
+
 import './layouts.less';
 
 /**
@@ -123,24 +124,18 @@ const Layout = (
 ) => {
   const i18n = useIntl();
 
-  const { initialState, setInitialState } = useModel('@@initialState');
+  //const { initialState, setInitialState } = useModel('@@initialState');
+  const { menus, setMenus, settings, setSettings } = useModel('AuthUser');
   //const [settings, setSettings] = useState<any>({ ...initialState?.settings });
-  // 全局风格配置
-  const settings: DefaultSettings =
-    initialState?.defaultSettings || defaultSettings;
-  const setSettings = useCallback(
-    settings => setInitialState({ ...initialState, defaultSettings: settings }),
-    [],
-  );
 
   const uriParams = getDifferentSettingPath({ ...settings });
+  //当前系统会出现一个问题,当重新登陆后,系统会在URL上没有风格参数
+  //当时暂时不适合在这里解决,这个参数主要是给菜单,以保障在跳转后,保留风格参数
+  //if (uriParams) {
+  //  history.replace(getPath(props.location.pathname, uriParams)
+  //}
+
   // const [uriParams, setUriParams] = useState<string>(); // => SettingDrawer.onDiffUriParams
-
-  // 菜单数据
-  const [menuData, setMenuData] = useState<MenuDataItem[]>([
-    ...(initialState?.defaultMenus || []),
-  ]);
-
   const [keyword, setKeyword] = useState('');
 
   // 主要给openKey使用
@@ -152,18 +147,19 @@ const Layout = (
 
   // 配置路由权限 & 缓存
   const routeMap = useRef(new Map<string, any>());
-  const routeAcc = useCallback(key => {
+  const routeAcc = useCallback((key, proute) => {
     let route = routeMap.current.get(key);
     if (!route) {
-      let iroute = getPrejudgeRoute(key, [props.route as IRoute]);
+      let croute = getPrejudgeRoute(key, [proute as IRoute]);
       routeMap.current.set(
         key,
-        (route = { unaccessible: iroute?.unaccessible || false }),
+        (route = { unaccessible: croute?.unaccessible || false }),
       );
     }
     return route.unaccessible;
   }, []);
-  const unaccessible = settings.menuAccess && routeAcc(props.location.pathname);
+  const unaccessible =
+    settings.menuAccess && routeAcc(props.location.pathname, props.route);
 
   //console.log(routeMap.current);
   return (
@@ -187,7 +183,7 @@ const Layout = (
         formatMessage={msg => i18n.formatMessage(msg)}
         // menuData={menuData}
         // route={[]}
-        menuDataRender={menus => menuData}
+        menuDataRender={old => menus}
         // path => itemPath, parentKeys => pro_layout_parentKeys
         menuItemRender={(item, dom) => {
           if (typeof item.key === 'string')
@@ -224,7 +220,7 @@ const Layout = (
             )}
           </>
         )}
-        postMenuData={menus => filterByMenuDate(menus || [], keyword)}
+        postMenuData={old => filterByMenuDate(old || [], keyword)}
         disableContentMargin={true}
         children={unaccessible ? <Error403 /> : props.children}
         //pure={false}
@@ -232,7 +228,10 @@ const Layout = (
         //{...settings}
       />
       {!collapsed && (
-        <SettingDrawer settings={settings} onSettingChange={setSettings} />
+        <SettingDrawer
+          settings={settings}
+          onSettingChange={value => setSettings({ ...settings, ...value })}
+        />
       )}
     </div>
   );

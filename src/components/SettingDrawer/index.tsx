@@ -39,14 +39,16 @@ export interface SettingDrawerProps {
   onDiffUriParams?: (search: any) => void;
 }
 
-let oldSetting: Partial<Settings> = {};
+//let oldSetting: Partial<Settings> = {};
 const getDifferentSetting = (state: Partial<Settings>) => {
   const stateObj: Partial<Settings> = {};
   Object.keys(state).forEach(key => {
     if (UsedUrlParams.indexOf(key) < 0) {
       return;
     }
-    if (state[key] !== oldSetting[key] /*&& key !== 'collapse'*/) {
+    if (
+      state[key] !== defaultSettings /*oldSetting[key] /*&& key !== 'collapse'*/
+    ) {
       stateObj[key] = state[key];
     }
   });
@@ -197,10 +199,6 @@ const SettingDrawer: React.FC<SettingDrawerProps> = props => {
 
   useEffect(() => {
     // 记住默认的选择，方便做 diff，然后保存到 url 参数中
-    oldSetting = {
-      ...defaultSettings,
-      ...propsSettings,
-    };
     if (!isBrowser()) {
       return;
     }

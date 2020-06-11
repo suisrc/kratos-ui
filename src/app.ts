@@ -2,14 +2,8 @@
  * 动态配置文件
  * 当前文件可以是ts, 也可以是tsx文件
  */
-import React from 'react';
-
-import { MenuDataItem } from '@ant-design/pro-layout';
-import defaultSettings, { DefaultSettings } from '../config/defaultSettings';
-
-import { history, RequestConfig } from 'umi';
-import { getCurrentUser } from './services/user';
-import defaultMenus from '../config/menu';
+//import { history, RequestConfig } from 'umi';
+import { getCurrentUser } from '@/services/user';
 
 /**
  * 应用初次加载,进行初始化配置
@@ -17,8 +11,6 @@ import defaultMenus from '../config/menu';
  */
 // https://umijs.org/zh-CN/plugins/plugin-initial-state
 export async function getInitialState(): Promise<{
-  defaultSettings?: DefaultSettings;
-  defaultMenus?: MenuDataItem[];
   currentUser?: API.CurrentUser;
   isSignin?: boolean;
   // [key: string]: any;
@@ -30,8 +22,6 @@ export async function getInitialState(): Promise<{
       return {
         currentUser: res?.data,
         isSignin: !!res?.data?.userid,
-        defaultSettings: defaultSettings,
-        defaultMenus: defaultMenus,
       };
     }
   } catch (error) {
@@ -40,8 +30,7 @@ export async function getInitialState(): Promise<{
   }
   //}
   return {
-    defaultSettings: defaultSettings,
-    defaultMenus: defaultMenus,
+    isSignin: false,
   };
 }
 

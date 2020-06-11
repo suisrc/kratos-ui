@@ -22,28 +22,42 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
 
 //import { message } from 'antd';
-import { useRequest, useModel } from 'umi';
+import { useRequest, useModel, history } from 'umi';
 import { gotoSigninPage } from '@/utils/utils';
+
+import { MenuDataItem } from '@ant-design/pro-layout';
+import defaultMenus from '../../config/menu';
+import defaultSettings, { DefaultSettings } from '../../config/defaultSettings';
 
 import {
   signout as logout,
   signin as login,
   SigninParamsType,
 } from '@/services/signin';
-import { getCurrentUser } from '@/services/user';
 
 // https://umijs.org/plugins/plugin-model
 // 用于完成用户权限认证和获取用户
 export default function(): {
+  // 登陆相关
   signin: (params: SigninParamsType) => Promise<any>;
   signout: () => void;
+  // 配置相关
+  settings: DefaultSettings;
+  setSettings: (settings: DefaultSettings) => void;
+  menus: MenuDataItem[];
+  setMenus: (menus: MenuDataItem[]) => void;
 } {
-  const { initialState, setInitialState, refresh, loading } = useModel(
-    '@@initialState',
-  );
+  const { initialState, setInitialState, refresh } = useModel('@@initialState');
 
-  //const [currentUser, setCurrentUser] = useState();
+  // 🚦🚥项链半天,最后决定将配置和菜单放入用于权限模块中
+  // 因为当用户信息发生变化时候,对应的菜单内容也应该进行变更
+  const [settings, setSettings] = useState<DefaultSettings>({
+    ...defaultSettings,
+  });
+  const [menus, setMenus] = useState<MenuDataItem[]>([...defaultMenus]);
+
   //const { currentUser } = initialState || {};
+  //const [currentUser, setCurrentUser] = useState();
   const setCurrentUser = useCallback(
     currentUser => setInitialState({ ...initialState, currentUser }),
     [],
@@ -76,5 +90,9 @@ export default function(): {
   return {
     signin,
     signout,
+    settings,
+    setSettings,
+    menus,
+    setMenus,
   };
 }
