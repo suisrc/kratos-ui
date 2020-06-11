@@ -15,7 +15,7 @@
  * 注意，使用useRequest，包含异常处理
  * 另外你可以通过 Error.name 是否是 BizError 来判断是否是因为 success 为 false 抛出的错误。
  */
-import { extend } from 'umi-request';
+//import { extend } from 'umi-request';
 import { request as requmi } from 'umi';
 import { notification } from 'antd';
 

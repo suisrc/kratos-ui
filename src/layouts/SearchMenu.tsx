@@ -39,14 +39,14 @@ export const filterByMenuDate = (
 const SearchMenu: React.FC<{
   setKeyword: (value: string) => void;
   [key: string]: any;
-}> = ({ logo, title, collapsed, setKeyword, ...props }) => {
+}> = ({ setKeyword, ...props }) => {
   return (
     <Input.Search
-      style={{
-        width: collapsed ? 0 : '100%',
-        transition: collapsed ? undefined : 'all 0.3s',
-        opacity: collapsed ? 0 : 1,
-      }}
+      // style={{
+      //   width: collapsed ? 0 : '100%',
+      //   transition: collapsed ? undefined : 'all 0.3s',
+      //   opacity: collapsed ? 0 : 1,
+      // }}
       onSearch={setKeyword}
     />
   );

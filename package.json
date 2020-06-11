@@ -72,7 +72,8 @@
       "README.*.md",
       "docker",
       "CNAME",
-      "create-umi"
+      "create-umi",
+      "doc"
     ]
   },
   "devDependencies": {}

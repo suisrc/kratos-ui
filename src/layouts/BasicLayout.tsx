@@ -146,8 +146,10 @@ const Layout = (
   const [collapsed, setCollapsed] = useState<boolean>(false);
 
   // 配置路由权限 & 缓存
-  const routeMap = useRef(new Map<string, any>());
-  const routeAcc = useCallback((key, proute) => {
+  const routeAcc = useCallback(() => {
+    const routeMap = useRef(new Map<string, any>());
+    let key = props.location.pathname;
+    let proute = props.route;
     let route = routeMap.current.get(key);
     if (!route) {
       let croute = getPrejudgeRoute(key, [proute as IRoute]);
@@ -156,10 +158,10 @@ const Layout = (
         (route = { unaccessible: croute?.unaccessible || false }),
       );
     }
+    console.log(routeMap);
     return route.unaccessible;
-  }, []);
-  const unaccessible =
-    settings.menuAccess && routeAcc(props.location.pathname, props.route);
+  }, [props.location.pathname, props.route]);
+  const unaccessible = settings.menuAccess && routeAcc();
 
   //console.log(routeMap.current);
   return (
@@ -215,9 +217,11 @@ const Layout = (
               {logo}
               {title}
             </NavLink>
-            {settings.menuSearch && settings.layout === 'sidemenu' && (
-              <SearchMenu setKeyword={setKeyword} />
-            )}
+            {settings.menuSearch &&
+              !collapsed &&
+              settings.layout === 'sidemenu' && (
+                <SearchMenu setKeyword={setKeyword} />
+              )}
           </>
         )}
         postMenuData={old => filterByMenuDate(old || [], keyword)}

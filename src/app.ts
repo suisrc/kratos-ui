@@ -11,6 +11,7 @@ import { getCurrentUser } from '@/services/user';
  */
 // https://umijs.org/zh-CN/plugins/plugin-initial-state
 export async function getInitialState(): Promise<{
+  // settings?: Settings;
   currentUser?: API.CurrentUser;
   isSignin?: boolean;
   // [key: string]: any;
@@ -20,6 +21,7 @@ export async function getInitialState(): Promise<{
     const res: API.ErrorInfo<API.CurrentUser> = await getCurrentUser();
     if (res.success) {
       return {
+        // settings: defaultSettings
         currentUser: res?.data,
         isSignin: !!res?.data?.userid,
       };
@@ -30,6 +32,7 @@ export async function getInitialState(): Promise<{
   }
   //}
   return {
+    // settings: defaultSettings
     isSignin: false,
   };
 }
@@ -69,4 +72,17 @@ export async function getInitialState(): Promise<{
 //   middlewares: [],
 //   requestInterceptors: [],
 //   responseInterceptors: [],
+// };
+
+/**
+ * dva全局配置
+ */
+// https://umijs.org/zh-CN/plugins/plugin-dva#hmr
+// export const dva = {
+//   config: {
+//     onAction: createLogger(),
+//     onError(e: Error) {
+//       message.error(e.message, 3);
+//     },
+//   },
 // };

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useModel, useAccess, Access } from 'umi';
 
-export default (): React.ReactNode => {
+export default () => {
   //console.log('run');
   const access = useAccess();
 
