@@ -15,6 +15,7 @@ export default {
         getResult({
           status: 'ok',
           role: 'admin',
+          token: '12345678',
         }),
       );
       return;

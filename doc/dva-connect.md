@@ -114,3 +114,58 @@ export default connect(({ index, loading }: { index: IndexModelState; loading: L
   loading: loading.models.index,
 }))(IndexPage);
 ```
+
+另外一个例子  
+``` ts
+import {connect} from 'dva'
+
+const Home = props=>{
+    // 获取数据
+    const {user,loading,dispatch} = props
+    
+    // 发起请求
+    useEffect(()=>{
+        dispatch({
+            type:'user/fetchUser',payload:{}
+        })
+    },[])
+    
+    // 渲染页面
+    if(loading) return <div>loading...</div>
+    return (
+        <div>{user.name}<div>
+    )
+}
+
+export default connect(({loading,user})=>({
+    loading:loading.effects['user/fetchUser'],
+    user:user.userInfo
+}))(Home)
+```
+``` ts
+import {useDispatch,useSelector} from 'dva'
+
+const Home = props=>{
+    
+    const dispatch = useDispatch()
+    
+    const loadingEffect = useSelector(state =>state.loading);
+    const loading = loadingEffect.effects['user/fetchUser'];
+    const user = useSelector(state=>state.user.userInfo)
+    
+    // 发起请求
+    useEffect(()=>{
+        dispatch({
+            type:'user/fetchUser',payload:{}
+        })
+    },[])
+    
+    // 渲染页面
+    if(loading) return <div>loading...</div>
+    return (
+        <div>{user.name}<div>
+    )
+}
+
+export default Home
+```

@@ -56,18 +56,19 @@ export const initKeysFromMenuData = (
  * 调整登录页
  */
 export const gotoSigninPage = () => {
+  if (window.location.pathname.startsWith('/auth/signin')) {
+    return;
+  }
+  console.log(window.location.pathname);
   const { redirect } = getPageQuery();
-  if (
-    !window.location.pathname.startsWith('/auth/') &&
-    !redirect &&
-    window.location.pathname !== '/'
-  ) {
+  if (redirect || window.location.pathname === '/') {
+    // 已经包含了重定向，或者是跟目录，不在执行重定向
+    history.replace({ pathname: '/auth/signin' });
+  } else {
     history.replace({
       pathname: '/auth/signin',
       search: stringify({ redirect: window.location.href }),
     });
-  } else {
-    history.replace({ pathname: '/auth/signin' });
   }
 };
 

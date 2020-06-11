@@ -2,12 +2,14 @@
  * 动态配置文件
  * 当前文件可以是ts, 也可以是tsx文件
  */
-//import { history, RequestConfig } from 'umi';
+import { RequestConfig } from 'umi';
 import { getCurrentUser } from '@/services/user';
+import { authorization, unauthorization } from '@/models/AuthUser';
 
 /**
  * 应用初次加载,进行初始化配置
  * @umijs/plugin-initial-state
+ * https://hooks.umijs.org/zh-CN/hooks/state/use-local-storage-state
  */
 // https://umijs.org/zh-CN/plugins/plugin-initial-state
 export async function getInitialState(): Promise<{
@@ -38,6 +40,21 @@ export async function getInitialState(): Promise<{
 }
 
 /**
+ * 请求全局配置
+ * @umijs/plugin-request
+ */
+// https://umijs.org/plugins/plugin-request
+// https://github.com/umijs/umi-request#interceptor
+// 该配置返回一个对象。除了 errorConfig 和 middlewares 以外其它配置都是直接透传 umi-request 的全局配置。
+export const request: RequestConfig = {
+  //timeout: 1000,
+  //errorConfig: {},
+  //middlewares: [],
+  requestInterceptors: [authorization],
+  responseInterceptors: [unauthorization],
+};
+
+/**
  * 应用布局配置,只有在config.ts中启用layout才有效
  * @umijs/plugin-layout
  */
@@ -58,20 +75,6 @@ export async function getInitialState(): Promise<{
 //     // menuDataRender: () => [],
 //     ...initialState?.settings,
 //   };
-// };
-
-/**
- * 请求全局配置
- * @umijs/plugin-request
- */
-// https://umijs.org/plugins/plugin-request
-// 该配置返回一个对象。除了 errorConfig 和 middlewares 以外其它配置都是直接透传 umi-request 的全局配置。
-// export const request: RequestConfig = {
-//   timeout: 1000,
-//   errorConfig: {},
-//   middlewares: [],
-//   requestInterceptors: [],
-//   responseInterceptors: [],
 // };
 
 /**
