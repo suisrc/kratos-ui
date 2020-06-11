@@ -10,4 +10,7 @@ export default {
   'menu.account.center': 'Account Center',
   'menu.account.settings': 'Account Settings',
   'menu.account.logout': 'Logout',
+  'menu.system': 'System',
+  'menu.system.center': 'System Center',
+  'menu.system.settings': 'System Settings',
 };

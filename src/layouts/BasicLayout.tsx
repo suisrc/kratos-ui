@@ -128,7 +128,9 @@ const Layout = (
   const { menus, setMenus, settings, setSettings } = useModel('AuthUser');
   //const [settings, setSettings] = useState<any>({ ...initialState?.settings });
 
-  const uriParams = getDifferentSettingPath({ ...settings });
+  const uriParams = settings.menuDrawer
+    ? getDifferentSettingPath({ ...settings })
+    : undefined;
   //当前系统会出现一个问题,当重新登陆后,系统会在URL上没有风格参数
   //当时暂时不适合在这里解决,这个参数主要是给菜单,以保障在跳转后,保留风格参数
   //if (uriParams) {
@@ -231,7 +233,7 @@ const Layout = (
         //{...props}
         //{...settings}
       />
-      {!collapsed && (
+      {settings.menuDrawer && !collapsed && (
         <SettingDrawer
           settings={settings}
           onSettingChange={value => setSettings({ ...settings, ...value })}

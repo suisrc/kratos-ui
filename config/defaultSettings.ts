@@ -8,6 +8,7 @@ import { Settings } from '@ant-design/pro-layout';
 export type DefaultSettings = Settings & {
   menuSearch?: boolean;
   menuAccess?: boolean;
+  menuDrawer?: boolean;
   //[key: string]: any;
 };
 
@@ -29,6 +30,7 @@ const defaultSettings: DefaultSettings = {
   fixSiderbar: true,
   menuSearch: false,
   menuAccess: true,
+  menuDrawer: false,
   menu: {
     locale: true,
   },

@@ -32,14 +32,14 @@ import { MenuDataItem } from '@ant-design/pro-layout';
  */
 const menus: MenuDataItem[] = [
   {
-    name: 'welcome',
-    path: '/welcome?mm=1',
+    name: 'home',
+    path: '/home',
     key: '000',
     icon1: 'icondingding',
   },
   {
     name: 'account',
-    //locale: 'menu.account',
+    //locale: 'menu.account', // 通过name字段合并
     key: '001',
     icon1: 'icondingding',
     children: [
@@ -48,7 +48,7 @@ const menus: MenuDataItem[] = [
         //locale: 'menu.account.center',
         path: '/account/center',
         key: '001001',
-        parentKeys: ['001'],
+        //parentKeys: ['001'], // 通过pro_layout_parentKeys合成
         icon1: 'icondingding',
       },
       {
@@ -56,66 +56,26 @@ const menus: MenuDataItem[] = [
         //locale: 'menu.account.settings',
         path: '/account/settings',
         key: '001002',
-        parentKeys: ['001'],
+        //parentKeys: ['001'],
         icon1: 'icondingding',
       },
     ],
   },
   {
-    name: 't2',
+    name: 'system',
     key: '002',
     icon1: 'icondingding',
     children: [
       {
-        name: 't21',
+        name: 'center',
+        path: 'center',
         key: '002001',
         icon1: 'icondingding',
-        children: [
-          {
-            name: 't211',
-            key: '002001001',
-            icon1: 'icondingding',
-            children: [
-              {
-                name: 't2111',
-                key: '002001001001',
-                icon1: 'icondingding',
-                children: [
-                  {
-                    name: 't21111',
-                    path: '/t21111',
-                    key: '002001001001001',
-                    icon1: 'icondingding',
-                  },
-                ],
-              },
-              {
-                name: 't21112',
-                path: '/t21112',
-                key: '002001001002',
-                icon1: 'icondingding',
-              },
-            ],
-          },
-        ],
       },
       {
-        name: 't22',
-        path: '/t22',
+        name: 'settings',
+        path: 'settings',
         key: '002002',
-        icon1: 'icondingding',
-      },
-    ],
-  },
-  {
-    name: 't3',
-    key: '003',
-    icon1: 'icondingding',
-    children: [
-      {
-        name: 't31',
-        path: '/t31',
-        key: '003001',
         icon1: 'icondingding',
       },
     ],
