@@ -11,7 +11,7 @@ import {
 
 import { Alert, Checkbox, message } from 'antd';
 import React, { useState, useEffect } from 'react';
-import { Link, history, useModel, useIntl, useRequest } from 'umi';
+import { Link, useModel, useIntl, useRequest } from 'umi';
 
 import { Sign3rdType, sign3rd, querySign3rdApp } from '@/services/sign3rd';
 import { SigninParamsType, SigninType } from '@/services/signin';
@@ -22,8 +22,8 @@ import SelectLang from '@/components/SelectLang';
 
 import { getIcon } from '@/components/IconFont';
 
-import { replaceGoto, getRedirectPage } from '@/utils/utils';
-import PageLoading from '@/components/PageLoading';
+import { getRedirectPage } from '@/utils/utils';
+// import PageLoading from '@/components/PageLoading';
 
 import styles from './style.less';
 import gstyle from '@/global.less';
@@ -57,7 +57,9 @@ const Signin: React.FC<{}> = () => {
   const [autoSignin, setAutoSignin] = useState(false);
   const [type, setType] = useState<string>('account');
 
-  const [userSigninState, setUserSigninState] = useState<any>({});
+  const [userSigninState, setUserSigninState] = useState<API.SigninStateType>(
+    {},
+  );
   const [submitting, setSubmitting] = useState(false);
 
   const i18n = useIntl();

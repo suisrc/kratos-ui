@@ -104,7 +104,24 @@ const routes = [
       {
         name: 'account',
         path: '/account',
-        access: 'canAccess',
+        access: 'signin',
+        routes: [
+          {
+            name: 'center',
+            path: 'center',
+            component: './Account/Center',
+          },
+          {
+            name: 'settings',
+            path: 'settings',
+            component: './Account/Settings',
+          },
+        ],
+      },
+      {
+        name: 'system',
+        path: '/system',
+        access: 'admin',
         routes: [
           {
             name: 'center',

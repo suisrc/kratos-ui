@@ -19,8 +19,8 @@ export default function(initialState: {
   //const { currentUser, isSignin } = useModel('AuthUser');
   //console.log(`access=> ${JSON.stringify(currentUser)}`);
   return {
-    isSign: !!initialState?.isSignin,
-    canAdmin: currentUser?.access === 'admin',
+    sign: !!initialState?.isSignin,
+    admin: currentUser?.access === 'admin',
     canAccess: currentUser?.access === 'admin',
   };
 }

@@ -69,13 +69,13 @@ const menus: MenuDataItem[] = [
     children: [
       {
         name: 'center',
-        path: 'center',
+        path: '/system/center',
         key: '002001',
         icon1: 'icondingding',
       },
       {
         name: 'settings',
-        path: 'settings',
+        path: 'system/settings',
         key: '002002',
         icon1: 'icondingding',
       },
