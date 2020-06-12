@@ -8,14 +8,14 @@ export default {
       cookie: req.headers.cookie,
     });
   },
+
   'POST  /api/v1/signin/account': (req: Request, res: Response) => {
     const { password, username, type, mobile, captcha } = req.body;
     if (password === '123456' && username === 'admin') {
       res.send(
         getResult({
           status: 'ok',
-          role: 'admin',
-          token: '12345678',
+          idToken: '12345678',
         }),
       );
       return;

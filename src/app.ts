@@ -2,9 +2,14 @@
  * 动态配置文件
  * 当前文件可以是ts, 也可以是tsx文件
  */
-import { RequestConfig } from 'umi';
+import { RequestConfig, history } from 'umi';
 import { getCurrentUser } from '@/services/user';
-import { authorization, unauthorization } from '@/models/AuthUser';
+import { SystemInfo, getSystemInfo } from '@/services/system';
+import {
+  authorization,
+  unauthorization,
+  hasAuthToken,
+} from '@/models/useAuthUser';
 
 /**
  * 应用初次加载,进行初始化配置
@@ -16,26 +21,31 @@ export async function getInitialState(): Promise<{
   // settings?: Settings;
   currentUser?: API.CurrentUser;
   isSignin?: boolean;
+  systemInfo: SystemInfo;
   // [key: string]: any;
 }> {
-  //if (!history.location.pathname.startsWith('/auth/')) {
-  try {
-    const res: API.ErrorInfo<API.CurrentUser> = await getCurrentUser();
-    if (res.success) {
-      return {
-        // settings: defaultSettings
-        currentUser: res?.data,
-        isSignin: !!res?.data?.userid,
-      };
+  const systemInfo = await getSystemInfo();
+  //if ( !history.location.pathname.startsWith('/auth/') &&
+  if (hasAuthToken()) {
+    try {
+      const res: API.ErrorInfo<API.CurrentUser> = await getCurrentUser();
+      if (res.success) {
+        return {
+          // settings: defaultSettings
+          currentUser: res?.data,
+          isSignin: !!res?.data?.userid,
+          systemInfo,
+        };
+      }
+    } catch (error) {
+      // do nothing
+      // history.replace('/auth/signin');
     }
-  } catch (error) {
-    // do nothing
-    // history.replace('/auth/signin');
   }
-  //}
   return {
     // settings: defaultSettings
     isSignin: false,
+    systemInfo,
   };
 }
 

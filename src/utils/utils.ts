@@ -56,7 +56,7 @@ export const initKeysFromMenuData = (
  * 调整登录页
  */
 export const gotoSigninPage = () => {
-  if (window.location.pathname.startsWith('/auth/signin')) {
+  if (window.location.pathname === '/auth/signin') {
     return;
   }
   // console.log(window.location.pathname);

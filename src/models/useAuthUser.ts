@@ -1,5 +1,10 @@
 /**
  * 权限控制应用服务器
+ *
+ * https://umijs.org/zh-CN/plugins/plugin-model
+ * 约定在 src/models 目录下的文件为项目定义的 model 文件。每个文件需要默认导出一个 function，该 function 定义了一个 Hook，不符合规范的文件我们会过滤掉。
+ * 文件名则对应最终 model 的 name，你可以通过插件提供的 API 来消费 model 中的数据。
+ *
  * https://hooks.umijs.org/zh-CN/hooks/async
  */
 
@@ -33,6 +38,7 @@ import {
   signout as logout,
   signin as login,
   SigninParamsType,
+  SigninType,
 } from '@/services/signin';
 
 // https://umijs.org/plugins/plugin-model
@@ -60,21 +66,29 @@ export default function(): {
   });
   const [menus, setMenus] = useState<MenuDataItem[]>([...defaultMenus]);
 
-  // https://hooks.umijs.org/zh-CN/hooks/async#%E8%BD%AE%E8%AF%A2
-  // 令牌生命周期放到服务器上处理
-  // const {
-  //   data: pollingData,
-  //   loading: pollingLoading,
-  //   run: pollingRun,
-  //   cancel: pollingCancel
-  // } = useRequest(() => {
-  //   // 轮询, 主要是防止令牌过期，用于更新令牌
-  //   console.log("123");
-  // }, {
-  //   pollingInterval: 10 * 60 * 1000, // 轮询间隔, 10分钟确认一次
-  //   pollingWhenHidden: false, //  在页面隐藏时会暂时停止轮询
-  //   manual: true,
-  // });
+  // 当initialState中的currentUser发生变化时候触发
+  useEffect(() => {
+    if (initialState?.currentUser?.menus) {
+      setMenus([...initialState?.currentUser?.menus]);
+    } else {
+      setMenus([...defaultMenus]);
+    }
+  }, [initialState?.currentUser]);
+
+  //https://hooks.umijs.org/zh-CN/hooks/async#%E8%BD%AE%E8%AF%A2
+  //令牌生命周期放到服务器上处理
+  //const {
+  //  run: tokenRefreshRun,
+  //  cancel: tokenRefreshCancel,
+  //  loading: tokenRefreshLoading,
+  //} = useRequest(login, {
+  //  onSuccess: (data, params) => {
+  //    localStorage.setItem('kratos_token', data?.token);
+  //  },
+  //  pollingInterval: 60 * 60 * 1000, // 轮询间隔, 60分钟确认一次
+  //  pollingWhenHidden: false, //  在页面隐藏时会暂时停止轮询
+  //  manual: true,
+  //});
 
   /**
    * 登陆
@@ -82,9 +96,12 @@ export default function(): {
   const signin = useCallback(async (params: SigninParamsType) => {
     const res: any = await login(params);
     if (res.success && res.data?.status === 'ok') {
-      if (res.data?.token) {
-        localStorage.setItem('kratos-token', res.data?.token);
-        //pollingRun();
+      if (res.data?.idToken) {
+        localStorage.setItem('kratos_token', res.data?.idToken);
+        //if (res.data?.refreshToken) {
+        //  localStorage.setItem('kratos_token_r', res.data?.refreshToken);
+        //  tokenRefreshRun(res.data?.refreshToken);
+        //}
       }
       await refresh();
       // setTimeout(() => refresh(), 0);
@@ -98,8 +115,10 @@ export default function(): {
   const signout = useCallback(async () => {
     const res: any = await logout();
     if (res.success) {
-      //pollingCancel();
-      localStorage.removeItem('kratos-token');
+      //if (tokenRefreshLoading) {
+      //  tokenRefreshCancel();
+      //}
+      localStorage.removeItem('kratos_token');
       setCurrentUser(undefined);
     }
     gotoSigninPage();
@@ -117,6 +136,15 @@ export default function(): {
 }
 
 /**
+ * 确定是否有访问令牌
+ * @param key
+ */
+export const hasAuthToken = () => {
+  // document.cookie.includes('kratos_token')
+  return !!localStorage.getItem('kratos_token');
+};
+
+/**
  * 请求拦截器，用于增加访问权限，比如在header中增加jwt token[authorization]
  *
  * https://github.com/umijs/umi-request#interceptor
@@ -124,7 +152,7 @@ export default function(): {
  * @param options
  */
 export const authorization = (url: string, options: any) => {
-  let token = localStorage.getItem('kratos-token');
+  let token = localStorage.getItem('kratos_token');
   return {
     url,
     options: !token

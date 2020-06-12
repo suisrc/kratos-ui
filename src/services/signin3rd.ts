@@ -1,5 +1,6 @@
 // 第三方登陆方式
-import request from '@/utils/request';
+// import request from '@/utils/request';
+import { request } from 'umi';
 /**
  * 返回到平台的第三方Oauth2登陆平台
  */

@@ -5,6 +5,7 @@ import React from 'react';
 import AvatarDropdown from './AvatarDropdown';
 import styles from './index.less';
 import SelectLang from '../SelectLang';
+import NoticeIcon from '../NoticeIcon';
 
 //export type SiderTheme = 'light' | 'dark';
 
@@ -32,7 +33,8 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
           <QuestionCircleOutlined />
         </span>
       </Tooltip>
-      <AvatarDropdown />
+      <NoticeIcon />
+      <AvatarDropdown menu />
       <SelectLang className={styles.action} />
       <div style={{ marginRight: '10px' }} />
     </Space>

@@ -65,15 +65,9 @@ const menus: MenuDataItem[] = [
   {
     name: 'system',
     key: '002',
-    icon1: 'iconsliders',
-    children: [
-      {
-        name: 'center',
-        path: '/system/center',
-        key: '002001',
-        icon1: 'iconcontrol',
-      },
-    ],
+    locale: 'menu.system.settings',
+    icon1: 'iconcontrol',
+    path: '/system/settings',
   },
 ];
 

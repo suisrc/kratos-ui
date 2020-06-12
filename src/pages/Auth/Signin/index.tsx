@@ -13,7 +13,7 @@ import { Alert, Checkbox, message } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { Link, useModel, useIntl, useRequest } from 'umi';
 
-import { Sign3rdType, sign3rd, querySign3rdApp } from '@/services/sign3rd';
+import { Sign3rdType, sign3rd, querySign3rdApp } from '@/services/signin3rd';
 import { SigninParamsType, SigninType } from '@/services/signin';
 
 import LogoIcon from '@/assets/LogoIcon';
@@ -52,7 +52,7 @@ const Signin: React.FC<{}> = () => {
   //const { initialState } = useModel('@@initialState');
   //console.log(initialState?.isSignin);
 
-  const { signin } = useModel('AuthUser');
+  const { signin } = useModel('useAuthUser');
 
   const [autoSignin, setAutoSignin] = useState(false);
   const [type, setType] = useState<string>('account');

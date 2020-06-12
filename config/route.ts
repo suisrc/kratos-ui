@@ -124,9 +124,9 @@ const routes = [
         access: 'admin',
         routes: [
           {
-            name: 'center',
-            path: 'center',
-            component: './Account/Center',
+            name: 'settings',
+            path: 'settings',
+            component: './System/Settings',
           },
         ],
       },

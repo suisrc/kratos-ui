@@ -6,7 +6,7 @@ import {
 } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
 import { ClickParam } from 'antd/es/menu';
-import { history, useModel } from 'umi';
+import { history, useModel, useIntl } from 'umi';
 
 import HeaderDropdown from './HeaderDropdown';
 import styles from './index.less';
@@ -17,11 +17,13 @@ export interface GlobalHeaderRightProps {
 
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   const { initialState, loading } = useModel('@@initialState');
-  const { signout } = useModel('AuthUser');
+  const { signout } = useModel('useAuthUser');
+
+  const i18n = useIntl();
 
   const onMenuClick = useCallback((event: ClickParam) => {
     const { key } = event;
-    if (key === 'logout') {
+    if (key === 'signout') {
       // await signout();
       signout();
       return;
@@ -50,20 +52,29 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       {menu && (
         <Menu.Item key="center">
           <UserOutlined />
-          个人中心
+          {i18n.formatMessage({
+            id: 'menu.account.center',
+            defaultMessage: 'Account Center',
+          })}
         </Menu.Item>
       )}
       {menu && (
         <Menu.Item key="settings">
           <SettingOutlined />
-          个人设置
+          {i18n.formatMessage({
+            id: 'menu.account.settings',
+            defaultMessage: 'Account Settings',
+          })}
         </Menu.Item>
       )}
       {menu && <Menu.Divider />}
 
-      <Menu.Item key="logout">
+      <Menu.Item key="signout">
         <LogoutOutlined />
-        退出登录
+        {i18n.formatMessage({
+          id: 'menu.account.signout',
+          defaultMessage: 'Sign Out',
+        })}
       </Menu.Item>
     </Menu>
   );
@@ -76,7 +87,10 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
           src={currentUser.avatar}
           alt="avatar"
         />
-        <span className={`${styles.name} anticon`}>{currentUser.name}</span>
+        <span className={`${styles.name} anticon`}>
+          {(currentUser.role?.show ? currentUser.role.name + ' & ' : '') +
+            currentUser.name}
+        </span>
       </span>
     </HeaderDropdown>
   );

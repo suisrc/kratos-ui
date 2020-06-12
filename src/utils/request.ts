@@ -15,9 +15,15 @@
  * 注意，使用useRequest，包含异常处理
  * 另外你可以通过 Error.name 是否是 BizError 来判断是否是因为 success 为 false 抛出的错误。
  */
-//import { extend } from 'umi-request';
-import { request as requmi } from 'umi';
+// import request, { extend } from 'umi-request';
+// import request from 'umi-request';
+import { request } from 'umi';
 import { notification } from 'antd';
+
+// const request2 = extend({
+//   errorHandler, // 默认错误处理(注意，这是网络上的异常)
+//   credentials: 'include', // 默认请求是否带上cookie
+// });
 
 interface CodeMessage {
   [key: number]: string;
@@ -64,15 +70,6 @@ const errorHandler = (error: { response: Response }): Response => {
   return response;
 };
 
-/**
- * 配置request请求时的默认参数
- */
-//const request = extend({
-//  errorHandler, // 默认错误处理(注意，这是网络上的异常)
-//  credentials: 'include', // 默认请求是否带上cookie
-//});
-const request = requmi;
-
 export default request;
 
 /**
@@ -81,10 +78,5 @@ export default request;
  * @param options
  */
 export const requestskip = (url: any, options?: any) => {
-  return requmi(url, { ...options, skipErrorHandler: true });
+  return request(url, { ...options, skipErrorHandler: true });
 };
-
-// import { useRequest } from 'umi';
-// const { data, error, loading } = useRequest(() => {
-//   return services.getList('/api/test');
-// });

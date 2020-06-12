@@ -125,7 +125,7 @@ const Layout = (
   const i18n = useIntl();
 
   //const { initialState, setInitialState } = useModel('@@initialState');
-  const { menus, setMenus, settings, setSettings } = useModel('AuthUser');
+  const { menus, setMenus, settings, setSettings } = useModel('useAuthUser');
   //const [settings, setSettings] = useState<any>({ ...initialState?.settings });
 
   const uriParams = settings.menuDrawer

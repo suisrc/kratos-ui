@@ -12,7 +12,7 @@ export default {
   'menu.account': '个人页',
   'menu.account.center': '个人中心',
   'menu.account.settings': '个人设置',
-  'menu.account.logout': '退出登录',
+  'menu.account.signout': '退出登录',
 
   'menu.system': '系统页',
   'menu.system.center': '系统中心',

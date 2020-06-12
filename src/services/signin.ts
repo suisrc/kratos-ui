@@ -1,4 +1,5 @@
-import request, { requestskip } from '@/utils/request';
+//import request, { requestskip } from '@/utils/request';
+import { request } from 'umi';
 
 /**
  * 登陆使用的参数
@@ -18,11 +19,13 @@ export interface SigninParamsType {
 
 /**
  * 运行登录系统的类型
+ * <系统>:<类型>:<备注>, 如果不区分系统，可以直接使用 :user: 代替
+ * 如果是都系统的情况下,登陆时候,需要增加系统前缀
  */
 export const SigninType: API.StringMap = {
   account: ':account:',
   mobile: ':mobile:',
-  code: ':code:',
+  token: ':token:', // 主要用户刷新令牌
 };
 
 /**
@@ -30,9 +33,10 @@ export const SigninType: API.StringMap = {
  * @param params
  */
 export async function signin(params: SigninParamsType): Promise<any> {
-  return requestskip('/api/v1/signin/account', {
+  return request('/api/v1/signin/account', {
     method: 'POST',
     data: params,
+    skipErrorHandler: false,
   });
 }
 

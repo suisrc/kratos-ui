@@ -77,7 +77,7 @@ useRequest: 网络请求
   
 ``` TypeScript
 const { initialState, setInitialState, refresh, loading } = useModel('@@initialState'); // 获取全局初始化数据模型
-const { menus, setMenus, settings, setSettings } = useModel('AuthUser'); // 获取应用模型
+const { menus, setMenus, settings, setSettings } = useModel('useAuthUser'); // 获取应用模型
 const access = useAccess(); // 获取权限控制
 const { data, error, loading } = useRequest(getUsername); // 获取网络请求
 ```

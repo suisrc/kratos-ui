@@ -3,18 +3,51 @@ declare namespace API {
     avatar?: string; // 头像
     name?: string; // 名称
     userid?: string; // 用户ID
-    // 是的，用户基本角色只有3种，
-    access?: 'user' | 'guest' | 'admin'; // 用户角色
-    notifyCount?: number;
     unreadCount?: number; // 未读消息计数
-    title?: string; // 标题， 备用
-    group?: string; // 分组， 备用
-    signature?: string; // 签名, 备用
-    tags?: {
-      // 标签, 备用
-      key: string;
-      label: string;
-    }[];
+    datetime?: string; // 获取当前信息的时间
+    system?: string; // 该字段主要是有前端给出,用以记录使用, 不同system带来的access也是不同的
+    access?: any; // 返回权限列表,注意,其返回的权限只是部分确认的权限,而不是全部权限,并且,返回的权限是跟当前系统相关的
+    role?: {
+      id: string; // 角色ID, 如果角色存在,那么id和name是必须存在的内容
+      name: string; // 角色名称
+      avatar?: string; // 角色头像
+      show?: boolean; // 是否显示
+    }; // 多角色用户,登陆系统后,是能使用单角色
+    menus?: [
+      ,// UserMenuItem[]
+    // 用户显示的菜单,注意,这里的菜单,不仅仅限制于当前所拥有的菜单内容
+    // 兼容MenuDataItem类型
+    ];
+  }
+
+  /**
+   * 菜单数据类型
+   *
+   */
+  // import { MenuDataItem } from '@ant-design/pro-layout';
+  // icon1: ant@4对icon不在支持,这里用icon1代替icon, 在 components/IconFont 中处理
+  // 兼容MenuDataItem类型
+  export interface UserMenuItem {
+    children?: UserMenuItem[]; // 子菜单
+    icon1?: string;
+    locale?: string | false; // menu.welcome, 可以直接抽取i18n对应的内容,如果不配置,可以通过name抽取
+    name?: string; // 必须字段,如果不存在,内容会被隐藏
+    key?: string; // 全局唯一标识符,在当前系统中, 层级结构,每层使用3个字符
+    path?: string; // 和route.ts路由对应
+  }
+
+  export interface NoticeIconData {
+    id: string;
+    key: string;
+    avatar: string;
+    title: string;
+    datetime: string;
+    type: string;
+    read?: boolean;
+    description: string;
+    clickClose?: boolean;
+    extra: any;
+    status: string;
   }
 
   export interface ErrorInfo<T> {
@@ -39,41 +72,30 @@ declare namespace API {
    * 登陆返回结果
    */
   export interface SigninStateType {
+    // 通过该状态,可以通知前端发生的异常,
+    // 异常内容可以通过errorCode和errorMessage中得到
     status?: 'ok' | 'error';
-    // type?: string; // 登陆类型, 不能为空，否则无法登陆
-    type?: string;
+    // 以下内容,如果使用常规的sessionid, 不存在
+    // token会持久化存储,这就导致浏览器重新打开,用户还是登陆状态
+    // 基于这个问题,服务器会将用于唯一标识token_client_id存储在cookie中,以解决这个问题
+    // 是否需要认证,是idToken中的内容决定的
+    idToken?: string; // 访问令牌,系统基于jwt认证时候,需要使用,一般为10个小时
+    // 🐖:下面是设计需要,当前环境并没有适配和支持
+    // ======================================================, 可以在AuthUser.ts中做出更改
+    // 如果refresh_token不存在,即系统不希望存在刷新令牌的存在
+    // 用户体验上可能存在问题,即当令牌过期后,需要重新登陆,
+    // 刷新令牌则每一个小时,会想认证服务器重新获取认证信息
+    // 注意,重新获取的认证接口调用为后端服务器行为, 非前端直接调用
+    refreshToken?: string; // 刷新令牌,比token有着更长的有效期,一般为7天,
   }
 
-  /**
-   * 一个简单的MAP
-   */
   export interface StringMap {
     [key: string]: string;
   }
 
-  /**
-   * 一个简单的MAP
-   */
   export interface ObjectMap<T> {
     [key: string]: T;
   }
 
-  /**
-   * 菜单数据类型
-   */
-  // import { MenuDataItem } from '@ant-design/pro-layout';
-  // export interface MenuDataItem {
-  //   authority?: string[] | string;
-  //   children?: MenuDataItem[]; // 子菜单
-  //   hideChildrenInMenu?: boolean;
-  //   hideInMenu?: boolean;
-  //   icon?: string; // | React.ReactNode; // 使用icon1替换
-  //   icon1?: string;
-  //   locale?: string | false; // menu.welcome, 可以直接抽取i18n对应的内容,如果不配置,可以通过name抽取
-  //   name?: string; // 必须字段,如果不存在,内容会被隐藏
-  //   key?: string; // 全局唯一标识符,在当前系统中, 层级结构,每层使用3个字符
-  //   path?: string; // 和route.ts路由对应
-  //   [key: string]: any;
-  //   parentKeys?: string[]; // 在使用openkeys内容时候,很重要,必须存在, 当前系统不用给出,会使用getKeysFromMenuData函数重建
-  // }
+  export type WithFalse<T> = T | false;
 }

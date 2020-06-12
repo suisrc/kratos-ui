@@ -8,6 +8,10 @@
 ``` TypeScript
 export default (props: any) => <>{props.children}</>;
 ```
+``` ts
+const node = (<>{props.children}</>)
+export node;
+```
 
 使用React.FC声明
 ``` TypeScript

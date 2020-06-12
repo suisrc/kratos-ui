@@ -16,11 +16,11 @@ export default function(initialState: {
   isSignin?: boolean;
 }) {
   const { currentUser } = initialState || {};
-  //const { currentUser, isSignin } = useModel('AuthUser');
+  //const { currentUser, isSignin } = useModel('useAuthUser');
   //console.log(`access=> ${JSON.stringify(currentUser)}`);
   return {
     sign: !!initialState?.isSignin,
-    admin: currentUser?.access === 'admin',
-    canAccess: currentUser?.access === 'admin',
+    admin: !!currentUser?.access?.admin || false,
+    canAccess: undefined,
   };
 }
