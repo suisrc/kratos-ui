@@ -14,6 +14,9 @@ export interface SigninParamsType {
   // <系统>:<类型>:<备注>, 如果不区分系统，可以直接使用 :user: 代替
   // 账户登陆：xxx:user:zzz 手机登陆：xxx:mobile:zzz 编码登陆：xxx:code:zzz
   type: string;
+  // 登录时候，使用的角色
+  role?: string;
+  // 重置登录
   reset?: boolean;
 }
 
@@ -36,7 +39,7 @@ export async function signin(params: SigninParamsType): Promise<any> {
   return request('/api/v1/signin/account', {
     method: 'POST',
     data: params,
-    skipErrorHandler: false,
+    skipErrorHandler: true,
   });
 }
 

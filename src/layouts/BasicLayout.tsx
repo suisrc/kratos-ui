@@ -172,10 +172,11 @@ const Layout = (
         {...settings}
         // location={{pathname: '/welcom'}}
         logo={<LogoIcon style={{ width: '54px', padding: '10px 0px' }} />}
-        title={i18n.formatMessage({
-          id: 'app.layout.basic.title',
-          defaultMessage: settings.title,
-        })}
+        title={settings.title}
+        // title={i18n.formatMessage({
+        //   id: 'app.layout.basic.title',
+        //   defaultMessage: settings.title,
+        // })}
         openKeys={openKeys}
         onOpenChange={data => {
           setOpenKeys(fixOpenKeysByMenuData(data || [], menuMap.current));

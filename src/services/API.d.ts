@@ -75,6 +75,9 @@ declare namespace API {
     // 通过该状态,可以通知前端发生的异常,
     // 异常内容可以通过errorCode和errorMessage中得到
     status?: 'ok' | 'error';
+    message?: string; // 消息， 优先显示
+    roles?: any; // {id: string, name: string} 多角色的时候，返回角色，重新确认登录
+    [key: string]: any;
     // 以下内容,如果使用常规的sessionid, 不存在
     // token会持久化存储,这就导致浏览器重新打开,用户还是登陆状态
     // 基于这个问题,服务器会将用于唯一标识token_client_id存储在cookie中,以解决这个问题

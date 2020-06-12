@@ -1,6 +1,7 @@
 import {
   MobileOutlined,
   TeamOutlined,
+  UserSwitchOutlined,
   //WechatOutlined,
   //DingdingOutlined,
   //AliyunOutlined,
@@ -9,7 +10,7 @@ import {
   //createFromIconfontCN
 } from '@ant-design/icons';
 
-import { Alert, Checkbox, message } from 'antd';
+import { Alert, Checkbox } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { Link, useModel, useIntl, useRequest } from 'umi';
 
@@ -19,6 +20,7 @@ import { SigninParamsType, SigninType } from '@/services/signin';
 import LogoIcon from '@/assets/LogoIcon';
 import SigninFrom from '@/components/Signin';
 import SelectLang from '@/components/SelectLang';
+import Footer from '@/components/Footer';
 
 import { getIcon } from '@/components/IconFont';
 
@@ -27,6 +29,7 @@ import { getRedirectPage } from '@/utils/utils';
 
 import styles from './style.less';
 import gstyle from '@/global.less';
+import SelectRole, { RoleItemType } from '@/components/Signin/SelectRole';
 
 // https://www.iconfont.cn/
 // const IconFont = createFromIconfontCN({
@@ -57,9 +60,7 @@ const Signin: React.FC<{}> = () => {
   const [autoSignin, setAutoSignin] = useState(false);
   const [type, setType] = useState<string>('account');
 
-  const [userSigninState, setUserSigninState] = useState<API.SigninStateType>(
-    {},
-  );
+  const [signinState, setSigninState] = useState<API.SigninStateType>({});
   const [submitting, setSubmitting] = useState(false);
 
   const i18n = useIntl();
@@ -87,49 +88,32 @@ const Signin: React.FC<{}> = () => {
         return;
       }
       if (!msg.success) {
-        setUserSigninState({});
+        setSigninState({});
         message.error(
           i18n.formatMessage({ id: 'page.auth.signin.func.submit.error' }),
         );
       } else {
         // 如果失败去设置用户错误信息
-        setUserSigninState(msg.data ? { ...msg.data, type } : {});
+        setSigninState(msg.data ? { ...msg.data, type } : {});
       }
     } catch (error) {
-      setUserSigninState({});
+      setSigninState({});
       message.error(
         i18n.formatMessage({ id: 'page.auth.signin.func.submit.error' }),
       );
     }
     setSubmitting(false);
   };
-  const { status, type: loginType } = userSigninState;
+  const { status, type: loginType, roles, message } = signinState;
 
-  // 第三方登陆
-  const App3rdChildren: React.ReactComponentElement<any>[] = [];
-  //const [use3rdApps, setUse3rdApps] = useState<Sign3rdType[]>([]);
-  const { data: use3rdApps, loading: loading3rd } = useRequest(
-    querySign3rdApp,
-    {
-      cacheKey: 'signin-use-3rd-apps',
-    },
-  );
-  const { run: goto3rd } = useRequest(sign3rd, { manual: true });
-  (use3rdApps as Sign3rdType[])?.map((app, index) => {
-    App3rdChildren.push(
-      // 由于三方登录会直接跳转,所以不再单独处理
-      <a
-        key={app.appid}
-        onClick={e =>
-          goto3rd(app.appid, app.signature, getRedirectPage() || '')
-        }
-      >
-        {getIcon(app.icon, styles.icon) || (
-          <TeamOutlined className={styles.icon} />
-        )}
-      </a>,
-    );
+  const { data: use3rdApps } = useRequest(querySign3rdApp, {
+    cacheKey: 'signin-use-3rd-apps',
   });
+  const { run: goto3rd } = useRequest(sign3rd, { manual: true });
+
+  // 如果有角色的清空下出现
+  //const [roles, setRoles] = useState<RoleItemType[]>([]);
+  //const [roles, setRoles] = useState<any>([{id: '1', name: '213'}]);
 
   return (
     <div className={styles.container}>
@@ -165,15 +149,19 @@ const Signin: React.FC<{}> = () => {
             >
               {status === 'error' && loginType === 'account' && !submitting && (
                 <SigninMessage
-                  content={i18n.formatMessage({
-                    id: 'page.auth.signin.tabs.user.error',
-                  })}
+                  content={
+                    message ||
+                    i18n.formatMessage({
+                      id: 'page.auth.signin.tabs.user.error',
+                    })
+                  }
                 />
               )}
               {type === 'account' && (
                 <>
                   <Account
                     name="username"
+                    // disabled: roles?.length,
                     placeholder={i18n.formatMessage({
                       id: 'page.auth.signin.tabs.user.username.placeholder',
                     })}
@@ -211,9 +199,12 @@ const Signin: React.FC<{}> = () => {
             >
               {status === 'error' && loginType === 'mobile' && !submitting && (
                 <SigninMessage
-                  content={i18n.formatMessage({
-                    id: 'page.auth.signin.tabs.mobile.error',
-                  })}
+                  content={
+                    message ||
+                    i18n.formatMessage({
+                      id: 'page.auth.signin.tabs.mobile.error',
+                    })
+                  }
                 />
               )}
               {type === 'mobile' && (
@@ -265,6 +256,28 @@ const Signin: React.FC<{}> = () => {
                 </>
               )}
             </Tab>
+            {(roles?.length || false) && (
+              <div>
+                <SelectRole
+                  name="role"
+                  //prefix={<UserSwitchOutlined className={gstyle.prefixIcon} />}
+                  placeholder={i18n.formatMessage({
+                    id: 'page.auth.signin.select.role.placeholder',
+                    defaultMessage: 'Select Role',
+                  })}
+                  rules={[
+                    {
+                      required: true,
+                      message: i18n.formatMessage({
+                        id: 'page.auth.signin.select.role.message',
+                        defaultMessage: 'Select Role',
+                      }),
+                    },
+                  ]}
+                  roles={roles}
+                />
+              </div>
+            )}
             <div>
               <Checkbox
                 checked={autoSignin}
@@ -285,12 +298,28 @@ const Signin: React.FC<{}> = () => {
                 id: 'page.auth.signin.func.submit.button',
               })}
             </Submit>
-            <div className={styles.other}>
-              {i18n.formatMessage({ id: 'page.auth.signin.other.title' })}
-              {App3rdChildren}
-            </div>
+            {use3rdApps?.length && (
+              <div className={styles.other}>
+                {i18n.formatMessage({ id: 'page.auth.signin.other.title' })}
+                {use3rdApps.map((app: any) => (
+                  <a
+                    key={app.appid}
+                    onClick={e =>
+                      goto3rd(app.appid, app.signature, getRedirectPage() || '')
+                    }
+                  >
+                    {getIcon(app.icon, styles.icon) || (
+                      <TeamOutlined className={styles.icon} />
+                    )}
+                  </a>
+                ))}
+              </div>
+            )}
           </SigninFrom>
         </div>
+      </div>
+      <div className={styles.footer}>
+        <Footer />
       </div>
     </div>
   );
