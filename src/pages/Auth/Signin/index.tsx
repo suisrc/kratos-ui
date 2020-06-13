@@ -10,7 +10,7 @@ import {
   //createFromIconfontCN
 } from '@ant-design/icons';
 
-import { Alert, Checkbox } from 'antd';
+import { Alert, Checkbox, message } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { Link, useModel, useIntl, useRequest } from 'umi';
 
@@ -104,7 +104,7 @@ const Signin: React.FC<{}> = () => {
     }
     setSubmitting(false);
   };
-  const { status, type: loginType, roles, message } = signinState;
+  const { status, type: loginType, roles, message: loginMessage } = signinState;
 
   const { data: use3rdApps } = useRequest(querySign3rdApp, {
     cacheKey: 'signin-use-3rd-apps',
@@ -150,7 +150,7 @@ const Signin: React.FC<{}> = () => {
               {status === 'error' && loginType === 'account' && !submitting && (
                 <SigninMessage
                   content={
-                    message ||
+                    loginMessage ||
                     i18n.formatMessage({
                       id: 'page.auth.signin.tabs.user.error',
                     })
@@ -200,7 +200,7 @@ const Signin: React.FC<{}> = () => {
               {status === 'error' && loginType === 'mobile' && !submitting && (
                 <SigninMessage
                   content={
-                    message ||
+                    loginMessage ||
                     i18n.formatMessage({
                       id: 'page.auth.signin.tabs.mobile.error',
                     })
