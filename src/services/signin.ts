@@ -47,7 +47,7 @@ export async function signin(params: SigninParamsType): Promise<any> {
  * 获取手机验证码（验证码不一定必须使用手机短信发送，也可以是其他方式
  * @param mobile
  */
-export async function getCaptcha(mobile: string): Promise<any> {
+export async function queryCaptcha(mobile: string): Promise<any> {
   return request(`/api/v1/signin/captcha?mobile=${mobile}`);
 }
 

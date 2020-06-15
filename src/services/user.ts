@@ -6,7 +6,7 @@ import { request } from 'umi';
  * 一般在用户收起登陆，或者首次打开页面时候触发
  * 只有基本信息
  */
-export async function getCurrentUser(): Promise<any> {
+export async function queryCurrentUser(): Promise<any> {
   return request('/api/v1/user/current', {
     skipErrorHandler: true,
   });
@@ -15,7 +15,7 @@ export async function getCurrentUser(): Promise<any> {
 /**
  * 查询用户详情
  */
-export async function getCurrentUserDetail(): Promise<any> {
+export async function queryCurrentUserDetail(): Promise<any> {
   return request('/api/v1/user/detail');
 }
 

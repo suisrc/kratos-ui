@@ -67,7 +67,8 @@ export const gotoSigninPage = () => {
   } else {
     history.replace({
       pathname: '/auth/signin',
-      search: stringify({ redirect: window.location.href }),
+      //search: stringify({ redirect: window.location.href }),
+      search: stringify({ redirect: window.location.pathname }),
     });
   }
 };
@@ -80,6 +81,11 @@ export const replaceGoto = () => {
   const params = getPageQuery();
   let { redirect } = params as { redirect: string };
   if (redirect) {
+    if (redirect.startsWith('/')) {
+      redirect =
+        window.location.protocol + '//' + window.location.host + redirect;
+    }
+    //console.log(redirect);
     const redirectUrlParams = new URL(redirect);
     if (redirectUrlParams.origin === urlParams.origin) {
       redirect = redirect.substr(urlParams.origin.length);

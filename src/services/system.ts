@@ -10,7 +10,7 @@ export interface SystemInfo {
  * 获取系统公共配置,主要用于展示页面的自定义部分内容
  * 特别注意,该方法是一个同步方法
  */
-export async function getSystemInfo(): Promise<SystemInfo> {
+export async function querySystemInfo(): Promise<SystemInfo> {
   try {
     let res = await request('/api/v1/system/info', {
       skipErrorHandler: true,

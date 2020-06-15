@@ -3,8 +3,8 @@
  * 当前文件可以是ts, 也可以是tsx文件
  */
 import { RequestConfig, history } from 'umi';
-import { getCurrentUser } from '@/services/user';
-import { SystemInfo, getSystemInfo } from '@/services/system';
+import { queryCurrentUser } from '@/services/user';
+import { SystemInfo, querySystemInfo } from '@/services/system';
 import {
   authorization,
   unauthorization,
@@ -24,11 +24,11 @@ export async function getInitialState(): Promise<{
   systemInfo: SystemInfo;
   // [key: string]: any;
 }> {
-  const systemInfo = await getSystemInfo();
+  const systemInfo = await querySystemInfo();
   //if ( !history.location.pathname.startsWith('/auth/') &&
   if (hasAuthToken()) {
     try {
-      const res: API.ErrorInfo<API.CurrentUser> = await getCurrentUser();
+      const res: API.ErrorInfo<API.CurrentUser> = await queryCurrentUser();
       if (res.success) {
         return {
           // settings: defaultSettings

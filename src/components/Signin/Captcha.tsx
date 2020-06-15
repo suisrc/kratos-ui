@@ -6,7 +6,7 @@ import omit from 'omit.js';
 import { FormItemProps } from 'antd/es/form/FormItem';
 
 //import { useRequest } from 'umi';
-import { getCaptcha } from '@/services/signin';
+import { queryCaptcha } from '@/services/signin';
 
 import Context, { ContextProps } from './Context';
 import styles from './index.less';
@@ -71,7 +71,7 @@ const Captcha: React.FC<CaptchaProps> = props => {
   } = props;
 
   const onGetCaptcha = useCallback(async (mobile: string) => {
-    const result = await getCaptcha(mobile);
+    const result = await queryCaptcha(mobile);
     if (result.success === false) {
       return;
     }
