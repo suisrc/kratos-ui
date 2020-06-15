@@ -13,15 +13,8 @@ export async function queryCurrentUser(): Promise<any> {
 }
 
 /**
- * 查询用户详情
- */
-export async function queryCurrentUserDetail(): Promise<any> {
-  return request('/api/v1/user/detail');
-}
-
-/**
  * 查询当前用户消息
  */
-export async function queryNotices(): Promise<any> {
-  return request('/api/v1/user/notices');
+export async function queryCurrentUserNotices(): Promise<any> {
+  return request('/api/v1/user/current/notices');
 }

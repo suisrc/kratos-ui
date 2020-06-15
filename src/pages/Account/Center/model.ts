@@ -1,62 +1,139 @@
 import { Reducer, Effect } from 'umi';
-import { CurrentUser, ListItemDataType } from './data.d';
-import { queryCurrent, queryFakeList } from './service';
 
-export interface ModalState {
-  currentUser: Partial<CurrentUser>;
-  list: ListItemDataType[];
+import {
+  CurrentUserDetail,
+  ListItemDataType,
+  NewsItemDataType,
+  ApplicationItemDataType,
+  ProjectItemDataType,
+} from './data.d';
+import {
+  queryUserDetail,
+  queryApplications,
+  queryProjects,
+  queryNews,
+  postUserTags,
+} from './service';
+
+export interface ModelState {
+  detail: Partial<CurrentUserDetail>;
+  applications: ApplicationItemDataType[];
+  projects: ProjectItemDataType[];
+  news?: NewsItemDataType[];
 }
 
 export interface ModelType {
   namespace: string;
-  state: ModalState;
+  state: ModelState;
   effects: {
-    fetchCurrent: Effect;
-    fetch: Effect;
+    fetchUserDetail: Effect;
+    putUserTags: Effect;
+    fetchApplications: Effect;
+    fetchProjects: Effect;
+    fetchNews: Effect;
   };
   reducers: {
-    saveCurrentUser: Reducer<ModalState>;
-    queryList: Reducer<ModalState>;
+    saveUserDetail: Reducer<ModelState>;
+    saveApplications: Reducer<ModelState>;
+    saveProjects: Reducer<ModelState>;
+    saveNews: Reducer<ModelState>;
   };
 }
 
 const Model: ModelType = {
-  namespace: 'accountAndCenter',
+  namespace: 'accountCenter',
 
   state: {
-    currentUser: {},
-    list: [],
+    detail: {},
+    applications: [],
+    projects: [],
+    news: [],
   },
 
   effects: {
-    *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
+    // *fetch({ payload }, { call, put }) {
+    //   const response = yield call(query, payload);
+    //   if (response?.success) {}
+    //     yield put({
+    //       type: 'save',
+    //       payload: Array.isArray(response) ? response : [],
+    //     });
+    //   }
+    // },
+    *fetchUserDetail(_, { call, put }) {
+      const response = yield call(queryUserDetail);
+      if (response?.success) {
+        yield put({
+          type: 'saveUserDetail',
+          payload: response.data,
+        });
+      }
     },
-    *fetch({ payload }, { call, put }) {
-      const response = yield call(queryFakeList, payload);
-      yield put({
-        type: 'queryList',
-        payload: Array.isArray(response) ? response : [],
-      });
+    *putUserTags({ payload }, { call, put }) {
+      const response = yield call(postUserTags, payload);
+      if (response?.success) {
+        const detail = yield call(queryUserDetail);
+        if (detail?.success) {
+          yield put({
+            type: 'saveUserDetail',
+            payload: detail.data,
+          });
+        }
+      }
+    },
+    *fetchApplications(_, { call, put }) {
+      const response = yield call(queryApplications);
+      if (response?.success) {
+        yield put({
+          type: 'saveApplications',
+          payload: Array.isArray(response.data) ? response.data : [],
+        });
+      }
+    },
+    *fetchProjects(_, { call, put }) {
+      const response = yield call(queryProjects);
+      if (response?.success) {
+        yield put({
+          type: 'saveProjects',
+          payload: Array.isArray(response.data) ? response.data : [],
+        });
+      }
+    },
+    *fetchNews(_, { call, put }) {
+      const response = yield call(queryNews);
+      if (response?.success) {
+        yield put({
+          type: 'saveNews',
+          payload: Array.isArray(response.data) ? response.data : [],
+        });
+      }
     },
   },
 
   reducers: {
-    saveCurrentUser(state, action) {
+    saveUserDetail(state, action) {
       return {
-        ...(state as ModalState),
-        currentUser: action.payload || {},
-      };
+        ...state,
+        detail: action.payload || {},
+      } as ModelState;
     },
-    queryList(state, action) {
+    saveApplications(state, action) {
       return {
-        ...(state as ModalState),
-        list: action.payload,
-      };
+        ...state,
+        applications: action.payload || {},
+      } as ModelState;
+    },
+    saveProjects(state, action) {
+      return {
+        ...state,
+        projects: action.payload || {},
+      } as ModelState;
+    },
+    saveNews(state, action) {
+      return {
+        ...state,
+        news: action.payload || {},
+      } as ModelState;
     },
   },
 };

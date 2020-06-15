@@ -9,8 +9,9 @@ import React from 'react';
 
 import { connect } from 'umi';
 import numeral from 'numeral';
-import { ModalState } from '../../model';
-import stylesApplications from './index.less';
+import { ModelState } from '../../model';
+
+import styles from './index.less';
 
 export function formatWan(val: number) {
   const v = val * 1;
@@ -38,7 +39,7 @@ export function formatWan(val: number) {
   return result;
 }
 
-const Applications: React.FC<Partial<ModalState>> = props => {
+const Applications: React.FC<Partial<ModelState>> = props => {
   const { list } = props;
   const itemMenu = (
     <Menu>

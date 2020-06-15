@@ -1,6 +1,6 @@
 import { UserOutlined } from '@ant-design/icons';
 
-import { Input, Form, Select } from 'antd';
+import { Empty, Form, Select } from 'antd';
 import React from 'react';
 import { FormItemProps } from 'antd/es/form/FormItem';
 
@@ -10,9 +10,22 @@ import gstyle from '@/global.less';
 const { Option } = Select;
 
 export interface RoleItemType {
+  //label?: string;
+  //key: string;
   name?: string;
   id: string;
 }
+
+const getOption = (list: RoleItemType[]) => {
+  if (!list || list.length < 1) {
+    return null;
+  }
+  return list.map(item => (
+    <Option key={item.id} value={item.id}>
+      {item.name}
+    </Option>
+  ));
+};
 
 export interface SelectRoleProps extends Partial<FormItemProps> {
   name?: string;
@@ -28,21 +41,6 @@ export interface SelectRoleProps extends Partial<FormItemProps> {
   tabUtil?: ContextProps['tabUtil'];
   prefix?: JSX.Element;
 }
-
-const getOption = (list: RoleItemType[]) => {
-  if (!list || list.length < 1) {
-    return (
-      <Option key={0} value={0}>
-        没有找到选项
-      </Option>
-    );
-  }
-  return list.map(item => (
-    <Option key={item.id} value={item.id}>
-      {item.name}
-    </Option>
-  ));
-};
 
 const FormItem = Form.Item;
 

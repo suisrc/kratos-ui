@@ -10,7 +10,7 @@ export default {
   },
 
   'POST  /api/v1/signin/account': (req: Request, res: Response) => {
-    const { password, username, type, mobile, captcha } = req.body;
+    const { password, username, type, mobile, captcha, role } = req.body;
     if (password === '123456' && username === 'admin') {
       res.send(
         getResult({
@@ -33,6 +33,28 @@ export default {
       res.send(
         getResult({
           status: 'error', // 登陆失败
+        }),
+      );
+      return;
+    }
+    if (type === ':account:' && username === 'role' && !role) {
+      res.send(
+        getResult({
+          status: 'error', // 登陆失败
+          message: '请选择角色',
+          roles: [
+            { id: 'admin', name: '管理员' },
+            { id: '用户', name: '用户' },
+          ],
+        }),
+      );
+      return;
+    }
+    if (type === ':account:' && username === 'role' && role === 'admin') {
+      res.send(
+        getResult({
+          status: 'ok',
+          idToken: '12345679',
         }),
       );
       return;

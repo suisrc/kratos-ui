@@ -25,16 +25,16 @@ export default {
       res.send(
         getResult({
           avatar: '/icons/logo-192x192.png', // 头像
-          name: 'Demo User', // 名称
+          name: '辛弃疾', // 名称
           userid: '00000001', // 用户ID
-          unreadCount: 15, // 未读消息计数
+          unreadCount: 10, // 未读消息计数
           datetime: new Date(), // 获取当前信息的时间
           system: '', // 该字段主要是有前端给出,用以记录使用, 不同system带来的access也是不同的
           access: access, // 返回权限列表,注意,其返回的权限只是部分确认的权限,而不是全部权限,并且,返回的权限是跟当前系统相关的
           role: {
             id: '10000001', // 角色ID, 如果角色存在,那么id和name是必须存在的内容
-            name: '系统管理员', // 角色名称
-            avatar: '/icons/logo-192x192.png', // 角色头像
+            name: '管理员', // 角色名称
+            // avatar: '/icons/logo-192x192.png', // 角色头像
             show: true,
           }, // 多角色用户,登陆系统后,是能使用单角色
           menus: [

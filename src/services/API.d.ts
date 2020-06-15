@@ -1,4 +1,7 @@
 declare namespace API {
+  /**
+   * 全局用户
+   */
   export interface CurrentUser {
     avatar?: string; // 头像
     name?: string; // 名称
@@ -14,19 +17,19 @@ declare namespace API {
       avatar?: string; // 角色头像
       show?: boolean; // 是否显示
     }; // 多角色用户,登陆系统后,是能使用单角色
-    menus?: [];
     // UserMenuItem[]
     // 用户显示的菜单,注意,这里的菜单,不仅仅限制于当前所拥有的菜单内容
     // 兼容MenuDataItem类型
+    menus?: [];
   }
 
   /**
    * 菜单数据类型
    *
+   * import { MenuDataItem } from '@ant-design/pro-layout';
+   * icon1: ant@4对icon不在支持,这里用icon1代替icon, 在 components/IconFont 中处理
+   * 兼容MenuDataItem类型
    */
-  // import { MenuDataItem } from '@ant-design/pro-layout';
-  // icon1: ant@4对icon不在支持,这里用icon1代替icon, 在 components/IconFont 中处理
-  // 兼容MenuDataItem类型
   export interface UserMenuItem {
     children?: UserMenuItem[]; // 子菜单
     icon1?: string;
@@ -36,6 +39,9 @@ declare namespace API {
     path?: string; // 和route.ts路由对应
   }
 
+  /**
+   * 右上角的消息提醒
+   */
   export interface NoticeIconData {
     id: string;
     key: string;
@@ -50,6 +56,10 @@ declare namespace API {
     status: string;
   }
 
+  /**
+   * 返回值的标准格式,注意,所有的解决的放回置都是该结构
+   * 兼容于umi-request请求
+   */
   export interface ErrorInfo<T> {
     success: boolean; // 请求成功
     data?: T; // 响应数据
@@ -60,6 +70,9 @@ declare namespace API {
     host?: string; // 方便后端故障排除：当前访问服务器的主机
   }
 
+  /**
+   * 返回值,对应的消息类型
+   */
   export enum ErrorShowType {
     SILENT = 0, // 不提示错误
     WARN_MESSAGE = 1, // 警告信息提示
@@ -70,10 +83,10 @@ declare namespace API {
 
   /**
    * 登陆返回结果
+   *
+   * status: 通过该状态,可以通知前端发生的异常,异常内容可以通过errorCode和errorMessage中得到
    */
   export interface SigninStateType {
-    // 通过该状态,可以通知前端发生的异常,
-    // 异常内容可以通过errorCode和errorMessage中得到
     status?: 'ok' | 'error';
     message?: string; // 消息， 优先显示
     roles?: any; // {id: string, name: string} 多角色的时候，返回角色，重新确认登录
@@ -91,6 +104,8 @@ declare namespace API {
     // 注意,重新获取的认证接口调用为后端服务器行为, 非前端直接调用
     refreshToken?: string; // 刷新令牌,比token有着更长的有效期,一般为7天,
   }
+
+  //====================================================================================
 
   export interface StringMap {
     [key: string]: string;

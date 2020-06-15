@@ -5,10 +5,10 @@ import { connect } from 'umi';
 import moment from 'moment';
 import AvatarList from '../AvatarList';
 import { ListItemDataType } from '../../data.d';
-import { ModalState } from '../../model';
+import { ModelState } from '../../model';
 import styles from './index.less';
 
-const Projects: React.FC<Partial<ModalState>> = props => {
+const Projects: React.FC<Partial<ModelState>> = props => {
   const { list } = props;
   return (
     <List<ListItemDataType>

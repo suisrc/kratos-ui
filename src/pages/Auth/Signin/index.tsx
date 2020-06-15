@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons';
 
 import { Alert, Checkbox, message } from 'antd';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useModel, useIntl, useRequest } from 'umi';
 
 import { Sign3rdType, sign3rd, querySign3rdApp } from '@/services/signin3rd';
@@ -105,6 +105,9 @@ const Signin: React.FC<{}> = () => {
     setSubmitting(false);
   };
   const { status, type: loginType, roles, message: loginMessage } = signinState;
+  // const  clearRoles = () => {
+  //   if (roles?.length) setSigninState({...signinState, roles: undefined});
+  // };
 
   const { data: use3rdApps } = useRequest(querySign3rdApp, {
     cacheKey: 'signin-use-3rd-apps',
@@ -162,6 +165,7 @@ const Signin: React.FC<{}> = () => {
                   <Account
                     name="username"
                     // disabled: roles?.length,
+                    // onChange={clearRoles}
                     placeholder={i18n.formatMessage({
                       id: 'page.auth.signin.tabs.user.username.placeholder',
                     })}
@@ -211,6 +215,7 @@ const Signin: React.FC<{}> = () => {
                 <>
                   <Account
                     name="mobile"
+                    // onChange={clearRoles}
                     prefix={<MobileOutlined className={gstyle.prefixIcon} />}
                     placeholder={i18n.formatMessage({
                       id: 'page.auth.signin.tabs.mobile.mobile.placeholder',

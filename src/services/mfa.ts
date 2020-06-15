@@ -11,17 +11,17 @@ export async function postMfaBinding(): Promise<any> {}
  * 通过二维码或者签名，完成设备绑定，返回值是备用码
  * Verify
  */
-export async function getMfaVfBinding(): Promise<any> {}
+export async function queryMfaVfBinding(): Promise<any> {}
 
 /**
  * 完成重新绑定
  */
-export async function putMfaReBinding(): Promise<any> {}
+export async function postMfaReBinding(): Promise<any> {}
 
 /**
  * 删除绑定的设备
  */
-export async function deleteMfaBinding(): Promise<any> {}
+export async function postMfaUnbinding(): Promise<any> {}
 
 /**
  * 进行二次验证

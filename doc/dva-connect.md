@@ -1,10 +1,14 @@
 # dva的数据连接
 
-写在这里是应为,目前,可以使用useModel方法替换之前的写法,且更加简介,这里只是作为一种功能介绍阐述  
 通过 umi 导出类型：ConnectRC，ConnectProps，Dispatch，Action，Reducer，ImmerReducer，Effect，Subscription，和所有 model 文件中导出的类型。  
   
-新的解决方案中,我们可以使用useEffect, useState, useRef, useCallback, useModel来替换下面的写法  
+新的解决方案中,我们可以使用useEffect, useState, useRef, useCallback, useModel来替换, 只是用与业务加单的情况下  
+Dvajs好处在于,我们可以将展示逻辑和业务逻辑分离,所以并不是在所有情况下都是可以被替换的.
   
+说明链接:
+[官网](https://dvajs.com/guide/concepts.html#models)
+[github](https://github.com/dvajs/dva/blob/master/docs/guide)
+
 model 用例  
 ``` TS
 import { Effect, ImmerReducer, Reducer, Subscription } from 'umi';
