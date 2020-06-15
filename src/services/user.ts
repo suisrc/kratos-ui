@@ -1,5 +1,5 @@
-// import request, { requestskip } from '@/utils/request';
-import { request } from 'umi';
+import request from '@/utils/request';
+// import { request } from 'umi';
 
 /**
  * 查询当前用户信息

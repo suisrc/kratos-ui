@@ -1,4 +1,5 @@
-import { request } from 'umi';
+import request from '@/utils/request';
+// import { request } from 'umi';
 
 export interface SystemInfo {
   name?: string; // 系统名称

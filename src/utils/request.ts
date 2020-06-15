@@ -20,10 +20,7 @@
 import { request } from 'umi';
 import { notification } from 'antd';
 
-// const request2 = extend({
-//   errorHandler, // 默认错误处理(注意，这是网络上的异常)
-//   credentials: 'include', // 默认请求是否带上cookie
-// });
+export default request;
 
 interface CodeMessage {
   [key: number]: string;
@@ -70,13 +67,11 @@ const errorHandler = (error: { response: Response }): Response => {
   return response;
 };
 
-export default request;
+// const request2 = extend({
+//   errorHandler, // 默认错误处理(注意，这是网络上的异常)
+//   credentials: 'include', // 默认请求是否带上cookie
+// });
 
-/**
- * 忽略警告
- * @param url
- * @param options
- */
-export const requestskip = (url: any, options?: any) => {
-  return request(url, { ...options, skipErrorHandler: true });
-};
+//export const reques2 = (url: any, options?: any) => {
+//  return request(url, { ...options, skipErrorHandler: true });
+//};

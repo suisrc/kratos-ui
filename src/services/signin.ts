@@ -1,5 +1,5 @@
-//import request, { requestskip } from '@/utils/request';
-import { request } from 'umi';
+import request from '@/utils/request';
+// import { request } from 'umi';
 
 /**
  * 登陆使用的参数

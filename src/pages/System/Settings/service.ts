@@ -12,6 +12,6 @@ export async function queryCity(province: string) {
   return request(`/api/geographic/city/${province}`);
 }
 
-export async function query() {
+export async function queryUsers() {
   return request('/api/users');
 }
