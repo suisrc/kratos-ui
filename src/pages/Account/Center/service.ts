@@ -20,7 +20,7 @@ export async function queryNews() {
 }
 
 export async function queryApplications() {
-  return request('/api/v1/user/current/application');
+  return request('/api/v1/user/current/applications');
 }
 
 export async function queryProjects() {

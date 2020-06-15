@@ -61,8 +61,41 @@ export interface ListItemDataType {
   members: Member[];
 }
 
-export interface ApplicationItemDataType extends ListItemDataType {}
+export interface ApplicationItemDataType extends ListItemDataType {
+  id: string;
+  title: string;
+  updatedAt: number;
+  createdAt: number;
+  avatar: string;
+  activeTokenNumber: number;
+  totalVisitsNumber: number;
+  prdayVisitsNumber: number;
+}
 
-export interface ProjectItemDataType extends ListItemDataType {}
+export interface ProjectItemDataType /*extends ListItemDataType*/ {
+  id: string;
+  title: string;
+  updatedAt: number;
+  createdAt: number;
+  content: string;
+  href: string;
+  cover: string;
+  members?: Member[];
+}
 
-export interface NewsItemDataType extends ListItemDataType {}
+export interface NewsItemDataType /*extends ListItemDataType*/ {
+  id: string;
+  title: string;
+  updatedAt: number;
+  createdAt: number;
+  content: string;
+  href: string;
+  avatar: string;
+  star: number;
+  like: number;
+  message: number;
+  tags?: string[];
+  //body?: any;
+  owner: string;
+  ownerHref: string;
+}

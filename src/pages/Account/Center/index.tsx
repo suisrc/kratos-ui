@@ -1,35 +1,21 @@
 import {
-  PlusOutlined,
   HomeOutlined,
   ContactsOutlined,
   ClusterOutlined,
   PhoneOutlined,
 } from '@ant-design/icons';
-import { Avatar, Card, Col, Divider, Input, Row, Tag, Empty } from 'antd';
-import React, {
-  Component,
-  useState,
-  useRef,
-  useCallback,
-  useEffect,
-} from 'react';
+import { Card, Col, Divider, Row, Empty } from 'antd';
+import React, { useState, useEffect } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
-import {
-  Link,
-  connect,
-  Dispatch,
-  useDispatch,
-  useSelector,
-  useModel,
-  useIntl,
-  IntlShape,
-} from 'umi';
+import { useDispatch, useSelector, useModel, useIntl, IntlShape } from 'umi';
 
 // import { RouteChildrenProps } from 'react-router';
 import { CurrentUserDetail, TagType } from './data.d';
 import { ModelState } from './model';
 
 import TagList from './components/TagList';
+import Projects from './components/Projects';
+import Applications from './components/Applications';
 
 import styles from './index.less';
 
@@ -40,16 +26,12 @@ import styles from './index.less';
 
 const renderChildrenByTabKey = (tabKey: string) => {
   if (tabKey === 'projects') {
-    return <Empty />;
-    //return <Projects />;
+    //return <Empty />;
+    return <Projects />;
   }
   if (tabKey === 'applications') {
-    return <Empty />;
-    //return <Applications />;
-  }
-  if (tabKey === 'news') {
-    return <Empty />;
-    //return <Articles />;
+    //return <Empty />;
+    return <Applications />;
   }
   return null;
 };

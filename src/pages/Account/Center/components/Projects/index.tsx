@@ -1,19 +1,32 @@
 import { Card, List } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 
-import { connect } from 'umi';
+import { useDispatch, useSelector, useIntl } from 'umi';
+
 import moment from 'moment';
-import AvatarList from '../AvatarList';
-import { ListItemDataType } from '../../data.d';
+import AvatarList from './AvatarList';
+import { ProjectItemDataType } from '../../data.d';
 import { ModelState } from '../../model';
 import styles from './index.less';
 
-const Projects: React.FC<Partial<ModelState>> = props => {
-  const { list } = props;
+const Projects = (props: any) => {
+  const i18n = useIntl();
+
+  const dispatch = useDispatch();
+  const loadingEffect = useSelector((state: any) => state.loading);
+
+  const loading = loadingEffect.effects['accountCenter/fetchProjects'];
+  const list = useSelector((state: any) => state['accountCenter'].projects);
+
+  useEffect(() => {
+    dispatch({ type: 'accountCenter/fetchProjects' });
+  }, []);
+
   return (
-    <List<ListItemDataType>
+    <List<ProjectItemDataType>
       className={styles.coverCardList}
       rowKey="id"
+      loading={loading}
       grid={{
         gutter: 16,
         xs: 1,
@@ -31,22 +44,21 @@ const Projects: React.FC<Partial<ModelState>> = props => {
             hoverable
             cover={<img alt={item.title} src={item.cover} />}
           >
-            <Card.Meta
-              title={<a>{item.title}</a>}
-              description={item.subDescription}
-            />
+            <Card.Meta title={<a>{item.title}</a>} description={item.content} />
             <div className={styles.cardItemContent}>
               <span>{moment(item.updatedAt).fromNow()}</span>
               <div className={styles.avatarList}>
-                <AvatarList size="small">
-                  {item.members.map(member => (
-                    <AvatarList.Item
-                      key={`${item.id}-avatar-${member.id}`}
-                      src={member.avatar}
-                      tips={member.name}
-                    />
-                  ))}
-                </AvatarList>
+                {item.members && (
+                  <AvatarList size="small">
+                    {item.members.map(member => (
+                      <AvatarList.Item
+                        key={`${item.id}-avatar-${member.id}`}
+                        src={member.avatar}
+                        tips={member.name}
+                      />
+                    ))}
+                  </AvatarList>
+                )}
               </div>
             </div>
           </Card>
@@ -56,8 +68,4 @@ const Projects: React.FC<Partial<ModelState>> = props => {
   );
 };
 
-export default connect(
-  ({ accountAndCenter }: { accountAndCenter: ModalState }) => ({
-    list: accountAndCenter.list,
-  }),
-)(Projects);
+export default Projects;
