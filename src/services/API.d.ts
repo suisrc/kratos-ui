@@ -8,16 +8,16 @@ declare namespace API {
     system?: string; // 该字段主要是有前端给出,用以记录使用, 不同system带来的access也是不同的
     access?: any; // 返回权限列表,注意,其返回的权限只是部分确认的权限,而不是全部权限,并且,返回的权限是跟当前系统相关的
     role?: {
+      // 是当前登陆使用的角色
       id: string; // 角色ID, 如果角色存在,那么id和name是必须存在的内容
       name: string; // 角色名称
       avatar?: string; // 角色头像
       show?: boolean; // 是否显示
     }; // 多角色用户,登陆系统后,是能使用单角色
-    menus?: [
-      ,// UserMenuItem[]
+    menus?: [];
+    // UserMenuItem[]
     // 用户显示的菜单,注意,这里的菜单,不仅仅限制于当前所拥有的菜单内容
     // 兼容MenuDataItem类型
-    ];
   }
 
   /**

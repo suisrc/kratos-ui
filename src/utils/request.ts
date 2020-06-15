@@ -18,6 +18,7 @@
 // import request, { extend } from 'umi-request';
 // import request from 'umi-request';
 import { request } from 'umi';
+
 import { notification } from 'antd';
 
 export default request;
