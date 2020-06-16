@@ -11,10 +11,30 @@ export const DefaultFNT: FormatNumberType[] = [
   { text: '万', unit: 10000 },
 ];
 
-export function formatNumber(
-  val: number,
-  units: FormatNumberType[] = DefaultFNT,
-) {
+export const DFNT: FormatNumberType[] = [
+  { text: 'B', unit: 100000000 },
+  { text: 'M', unit: 1000000 },
+  { text: 'K', unit: 10000 },
+];
+
+//const formatNum: FormatNumberType[] = [
+//  {
+//    text: i18n.formatMessage({
+//      id: 'page.account.center.applications.million.text',
+//      defaultMessage: '百万',
+//    }),
+//    unit: 1000000,
+//  },
+//  {
+//    text: i18n.formatMessage({
+//      id: 'page.account.center.applications.10thousand.text',
+//      defaultMessage: '万',
+//    }),
+//    unit: 10000,
+//  },
+//];
+
+export function formatNumber(val: number, units: FormatNumberType[] = DFNT) {
   const v = val * 1;
   if (!v || Number.isNaN(v)) return '';
   let type = units.find(item => val >= item.unit);
@@ -25,7 +45,7 @@ export function formatNumber(
   }
   return (
     <span>
-      {Math.floor(val / 10000)}
+      {Math.floor(val / type.unit)}
       <span
         style={{
           position: 'relative',

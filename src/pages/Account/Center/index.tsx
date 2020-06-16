@@ -11,7 +11,6 @@ import { useDispatch, useSelector, useModel, useIntl, IntlShape } from 'umi';
 
 // import { RouteChildrenProps } from 'react-router';
 import { CurrentUserDetail, TagType } from './data.d';
-import { ModelState } from './model';
 
 import TagList from './components/TagList';
 import Projects from './components/Projects';

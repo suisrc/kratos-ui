@@ -39,63 +39,29 @@ export interface Member {
 
 export interface ListItemDataType {
   id: string;
-  owner: string;
   title: string;
   avatar: string;
   cover: string;
-  status: 'normal' | 'exception' | 'active' | 'success';
-  percent: number;
-  logo: string;
-  href: string;
-  body?: any;
   updatedAt: number;
   createdAt: number;
-  subDescription: string;
-  description: string;
-  activeUser: number;
-  newUser: number;
-  star: number;
-  like: number;
-  message: number;
   content: string;
-  members: Member[];
+  href: string;
+  tags?: string[];
 }
 
 export interface ApplicationItemDataType extends ListItemDataType {
-  id: string;
-  title: string;
-  updatedAt: number;
-  createdAt: number;
-  avatar: string;
-  activeTokenNumber: number;
-  totalVisitsNumber: number;
-  prdayVisitsNumber: number;
+  cnToken: number; // 当前激活的令牌数量, 统计当前未过期的令牌
+  pvCount: number; // 日访问量
 }
 
-export interface ProjectItemDataType /*extends ListItemDataType*/ {
-  id: string;
-  title: string;
-  updatedAt: number;
-  createdAt: number;
-  content: string;
-  href: string;
-  cover: string;
+export interface ProjectItemDataType extends ListItemDataType {
   members?: Member[];
 }
 
-export interface NewsItemDataType /*extends ListItemDataType*/ {
-  id: string;
-  title: string;
-  updatedAt: number;
-  createdAt: number;
-  content: string;
-  href: string;
-  avatar: string;
+export interface NewsItemDataType extends ListItemDataType {
   star: number;
   like: number;
   message: number;
-  tags?: string[];
-  //body?: any;
   owner: string;
-  ownerHref: string;
+  //body?: any;
 }

@@ -10,20 +10,19 @@ export interface ApplicationsProps {
     updatedAt?: any;
     avatar?: string;
     owner?: string;
-    ownerHref?: string;
     href?: string;
   };
   i18n: IntlShape;
 }
 const ArticleListContent: React.FC<ApplicationsProps> = ({
-  data: { content, updatedAt, avatar, owner, href, ownerHref },
+  data: { content, updatedAt, avatar, owner, href },
   i18n,
 }) => (
   <div className={styles.listContent}>
     <div className={styles.description}>{content}</div>
     <div className={styles.extra}>
       <Avatar src={avatar} size="small" />
-      <a href={ownerHref || href}>{owner}</a>{' '}
+      <a href={href}>{owner}</a>{' '}
       {i18n.formatMessage({
         id: 'page.account.center.news.posted.text',
         defaultMessage: '发布在',
