@@ -30,7 +30,7 @@ interface SettingsState {
  * 功能菜单
  */
 const menuMap = {
-  basic: (
+  base: (
     <FormattedMessage
       id="page.system.settings.menu.basic"
       defaultMessage="基本设置"
