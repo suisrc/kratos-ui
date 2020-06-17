@@ -4,14 +4,19 @@ export interface TagType {
 }
 
 export interface GeographicType {
+  country: {
+    id: string;
+    name: string;
+  };
   province: {
-    label: string;
-    key: string;
+    id: string;
+    name: string;
   };
   city: {
-    label: string;
-    key: string;
+    id: string;
+    name: string;
   };
+  address: string;
 }
 
 export interface CurrentUserDetail /*extends API.CurrentUser*/ {
@@ -25,10 +30,9 @@ export interface CurrentUserDetail /*extends API.CurrentUser*/ {
   title: string;
   group: string;
   tags: TagType[];
-  country: string;
-  geographic: GeographicType;
-  address: string;
-  phone: string;
+  geographic: GeographicType; // 地理坐标
+  phone: string; // 电话
+  email: string; // 邮箱
 }
 
 export interface Member {

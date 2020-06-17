@@ -22,19 +22,22 @@ export default {
       { key: '7', label: '苏辛' },
       { key: '8', label: '济南二安' },
     ],
-    country: '中国',
+    phone: '188****8888',
     geographic: {
+      country: {
+        name: '中国',
+        id: '86',
+      },
       province: {
-        label: '山东省',
-        key: '370000',
+        name: '山东省',
+        id: '370000',
       },
       city: {
-        label: '济南市',
-        key: '370100',
+        name: '济南市',
+        id: '370100',
       },
+      address: '历城区遥墙镇四风闸村',
     },
-    address: '历城区遥墙镇四风闸村',
-    phone: '18888888888',
   }),
   'POST  /api/v1/user/current/tags/update': getResult(
     {},

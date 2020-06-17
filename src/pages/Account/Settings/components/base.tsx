@@ -1,21 +1,32 @@
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, Input, Select, Upload, Form, message } from 'antd';
-import { connect, FormattedMessage, formatMessage } from 'umi';
-import React, { Component } from 'react';
+import { Button, Input, Select, Upload, Form, message, Cascader } from 'antd';
+import { Rule } from 'antd/es/form';
 
-import { CurrentUser } from '../data.d';
-import GeographicView from './GeographicView';
-import PhoneView from './PhoneView';
-import styles from './BaseView.less';
+import { FormattedMessage, useIntl, IntlShape, useRequest } from 'umi';
+// import { useDispatch,useSelector,useModel } from 'umi';
+
+import React, { useRef, useState, useEffect } from 'react';
+
+import {
+  queryUserBasic,
+  queryCountry,
+  queryProvince,
+  queryCity,
+} from '../service';
+
+import { ConfigBase, GeographicType } from '../data.d';
+
+import styles from './base.less';
+import PageLoading from '@/components/PageLoading';
 
 const { Option } = Select;
 
-// 头像组件 方便以后独立，增加裁剪之类的功能
+// 头像组件
 const AvatarView = ({ avatar }: { avatar: string }) => (
   <>
     <div className={styles.avatar_title}>
       <FormattedMessage
-        id="accountandsettings.basic.avatar"
+        id="page.account.settings.base.avatar"
         defaultMessage="Avatar"
       />
     </div>
@@ -27,32 +38,71 @@ const AvatarView = ({ avatar }: { avatar: string }) => (
         <Button>
           <UploadOutlined />
           <FormattedMessage
-            id="accountandsettings.basic.change-avatar"
-            defaultMessage="Change avatar"
+            id="page.account.settings.base.avatar.change"
+            defaultMessage="更改头像"
           />
         </Button>
       </div>
     </Upload>
   </>
 );
+
+const reloadResidences = (ss: string[], setResidences: (rs: any[]) => void) => {
+  queryCountry().then(country => {
+    if (country?.success) {
+      queryProvince(ss[0]).then(province => {
+        if (province?.success) {
+          queryCity(ss[0], ss[1]).then(city => {
+            if (city?.success) {
+              let selectCountry = country.data.find(
+                (item: any) => item.id === ss[0],
+              );
+
+              if (selectCountry) {
+                selectCountry.children = province.data;
+              }
+              let selectProvince = province.data.find(
+                (item: any) => item.id === ss[1],
+              );
+              if (selectProvince) {
+                selectProvince.children = city.data;
+              }
+              country.data.map((item: any) => {
+                if (!item.children) item.isLeaf = false;
+              });
+              province.data.map((item: any) => {
+                if (!item.children) item.isLeaf = false;
+              });
+              setResidences(country.data);
+            }
+          });
+        }
+      });
+    }
+  });
+};
 interface SelectItem {
-  label: string;
-  key: string;
+  name: string;
+  id: string;
 }
 
 const validatorGeographic = (
-  _: any,
-  value: {
-    province: SelectItem;
-    city: SelectItem;
-  },
+  // _: any,
+  value: GeographicType,
   callback: (message?: string) => void,
+  i18n: IntlShape,
 ) => {
-  const { province, city } = value;
-  if (!province.key) {
+  const { country, province, city, address } = value;
+  if (!country.id) {
     callback('Please input your province!');
   }
-  if (!city.key) {
+  if (!province.id) {
+    callback('Please input your province!');
+  }
+  if (!city.id) {
+    callback('Please input your city!');
+  }
+  if (!address) {
     callback('Please input your city!');
   }
   callback();
@@ -73,190 +123,214 @@ const validatorPhone = (
   callback();
 };
 
-interface BaseViewProps {
-  currentUser?: CurrentUser;
-}
+const BaseView = (props: any) => {
+  const i18n = useIntl();
 
-class BaseView extends Component<BaseViewProps> {
-  view: HTMLDivElement | undefined = undefined;
-
-  getAvatarURL() {
-    const { currentUser } = this.props;
-    if (currentUser) {
-      if (currentUser.avatar) {
-        return currentUser.avatar;
-      }
-      const url =
-        'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
-      return url;
-    }
-    return '';
-  }
-
-  getViewDom = (ref: HTMLDivElement) => {
-    this.view = ref;
-  };
-
-  handleFinish = () => {
-    message.success(
-      formatMessage({ id: 'accountandsettings.basic.update.success' }),
-    );
-  };
-
-  render() {
-    const { currentUser } = this.props;
-
-    return (
-      <div className={styles.baseView} ref={this.getViewDom}>
-        <div className={styles.left}>
-          <Form
-            layout="vertical"
-            onFinish={this.handleFinish}
-            initialValues={currentUser}
-            hideRequiredMark
-          >
-            <Form.Item
-              name="email"
-              label={formatMessage({ id: 'accountandsettings.basic.email' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage(
-                    { id: 'accountandsettings.basic.email-message' },
-                    {},
-                  ),
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="name"
-              label={formatMessage({ id: 'accountandsettings.basic.nickname' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage(
-                    { id: 'accountandsettings.basic.nickname-message' },
-                    {},
-                  ),
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="profile"
-              label={formatMessage({ id: 'accountandsettings.basic.profile' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage(
-                    { id: 'accountandsettings.basic.profile-message' },
-                    {},
-                  ),
-                },
-              ]}
-            >
-              <Input.TextArea
-                placeholder={formatMessage({
-                  id: 'accountandsettings.basic.profile-placeholder',
-                })}
-                rows={4}
-              />
-            </Form.Item>
-            <Form.Item
-              name="country"
-              label={formatMessage({ id: 'accountandsettings.basic.country' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage(
-                    { id: 'accountandsettings.basic.country-message' },
-                    {},
-                  ),
-                },
-              ]}
-            >
-              <Select style={{ maxWidth: 220 }}>
-                <Option value="China">中国</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name="geographic"
-              label={formatMessage({
-                id: 'accountandsettings.basic.geographic',
-              })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage(
-                    { id: 'accountandsettings.basic.geographic-message' },
-                    {},
-                  ),
-                },
-                {
-                  validator: validatorGeographic,
-                },
-              ]}
-            >
-              <GeographicView />
-            </Form.Item>
-            <Form.Item
-              name="address"
-              label={formatMessage({ id: 'accountandsettings.basic.address' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage(
-                    { id: 'accountandsettings.basic.address-message' },
-                    {},
-                  ),
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="phone"
-              label={formatMessage({ id: 'accountandsettings.basic.phone' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage(
-                    { id: 'accountandsettings.basic.phone-message' },
-                    {},
-                  ),
-                },
-                { validator: validatorPhone },
-              ]}
-            >
-              <PhoneView />
-            </Form.Item>
-            <Form.Item>
-              <Button htmlType="submit" type="primary">
-                <FormattedMessage
-                  id="accountandsettings.basic.update"
-                  defaultMessage="Update Information"
-                />
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
-        <div className={styles.right}>
-          <AvatarView avatar={this.getAvatarURL()} />
-        </div>
-      </div>
-    );
-  }
-}
-
-export default connect(
-  ({
-    accountAndSettings,
+  const [residences, setResidences] = useState<any>(undefined);
+  const [reloadBase, setReloadBase] = useState(false);
+  const view = useRef<HTMLDivElement | undefined>(undefined);
+  const {
+    data: base,
+    loading,
+    mutate: setBase,
   }: {
-    accountAndSettings: { currentUser: CurrentUser };
-  }) => ({
-    currentUser: accountAndSettings.currentUser,
-  }),
-)(BaseView);
+    data: ConfigBase;
+    loading: boolean;
+    mutate: (newData: ConfigBase) => void;
+  } = useRequest(queryUserBasic, {
+    formatResult: res => {
+      res.data['geographicIds'] = [
+        res.data.geographic?.country?.id || '',
+        res.data.geographic?.province?.id || '',
+        res.data.geographic?.city?.id || '',
+      ];
+      res.data['geographicAddress'] = res.data.geographic?.address || '';
+
+      return res.data;
+    },
+    onSuccess: (data, params) => {
+      //console.log(data);
+      //初始化地理坐标
+      setResidences([
+        {
+          ...data.geographic?.country,
+          children: [
+            {
+              ...data.geographic?.province,
+              children: [
+                {
+                  ...data.geographic?.city,
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+      setReloadBase(true);
+    },
+  });
+
+  const handleFinish = () => {
+    message.success(
+      i18n.formatMessage({
+        id: 'page.account.settings.base.update.success',
+        defaultMessage: '更新基本信息成功',
+      }),
+    );
+  };
+
+  const createFormItem = (
+    name: string | string[],
+    rules?: Rule[],
+    node?: React.ReactNode,
+  ) => (
+    <Form.Item
+      name={name}
+      label={i18n.formatMessage({ id: `page.account.settings.base.${name}` })}
+      rules={[
+        {
+          required: true,
+          message: i18n.formatMessage({
+            id: `page.account.settings.base.${name}.message`,
+          }),
+        },
+        ...(rules || []),
+      ]}
+    >
+      {node || <Input />}
+    </Form.Item>
+  );
+
+  const prefixSelector = (
+    <Form.Item noStyle>
+      <Select defaultValue="86" style={{ width: 70 }}>
+        <Option value="86">+86</Option>
+      </Select>
+    </Form.Item>
+  );
+
+  if (loading || !base) {
+    return <PageLoading />;
+  }
+
+  const loadResidencesData = (selectedOptions: any) => {
+    // 配置住宿筛选
+    const targetOption = selectedOptions[selectedOptions.length - 1];
+    targetOption.loading = true;
+    if (selectedOptions.length === 1) {
+      queryProvince(selectedOptions[0].id).then(res => {
+        if (res?.success) {
+          targetOption.children = res.data;
+          targetOption.loading = false;
+          setResidences([...residences]);
+        }
+      });
+    } else if (selectedOptions.length === 2) {
+      queryCity(selectedOptions[0].id, selectedOptions[1].id).then(res => {
+        if (res?.success) {
+          targetOption.children = res.data;
+          targetOption.loading = false;
+          setResidences([...residences]);
+        }
+      });
+    }
+  };
+  const onPopupVisibleChange = (show: boolean) => {
+    if (show && reloadBase) {
+      setReloadBase(false);
+      reloadResidences(base['geographicIds'], setResidences);
+    }
+  };
+  return (
+    <div
+      className={styles.baseView}
+      ref={(ref: HTMLDivElement) => (view.current = ref)}
+    >
+      <div className={styles.left}>
+        <Form
+          layout="vertical"
+          onFinish={handleFinish}
+          initialValues={base}
+          hideRequiredMark
+        >
+          {createFormItem('name')}
+          {createFormItem('email')}
+          {createFormItem(
+            'phone',
+            [
+              {
+                pattern: /^1\d{10}$/,
+                message: i18n.formatMessage({
+                  id: 'page.account.settings.base.phone.2.message',
+                }),
+              },
+            ],
+            <Input addonBefore={prefixSelector} style={{ width: '100%' }} />,
+          )}
+
+          {createFormItem(
+            'signature',
+            undefined,
+            <Input.TextArea
+              placeholder={i18n.formatMessage({
+                id: 'page.account.settings.base.signature.placeholder',
+              })}
+              rows={4}
+            />,
+          )}
+
+          <Form.Item
+            name="geographicIds"
+            label={i18n.formatMessage({
+              id: `page.account.settings.base.geographic`,
+            })}
+            rules={[
+              {
+                type: 'array',
+                required: true,
+                message: i18n.formatMessage({
+                  id: `page.account.settings.base.geographic.message`,
+                }),
+              },
+            ]}
+          >
+            <Cascader
+              loadData={loadResidencesData}
+              options={residences}
+              fieldNames={{ label: 'name', value: 'id', children: 'children' }}
+              onPopupVisibleChange={onPopupVisibleChange}
+            />
+          </Form.Item>
+          <Form.Item
+            name="geographicAddress"
+            label={i18n.formatMessage({
+              id: `page.account.settings.base.address`,
+            })}
+            rules={[
+              {
+                required: true,
+                message: i18n.formatMessage({
+                  id: `page.account.settings.base.address.message`,
+                }),
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item>
+            <Button htmlType="submit" type="primary">
+              <FormattedMessage
+                id="page.account.settings.base.update"
+                defaultMessage="Update Information"
+              />
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+      <div className={styles.right}>
+        <AvatarView avatar={base?.avatar} />
+      </div>
+    </div>
+  );
+};
+export default BaseView;

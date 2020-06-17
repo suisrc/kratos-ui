@@ -1,49 +1,19 @@
 import {
-  EllipsisOutlined,
   ShareAltOutlined,
   ClearOutlined,
-  AlignLeftOutlined,
-  LogoutOutlined,
+  SettingOutlined,
 } from '@ant-design/icons';
-import { Avatar, Card, Dropdown, List, Menu, Tooltip } from 'antd';
-import React, { useEffect, useRef } from 'react';
 
-import { useDispatch, useSelector, useIntl, IntlShape } from 'umi';
+import { Card, List, Tooltip } from 'antd';
+import React, { useEffect } from 'react';
 
-import numeral from 'numeral';
-//import { formatNumber } from '@/components/UtilsX';
+import { useDispatch, useSelector, useIntl } from 'umi';
 
-import { ApplicationItemDataType } from '../../data.d';
+import { ApplicationItemDataType } from '../../data';
+
 import styles from './index.less';
 
-const CardInfo: React.FC<{
-  cnToken: React.ReactNode;
-  pvCount: React.ReactNode;
-  i18n: IntlShape;
-}> = ({ cnToken, pvCount, i18n }) => (
-  <div className={styles.cardInfo}>
-    <div>
-      <p>
-        {i18n.formatMessage({
-          id: 'page.account.center.applications.cnToken.text',
-          defaultMessage: '令牌',
-        })}
-      </p>
-      <p>{cnToken}</p>
-    </div>
-    <div>
-      <p>
-        {i18n.formatMessage({
-          id: 'page.account.center.applications.pvCount.text',
-          defaultMessage: '访问量',
-        })}
-      </p>
-      <p>{pvCount}</p>
-    </div>
-  </div>
-);
-
-const Applications = (props: any) => {
+const Projects = (props: any) => {
   const i18n = useIntl();
 
   const dispatch = useDispatch();
@@ -53,62 +23,30 @@ const Applications = (props: any) => {
   const list = useSelector((state: any) => state['accountCenter'].applications);
 
   useEffect(() => {
-    dispatch({ type: 'accountCenter/fetchApplications' });
+    if (!list) dispatch({ type: 'accountCenter/fetchApplications' });
   }, []);
-
-  //============================================================================
-  const itemMenu = (item: ApplicationItemDataType) => (
-    <Menu>
-      <Menu.Item>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          //href=""
-        >
-          <AlignLeftOutlined /> &nbsp;
-          {i18n.formatMessage({
-            id: 'page.account.center.applications.tooltip.details.text',
-            defaultMessage: '详情',
-          })}
-        </a>
-      </Menu.Item>
-      <Menu.Item>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          //href=""
-        >
-          <LogoutOutlined /> &nbsp;
-          {i18n.formatMessage({
-            id: 'page.account.center.applications.tooltip.logout.text',
-            defaultMessage: '退出',
-          })}
-        </a>
-      </Menu.Item>
-    </Menu>
-  );
-  //============================================================================
 
   return (
     <List<ApplicationItemDataType>
+      className={styles.coverCardList}
       rowKey="id"
-      className={styles.filterCardList}
       loading={loading}
       grid={{
         gutter: 16,
         xs: 1,
-        sm: 1,
+        sm: 2,
         md: 3,
         lg: 3,
-        xl: 3,
+        xl: 4,
         xxl: 4,
       }}
-      dataSource={list}
+      dataSource={list || []}
       renderItem={item => (
-        <List.Item key={item.id}>
+        <List.Item>
           <Card
+            className={styles.card}
             hoverable
-            bodyStyle={{ paddingBottom: 20 }}
+            cover={<img alt={item.title} src={item.cover} />}
             actions={[
               <Tooltip
                 title={i18n.formatMessage({
@@ -128,23 +66,18 @@ const Applications = (props: any) => {
               >
                 <ClearOutlined />
               </Tooltip>,
-              <Dropdown overlay={itemMenu(item)} key="ellipsis">
-                <EllipsisOutlined />
-              </Dropdown>,
+              <Tooltip
+                title={i18n.formatMessage({
+                  id: 'page.account.center.applications.tooltip.setting.text',
+                  defaultMessage: '配置应用',
+                })}
+                key="setting"
+              >
+                <SettingOutlined />
+              </Tooltip>,
             ]}
           >
-            <Card.Meta
-              avatar={<Avatar size="small" src={item.avatar} />}
-              title={item.title}
-            />
-            <div className={styles.cardItemContent}>
-              <CardInfo
-                //activeTokenNumber={numeral(item.activeTokenNumber).format('0,0')}
-                cnToken={numeral(item.cnToken).format('0,0')}
-                pvCount={numeral(item.pvCount).format('0a')}
-                i18n={i18n}
-              />
-            </div>
+            <Card.Meta title={<a>{item.title}</a>} description={item.content} />
           </Card>
         </List.Item>
       )}
@@ -152,4 +85,4 @@ const Applications = (props: any) => {
   );
 };
 
-export default Applications;
+export default Projects;

@@ -1,181 +1,126 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-import { FormattedMessage, Dispatch, connect } from 'umi';
+import { FormattedMessage } from 'umi';
 import { GridContent } from '@ant-design/pro-layout';
-import { Menu } from 'antd';
+import { Menu, Empty } from 'antd';
 import BaseView from './components/base';
 import BindingView from './components/binding';
-import { CurrentUser } from './data.d';
 import NotificationView from './components/notification';
 import SecurityView from './components/security';
 import styles from './style.less';
 
 const { Item } = Menu;
+//type SettingsStateKeys = 'base' | 'security' | 'binding' | 'notification';
 
-interface SettingsProps {
-  dispatch: Dispatch;
-  currentUser: CurrentUser;
-}
+const menuMap = {
+  base: (
+    <FormattedMessage
+      id="page.account.settings.menuMap.base"
+      defaultMessage="基本设置"
+    />
+  ),
+  security: (
+    <FormattedMessage
+      id="page.account.settings.menuMap.security"
+      defaultMessage="安全设置"
+    />
+  ),
+  binding: (
+    <FormattedMessage
+      id="page.account.settings.menuMap.binding"
+      defaultMessage="账户绑定"
+    />
+  ),
+  notification: (
+    <FormattedMessage
+      id="page.account.settings.menuMap.notification"
+      defaultMessage="消息通知"
+    />
+  ),
+};
 
-type SettingsStateKeys = 'base' | 'security' | 'binding' | 'notification';
-interface SettingsState {
-  mode: 'inline' | 'horizontal';
-  menuMap: {
-    [key: string]: React.ReactNode;
-  };
-  selectKey: SettingsStateKeys;
-}
-
-class Settings extends Component<SettingsProps, SettingsState> {
-  main: HTMLDivElement | undefined = undefined;
-
-  constructor(props: SettingsProps) {
-    super(props);
-    const menuMap = {
-      base: (
-        <FormattedMessage
-          id="accountandsettings.menuMap.basic"
-          defaultMessage="Basic Settings"
-        />
-      ),
-      security: (
-        <FormattedMessage
-          id="accountandsettings.menuMap.security"
-          defaultMessage="Security Settings"
-        />
-      ),
-      binding: (
-        <FormattedMessage
-          id="accountandsettings.menuMap.binding"
-          defaultMessage="Account Binding"
-        />
-      ),
-      notification: (
-        <FormattedMessage
-          id="accountandsettings.menuMap.notification"
-          defaultMessage="New Message Notification"
-        />
-      ),
-    };
-    this.state = {
-      mode: 'inline',
-      menuMap,
-      selectKey: 'base',
-    };
+const resize = (
+  main: HTMLDivElement | undefined,
+  setMode: (mode: string) => void,
+) => {
+  if (!main) {
+    return;
   }
-
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'accountAndSettings/fetchCurrent',
-    });
-    window.addEventListener('resize', this.resize);
-    this.resize();
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.resize);
-  }
-
-  getMenu = () => {
-    const { menuMap } = this.state;
-    return Object.keys(menuMap).map(item => (
-      <Item key={item}>{menuMap[item]}</Item>
-    ));
-  };
-
-  getRightTitle = () => {
-    const { selectKey, menuMap } = this.state;
-    return menuMap[selectKey];
-  };
-
-  selectKey = (key: SettingsStateKeys) => {
-    this.setState({
-      selectKey: key,
-    });
-  };
-
-  resize = () => {
-    if (!this.main) {
+  requestAnimationFrame(() => {
+    if (!main) {
       return;
     }
-    requestAnimationFrame(() => {
-      if (!this.main) {
-        return;
-      }
-      let mode: 'inline' | 'horizontal' = 'inline';
-      const { offsetWidth } = this.main;
-      if (this.main.offsetWidth < 641 && offsetWidth > 400) {
-        mode = 'horizontal';
-      }
-      if (window.innerWidth < 768 && offsetWidth > 400) {
-        mode = 'horizontal';
-      }
-      this.setState({
-        mode,
-      });
-    });
-  };
-
-  renderChildren = () => {
-    const { selectKey } = this.state;
-    switch (selectKey) {
-      case 'base':
-        return <BaseView />;
-      case 'security':
-        return <SecurityView />;
-      case 'binding':
-        return <BindingView />;
-      case 'notification':
-        return <NotificationView />;
-      default:
-        break;
+    let mode: 'inline' | 'horizontal' = 'inline';
+    const { offsetWidth } = main;
+    if (main.offsetWidth < 641 && offsetWidth > 400) {
+      mode = 'horizontal';
     }
-
-    return null;
-  };
-
-  render() {
-    const { currentUser } = this.props;
-    if (!currentUser.userid) {
-      return '';
+    if (window.innerWidth < 768 && offsetWidth > 400) {
+      mode = 'horizontal';
     }
-    const { mode, selectKey } = this.state;
-    return (
-      <GridContent>
-        <div
-          className={styles.main}
-          ref={ref => {
-            if (ref) {
-              this.main = ref;
-            }
-          }}
-        >
-          <div className={styles.leftMenu}>
-            <Menu
-              mode={mode}
-              selectedKeys={[selectKey]}
-              onClick={({ key }) => this.selectKey(key as SettingsStateKeys)}
-            >
-              {this.getMenu()}
-            </Menu>
-          </div>
-          <div className={styles.right}>
-            <div className={styles.title}>{this.getRightTitle()}</div>
-            {this.renderChildren()}
-          </div>
-        </div>
-      </GridContent>
-    );
+    setMode(mode);
+  });
+};
+
+const renderChildren = (selectKey: string) => {
+  switch (selectKey) {
+    case 'base':
+      return <BaseView />;
+    case 'security':
+      return <SecurityView />;
+    case 'binding':
+      return <BindingView />;
+    case 'notification':
+      return <NotificationView />;
+    default:
+      break;
   }
-}
+  return <Empty />;
+};
 
-export default connect(
-  ({
-    accountAndSettings,
-  }: {
-    accountAndSettings: { currentUser: CurrentUser };
-  }) => ({
-    currentUser: accountAndSettings.currentUser,
-  }),
-)(Settings);
+const Settings = (props: any) => {
+  //const i18n = useIntl();
+  //const { initialState } = useModel('@@initialState');
+  //const currentUser = initialState?.currentUser || {};
+
+  const [mode, setMode] = useState<any>('inline');
+  const [selectKey, setSelectKey] = useState('base');
+  const main = useRef<HTMLDivElement | undefined>(undefined);
+
+  useEffect(() => {
+    const _resize = () => resize(main.current, setMode);
+    window.addEventListener('resize', _resize);
+    return () => window.removeEventListener('resize', _resize);
+  }, []);
+
+  return (
+    <GridContent>
+      <div
+        className={styles.main}
+        ref={ref => {
+          if (ref) {
+            main.current = ref;
+          }
+        }}
+      >
+        <div className={styles.leftMenu}>
+          <Menu
+            mode={mode}
+            selectedKeys={[selectKey]}
+            onClick={({ key }) => setSelectKey(key)}
+          >
+            {Object.keys(menuMap).map(item => (
+              <Item key={item}>{menuMap[item]}</Item>
+            ))}
+          </Menu>
+        </div>
+        <div className={styles.right}>
+          <div className={styles.title}>{menuMap[selectKey]}</div>
+          {renderChildren(selectKey)}
+        </div>
+      </div>
+    </GridContent>
+  );
+};
+
+export default Settings;

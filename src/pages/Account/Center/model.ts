@@ -17,8 +17,8 @@ import {
 
 export interface ModelState {
   detail: Partial<CurrentUserDetail>;
-  applications: ApplicationItemDataType[];
-  projects: ProjectItemDataType[];
+  applications?: ApplicationItemDataType[];
+  projects?: ProjectItemDataType[];
   news?: NewsItemDataType[];
 }
 
@@ -45,9 +45,6 @@ const Model: ModelType = {
 
   state: {
     detail: {},
-    applications: [],
-    projects: [],
-    news: [],
   },
 
   effects: {

@@ -26,7 +26,7 @@ const News = (props: any) => {
   const list = useSelector((state: any) => state['accountCenter'].news);
 
   useEffect(() => {
-    dispatch({ type: 'accountCenter/fetchNews' });
+    if (!list) dispatch({ type: 'accountCenter/fetchNews' });
   }, []);
 
   return (
@@ -35,7 +35,7 @@ const News = (props: any) => {
       className={styles.newsList}
       rowKey="id"
       itemLayout="vertical"
-      dataSource={list}
+      dataSource={list || []}
       loading={loading}
       renderItem={item => (
         <List.Item

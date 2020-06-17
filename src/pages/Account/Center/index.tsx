@@ -3,18 +3,18 @@ import {
   ContactsOutlined,
   ClusterOutlined,
   PhoneOutlined,
+  MailOutlined,
 } from '@ant-design/icons';
 import { Card, Col, Divider, Row, Empty } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
 import { useDispatch, useSelector, useModel, useIntl, IntlShape } from 'umi';
 
-// import { RouteChildrenProps } from 'react-router';
-import { CurrentUserDetail, TagType } from './data.d';
+import { CurrentUserDetail } from './data.d';
 
 import TagList from './components/TagList';
 import Projects from './components/Projects';
-import Applications from './components/Applications';
+import Applications from './components/Applications/index';
 
 import styles from './index.less';
 
@@ -48,17 +48,17 @@ const getOperationTabList = (i18n: IntlShape) => [
       </span>
     ),
   },
-  {
-    key: 'projects',
-    tab: (
-      <span>
-        {i18n.formatMessage({
-          id: 'page.account.center.tab.projects.title',
-          defaultMessage: '项目',
-        })}
-      </span>
-    ),
-  },
+  //{
+  //  key: 'projects',
+  //  tab: (
+  //    <span>
+  //      {i18n.formatMessage({
+  //        id: 'page.account.center.tab.projects.title',
+  //        defaultMessage: '项目',
+  //      })}
+  //    </span>
+  //  ),
+  //},
 ];
 
 const renderUserInfo = (detail: Partial<CurrentUserDetail>) => (
@@ -73,14 +73,18 @@ const renderUserInfo = (detail: Partial<CurrentUserDetail>) => (
     </p>
     <p>
       <HomeOutlined style={{ marginRight: 8 }} />
-      {detail.country || ''} &nbsp;
-      {(detail.geographic || { province: { label: '' } }).province.label}
-      {(detail.geographic || { city: { label: '' } }).city.label}
-      &nbsp; {detail.address || ''}
+      {detail.geographic?.country?.name || ''} &nbsp;
+      {detail.geographic?.province?.name || ''}
+      {detail.geographic?.city?.name || ''} &nbsp;
+      {detail.geographic?.address || ''}
     </p>
     <p>
       <PhoneOutlined style={{ marginRight: 8 }} />
       {detail.phone || ''}
+    </p>
+    <p>
+      <MailOutlined style={{ marginRight: 8 }} />
+      {detail.email || ''}
     </p>
   </div>
 );
@@ -98,11 +102,6 @@ const Center = (props: any) => {
   const detail = useSelector((state: any) => state['accountCenter'].detail);
 
   const [tabState, setTabState] = useState<string>('applications');
-  // 右侧的项目
-  // const operationTabs = useCallback(() => getOperationTabList(i18n), []);
-  const [operationTabs, setOperationTabs] = useState(() =>
-    getOperationTabList(i18n),
-  );
 
   useEffect(() => {
     dispatch({ type: 'accountCenter/fetchUserDetail' });
@@ -120,7 +119,7 @@ const Center = (props: any) => {
                 <div className={styles.name}>{currentUser.name}</div>
                 <div>{detail?.signature || ''}</div>
               </div>
-              {renderUserInfo(detail)}
+              {/*renderUserInfo(detail)*/}
               <Divider dashed />
               <TagList tags={detail?.tags || []} />
             </div>
@@ -130,7 +129,7 @@ const Center = (props: any) => {
           <Card
             className={styles.tabsCard}
             bordered={false}
-            tabList={operationTabs}
+            tabList={getOperationTabList(i18n)}
             activeTabKey={tabState}
             onTabChange={setTabState}
           >

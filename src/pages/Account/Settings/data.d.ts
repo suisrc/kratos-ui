@@ -1,43 +1,51 @@
-export interface TagType {
-  key: string;
-  label: string;
-}
-
 export interface GeographicItemType {
   name: string;
   id: string;
 }
 
 export interface GeographicType {
+  country: GeographicItemType;
   province: GeographicItemType;
   city: GeographicItemType;
+  address: string;
 }
 
-export interface NoticeType {
-  id: string;
-  title: string;
-  logo: string;
-  description: string;
-  updatedAt: string;
-  member: string;
-  href: string;
-  memberLink: string;
-}
-
-export interface CurrentUser {
+export interface ConfigBase {
+  userid: string;
   name: string;
   avatar: string;
-  userid: string;
-  notice: NoticeType[];
+
   email: string;
-  signature: string;
+  phone: string;
   title: string;
   group: string;
-  tags: TagType[];
-  notifyCount: number;
-  unreadCount: number;
-  country: string;
-  geographic: GeographicType;
-  address: string;
+
+  signature: string;
+
+  geographic?: GeographicType;
+  //geographicIds?: string[];
+  //geographicAddress?: string;
+}
+
+export interface ConfigSecurity {
+  password: 'none' | 'weak' | 'medium' | 'strong';
   phone: string;
+  email: string;
+  mfa: boolean;
+}
+
+export interface PlatformBinding {
+  id: string;
+  name: string;
+  avatar: string;
+  binding: boolean;
+}
+export interface ConfigBinding {
+  platforms: PlatformBinding[];
+}
+
+export interface ConfigNotification {
+  notice: boolean;
+  message: boolean;
+  task: boolean;
 }

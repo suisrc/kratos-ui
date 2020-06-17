@@ -15,5 +15,6 @@ export default {
   'page.account.center.applications.tooltip.access.text': '访问应用',
   'page.account.center.applications.tooltip.clear.text': '注销令牌',
   'page.account.center.applications.tooltip.logout.text': '退出',
-  'page.account.center.applications.tooltip.details.text': '详情',
+  'page.account.center.applications.tooltip.detail.text': '详情',
+  'page.account.center.applications.tooltip.setting.text': '配置应用',
 };

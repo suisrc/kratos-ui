@@ -6,7 +6,6 @@ import { useDispatch, useSelector, useIntl } from 'umi';
 import moment from 'moment';
 import AvatarList from './AvatarList';
 import { ProjectItemDataType } from '../../data.d';
-import { ModelState } from '../../model';
 import styles from './index.less';
 
 const Projects = (props: any) => {
@@ -19,7 +18,7 @@ const Projects = (props: any) => {
   const list = useSelector((state: any) => state['accountCenter'].projects);
 
   useEffect(() => {
-    dispatch({ type: 'accountCenter/fetchProjects' });
+    if (!list) dispatch({ type: 'accountCenter/fetchProjects' });
   }, []);
 
   return (
@@ -36,7 +35,7 @@ const Projects = (props: any) => {
         xl: 4,
         xxl: 4,
       }}
-      dataSource={list}
+      dataSource={list || []}
       renderItem={item => (
         <List.Item>
           <Card
