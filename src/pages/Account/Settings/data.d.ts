@@ -37,15 +37,15 @@ export interface ConfigSecurity {
 export interface PlatformBinding {
   id: string;
   name: string;
-  avatar: string;
+  avatar?: string;
   binding: boolean;
+  //description?: string;
 }
 export interface ConfigBinding {
   platforms: PlatformBinding[];
 }
 
 export interface ConfigNotification {
-  notice: boolean;
   message: boolean;
-  task: boolean;
+  todo: boolean;
 }

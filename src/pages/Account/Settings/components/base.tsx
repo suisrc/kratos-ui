@@ -5,16 +5,19 @@ import { Rule } from 'antd/es/form';
 import { FormattedMessage, useIntl, IntlShape, useRequest } from 'umi';
 // import { useDispatch,useSelector,useModel } from 'umi';
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 
+import { queryUserBasic } from '../service';
+
+import { ConfigBase } from '../data.d';
+
+// 可以直接使用Geographic1替换,以获取具有国家的选项
 import {
-  queryUserBasic,
-  queryCountry,
-  queryProvince,
-  queryCity,
-} from '../service';
-
-import { ConfigBase, GeographicType } from '../data.d';
+  getGeographicIds,
+  reloadResidences,
+  loadResidencesData,
+  getInitResidences,
+} from './Geographic';
 
 import styles from './base.less';
 import PageLoading from '@/components/PageLoading';
@@ -47,82 +50,6 @@ const AvatarView = ({ avatar }: { avatar: string }) => (
   </>
 );
 
-const reloadResidences = (ss: string[], setResidences: (rs: any[]) => void) => {
-  queryCountry().then(country => {
-    if (country?.success) {
-      queryProvince(ss[0]).then(province => {
-        if (province?.success) {
-          queryCity(ss[0], ss[1]).then(city => {
-            if (city?.success) {
-              let selectCountry = country.data.find(
-                (item: any) => item.id === ss[0],
-              );
-
-              if (selectCountry) {
-                selectCountry.children = province.data;
-              }
-              let selectProvince = province.data.find(
-                (item: any) => item.id === ss[1],
-              );
-              if (selectProvince) {
-                selectProvince.children = city.data;
-              }
-              country.data.map((item: any) => {
-                if (!item.children) item.isLeaf = false;
-              });
-              province.data.map((item: any) => {
-                if (!item.children) item.isLeaf = false;
-              });
-              setResidences(country.data);
-            }
-          });
-        }
-      });
-    }
-  });
-};
-interface SelectItem {
-  name: string;
-  id: string;
-}
-
-const validatorGeographic = (
-  // _: any,
-  value: GeographicType,
-  callback: (message?: string) => void,
-  i18n: IntlShape,
-) => {
-  const { country, province, city, address } = value;
-  if (!country.id) {
-    callback('Please input your province!');
-  }
-  if (!province.id) {
-    callback('Please input your province!');
-  }
-  if (!city.id) {
-    callback('Please input your city!');
-  }
-  if (!address) {
-    callback('Please input your city!');
-  }
-  callback();
-};
-
-const validatorPhone = (
-  rule: any,
-  value: string,
-  callback: (message?: string) => void,
-) => {
-  const values = value.split('-');
-  if (!values[0]) {
-    callback('Please input your area code!');
-  }
-  if (!values[1]) {
-    callback('Please input your phone number!');
-  }
-  callback();
-};
-
 const BaseView = (props: any) => {
   const i18n = useIntl();
 
@@ -139,33 +66,14 @@ const BaseView = (props: any) => {
     mutate: (newData: ConfigBase) => void;
   } = useRequest(queryUserBasic, {
     formatResult: res => {
-      res.data['geographicIds'] = [
-        res.data.geographic?.country?.id || '',
-        res.data.geographic?.province?.id || '',
-        res.data.geographic?.city?.id || '',
-      ];
+      res.data['geographicIds'] = getGeographicIds(res.data.geographic);
       res.data['geographicAddress'] = res.data.geographic?.address || '';
-
       return res.data;
     },
     onSuccess: (data, params) => {
-      //console.log(data);
       //初始化地理坐标
-      setResidences([
-        {
-          ...data.geographic?.country,
-          children: [
-            {
-              ...data.geographic?.province,
-              children: [
-                {
-                  ...data.geographic?.city,
-                },
-              ],
-            },
-          ],
-        },
-      ]);
+      //初始加载,不需要拉取地理位置坐标
+      setResidences(getInitResidences(data?.geographic));
       setReloadBase(true);
     },
   });
@@ -213,34 +121,6 @@ const BaseView = (props: any) => {
     return <PageLoading />;
   }
 
-  const loadResidencesData = (selectedOptions: any) => {
-    // 配置住宿筛选
-    const targetOption = selectedOptions[selectedOptions.length - 1];
-    targetOption.loading = true;
-    if (selectedOptions.length === 1) {
-      queryProvince(selectedOptions[0].id).then(res => {
-        if (res?.success) {
-          targetOption.children = res.data;
-          targetOption.loading = false;
-          setResidences([...residences]);
-        }
-      });
-    } else if (selectedOptions.length === 2) {
-      queryCity(selectedOptions[0].id, selectedOptions[1].id).then(res => {
-        if (res?.success) {
-          targetOption.children = res.data;
-          targetOption.loading = false;
-          setResidences([...residences]);
-        }
-      });
-    }
-  };
-  const onPopupVisibleChange = (show: boolean) => {
-    if (show && reloadBase) {
-      setReloadBase(false);
-      reloadResidences(base['geographicIds'], setResidences);
-    }
-  };
   return (
     <div
       className={styles.baseView}
@@ -295,10 +175,23 @@ const BaseView = (props: any) => {
             ]}
           >
             <Cascader
-              loadData={loadResidencesData}
+              displayRender={label => label.join(' / ')}
               options={residences}
               fieldNames={{ label: 'name', value: 'id', children: 'children' }}
-              onPopupVisibleChange={onPopupVisibleChange}
+              loadData={(selectedOptions: any) => {
+                // 动态加载数据
+                loadResidencesData(selectedOptions, (targetOption: any) => {
+                  setResidences([...residences]);
+                });
+              }}
+              onPopupVisibleChange={(show: boolean) => {
+                if (show && reloadBase) {
+                  // 只有在用户进行省市修改的时候,才会触发拉取全省信息
+                  // 第一次拉取省市地理数据
+                  setReloadBase(false);
+                  reloadResidences(base['geographicIds'], setResidences);
+                }
+              }}
             />
           </Form.Item>
           <Form.Item

@@ -38,55 +38,65 @@ export default {
     },
   }),
 
-  'GET /api/v1/geographic/country': getResult([
+  //==============================================================
+  'GET /api/v1/geographic/country1': getResult([
     {
       id: '86',
       name: '中国',
     },
   ]),
-  'GET  /api/v1/geographic/province/:country': (
+  'GET  /api/v1/geographic/province1/:country': (
     req: Request,
     res: Response,
   ) => {
     res.send(getResult([...province]));
   },
-  'GET  /api/v1/geographic/city/:country/:province': (
+  'GET  /api/v1/geographic/city1/:country/:province': (
     req: Request,
     res: Response,
   ) => {
     res.send(getResult([...city[req.params.province]]));
   },
+  //==============================================================
+  'GET  /api/v1/geographic/province': (req: Request, res: Response) => {
+    res.send(getResult([...province]));
+  },
+  'GET  /api/v1/geographic/city/:province': (req: Request, res: Response) => {
+    res.send(getResult([...city[req.params.province]]));
+  },
+  //==============================================================
 
-  'GET /api/v1/user/current/config/security': (req: Request, res: Response) =>
-    getResult({
-      password: 'weak',
-      phone: '188****8888',
-      email: 'kratos@quarkus.org',
-      mfa: false,
-    }),
-  'GET /api/v1/user/current/config/binding': (req: Request, res: Response) =>
-    getResult({
-      platforms: [
-        {
-          id: '129832',
-          name: '支付宝',
-          avatar:
-            'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png',
-          bingding: false,
-        },
-        {
-          id: '129833',
-          name: '微信',
-          avatar:
-            'https://open.weixin.qq.com/zh_CN/htmledition/res/assets/res-design-download/icon48_appwx_logo.png',
-          bingding: true,
-        },
-      ],
-    }),
-  'GET /api/v1/user/current/config/notices': (req: Request, res: Response) =>
-    getResult({
-      notice: true,
-      message: true,
-      task: true,
-    }),
+  'GET /api/v1/user/current/config/security': getResult({
+    password: 'weak',
+    phone: '188****8888',
+    email: 'kratos@quarkus.org',
+    mfa: false,
+  }),
+  'GET /api/v1/user/current/config/binding': getResult({
+    platforms: [
+      {
+        id: '129832',
+        name: '支付宝',
+        avatar: 'iconalipay-circle-fill',
+        bingding: false,
+      },
+      {
+        id: '129833',
+        name: '微信',
+        avatar:
+          'https://open.weixin.qq.com/zh_CN/htmledition/res/assets/res-design-download/icon48_appwx_logo.png',
+        bingding: true,
+      },
+      {
+        id: '129834',
+        name: '钉钉',
+        avatar: 'icondingtalk',
+        bingding: true,
+      },
+    ],
+  }),
+  'GET /api/v1/user/current/config/notices': getResult({
+    message: true,
+    todo: true,
+  }),
 };

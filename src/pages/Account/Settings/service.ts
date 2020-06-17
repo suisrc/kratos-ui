@@ -12,16 +12,23 @@ export async function postUserBasic(config: ConfigBase) {
   });
 }
 
-export async function queryCountry() {
-  return request('/api/v1/geographic/country');
+//===============================================================
+export async function queryCountry1() {
+  return request('/api/v1/geographic/country1');
 }
-
-export async function queryProvince(country: string) {
-  return request(`/api/v1/geographic/province/${country}`);
+export async function queryProvince1(country: string) {
+  return request(`/api/v1/geographic/province1/${country}`);
 }
+export async function queryCity1(country: string, province: string) {
+  return request(`/api/v1/geographic/city1/${country}/${province}`);
+}
+//===============================================================
 
-export async function queryCity(country: string, province: string) {
-  return request(`/api/v1/geographic/city/${country}/${province}`);
+export async function queryProvince() {
+  return request(`/api/v1/geographic/province`);
+}
+export async function queryCity(province: string) {
+  return request(`/api/v1/geographic/city/${province}`);
 }
 
 export async function queryUserSecurity() {

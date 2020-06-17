@@ -20,7 +20,6 @@ import {
 } from './data';
 import {
   queryUserBasic,
-  queryCountry,
   queryProvince,
   queryCity,
   queryUserSecurity,
@@ -29,7 +28,6 @@ import {
 } from './service';
 
 export interface ModelState {
-  country?: GeographicItemType[];
   province?: Record<string, GeographicItemType[]>;
   city?: Record<string, GeographicItemType[]>;
 
@@ -43,7 +41,6 @@ export interface ModelType {
   namespace: string;
   state: ModelState;
   effects: {
-    fetchCountry: Effect;
     fetchProvince: Effect;
     fetchCity: Effect;
 
@@ -53,7 +50,6 @@ export interface ModelType {
     fetchConfigNotification: Effect;
   };
   reducers: {
-    setCountry: Reducer<ModelState>;
     setProvince: Reducer<ModelState>;
     setCity: Reducer<ModelState>;
 
@@ -106,15 +102,6 @@ const Model: ModelType = {
         });
       }
     },
-    *fetchCountry(_, { call, put }) {
-      const response = yield call(queryCountry);
-      if (response?.success) {
-        yield put({
-          type: 'setCountry',
-          payload: response.data,
-        });
-      }
-    },
     *fetchProvince({ payload: country }, { call, put }) {
       const response = yield call(queryProvince, country);
       if (response?.success) {
@@ -160,12 +147,6 @@ const Model: ModelType = {
       return {
         ...state,
         notices: action.payload,
-      };
-    },
-    setCountry(state, action) {
-      return {
-        ...state,
-        country: action.payload,
       };
     },
     setProvince(state, action) {

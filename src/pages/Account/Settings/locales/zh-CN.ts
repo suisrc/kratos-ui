@@ -2,7 +2,7 @@ export default {
   'page.account.settings.menuMap.base': '基本设置',
   'page.account.settings.menuMap.security': '安全设置',
   'page.account.settings.menuMap.binding': '账号绑定',
-  'page.account.settings.menuMap.notification': '新消息通知',
+  'page.account.settings.menuMap.notification': '消息通知',
 
   'page.account.settings.base.avatar': '头像',
   'page.account.settings.base.avatar.change': '更换头像',
@@ -44,22 +44,15 @@ export default {
   'page.account.settings.security.set': '设置',
   'page.account.settings.security.bind': '绑定',
 
-  'page.account.settings.binding.taobao': '绑定淘宝',
-  'page.account.settings.binding.taobao-description': '当前未绑定淘宝账号',
-  'page.account.settings.binding.alipay': '绑定支付宝',
-  'page.account.settings.binding.alipay-description': '当前未绑定支付宝账号',
-  'page.account.settings.binding.dingding': '绑定钉钉',
-  'page.account.settings.binding.dingding-description': '当前未绑定钉钉账号',
+  'page.account.settings.binding.binding': '绑定{name}',
+  'page.account.settings.binding.binding.description': '当前未绑定{name}账号',
   'page.account.settings.binding.bind': '绑定',
 
-  'page.account.settings.notification.password': '账户密码',
-  'page.account.settings.notification.password-description':
-    '其他用户的消息将以站内信的形式通知',
   'page.account.settings.notification.messages': '系统消息',
-  'page.account.settings.notification.messages-description':
+  'page.account.settings.notification.messages.description':
     '系统消息将以站内信的形式通知',
   'page.account.settings.notification.todo': '待办任务',
-  'page.account.settings.notification.todo-description':
+  'page.account.settings.notification.todo.description':
     '待办任务将以站内信的形式通知',
 
   'page.account.settings.settings.open': '开',

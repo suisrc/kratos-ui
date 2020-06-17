@@ -1,3 +1,5 @@
+// 提供一种具有应用状态的卡片信息用于显示
+//
 import {
   EllipsisOutlined,
   ShareAltOutlined,
