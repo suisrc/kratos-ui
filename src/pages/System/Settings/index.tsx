@@ -1,19 +1,12 @@
 import React, { Component } from 'react';
 
-import {
-  FormattedMessage,
-  Dispatch,
-  connect,
-  useModel,
-  useDispatch,
-} from 'umi';
+import { FormattedMessage, useModel } from 'umi';
 import { GridContent } from '@ant-design/pro-layout';
 import { Menu } from 'antd';
 
 const { Item } = Menu;
 
 interface SettingsProps {
-  dispatch: Dispatch;
   currentUser: API.CurrentUser;
 }
 
@@ -66,9 +59,7 @@ const menuMap = {
 };
 
 const Settings = (props: SettingsProps) => {
-  const dispatch = useDispatch();
-  console.log(props.currentUser);
-  return <div>name</div>;
+  return <div>🏎🏎🏎开发中...</div>;
 };
 
 export default Settings;
