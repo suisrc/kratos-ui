@@ -29,16 +29,13 @@ export default {
   'page.account.settings.security.medium': '中',
   'page.account.settings.security.weak': '弱',
   'page.account.settings.security.password': '账户密码',
-  'page.account.settings.security.password-description': '当前密码强度：',
+  'page.account.settings.security.password.description': '当前密码强度：',
   'page.account.settings.security.phone': '密保手机',
-  'page.account.settings.security.phone-description': '已绑定手机：',
-  'page.account.settings.security.question': '密保问题',
-  'page.account.settings.security.question-description':
-    '未设置密保问题，密保问题可有效保护账户安全',
+  'page.account.settings.security.phone.description': '已绑定手机：',
   'page.account.settings.security.email': '备用邮箱',
-  'page.account.settings.security.email-description': '已绑定邮箱：',
+  'page.account.settings.security.email.description': '已绑定邮箱：',
   'page.account.settings.security.mfa': 'MFA 设备',
-  'page.account.settings.security.mfa-description':
+  'page.account.settings.security.mfa.description':
     '未绑定 MFA 设备，绑定后，可以进行二次确认',
   'page.account.settings.security.modify': '修改',
   'page.account.settings.security.set': '设置',

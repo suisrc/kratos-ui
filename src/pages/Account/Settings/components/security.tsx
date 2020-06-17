@@ -1,7 +1,12 @@
-import { FormattedMessage, formatMessage } from 'umi';
-import React, { Component } from 'react';
+import { FormattedMessage, useIntl, useRequest } from 'umi';
 
 import { List } from 'antd';
+import React, { Fragment, useCallback } from 'react';
+
+import PageLoading from '@/components/PageLoading';
+
+import { queryUserSecurity } from '../service';
+import { ConfigSecurity } from '../data';
 
 type Unpacked<T> = T extends (infer U)[] ? U : T;
 
@@ -9,7 +14,7 @@ const passwordStrength = {
   strong: (
     <span className="strong">
       <FormattedMessage
-        id="accountandsettings.security.strong"
+        id="page.account.settings.security.strong"
         defaultMessage="Strong"
       />
     </span>
@@ -17,7 +22,7 @@ const passwordStrength = {
   medium: (
     <span className="medium">
       <FormattedMessage
-        id="accountandsettings.security.medium"
+        id="page.account.settings.security.medium"
         defaultMessage="Medium"
       />
     </span>
@@ -25,7 +30,7 @@ const passwordStrength = {
   weak: (
     <span className="weak">
       <FormattedMessage
-        id="accountandsettings.security.weak"
+        id="page.account.settings.security.weak"
         defaultMessage="Weak"
       />
       Weak
@@ -33,108 +38,114 @@ const passwordStrength = {
   ),
 };
 
-class SecurityView extends Component {
-  getData = () => [
-    {
-      title: formatMessage({ id: 'accountandsettings.security.password' }, {}),
-      description: (
-        <>
-          {formatMessage({
-            id: 'accountandsettings.security.password-description',
-          })}
-          ：{passwordStrength.strong}
-        </>
-      ),
-      actions: [
-        <a key="Modify">
-          <FormattedMessage
-            id="accountandsettings.security.modify"
-            defaultMessage="Modify"
-          />
-        </a>,
-      ],
-    },
-    {
-      title: formatMessage({ id: 'accountandsettings.security.phone' }, {}),
-      description: `${formatMessage(
-        { id: 'accountandsettings.security.phone-description' },
-        {},
-      )}：138****8293`,
-      actions: [
-        <a key="Modify">
-          <FormattedMessage
-            id="accountandsettings.security.modify"
-            defaultMessage="Modify"
-          />
-        </a>,
-      ],
-    },
-    {
-      title: formatMessage({ id: 'accountandsettings.security.question' }, {}),
-      description: formatMessage(
-        { id: 'accountandsettings.security.question-description' },
-        {},
-      ),
-      actions: [
-        <a key="Set">
-          <FormattedMessage
-            id="accountandsettings.security.set"
-            defaultMessage="Set"
-          />
-        </a>,
-      ],
-    },
-    {
-      title: formatMessage({ id: 'accountandsettings.security.email' }, {}),
-      description: `${formatMessage(
-        { id: 'accountandsettings.security.email-description' },
-        {},
-      )}：ant***sign.com`,
-      actions: [
-        <a key="Modify">
-          <FormattedMessage
-            id="accountandsettings.security.modify"
-            defaultMessage="Modify"
-          />
-        </a>,
-      ],
-    },
-    {
-      title: formatMessage({ id: 'accountandsettings.security.mfa' }, {}),
-      description: formatMessage(
-        { id: 'accountandsettings.security.mfa-description' },
-        {},
-      ),
-      actions: [
-        <a key="bind">
-          <FormattedMessage
-            id="accountandsettings.security.bind"
-            defaultMessage="Bind"
-          />
-        </a>,
-      ],
-    },
-  ];
+const SecurityView: React.FC = () => {
+  const i18n = useIntl();
 
-  render() {
-    const data = this.getData();
-    return (
-      <>
-        <List<Unpacked<typeof data>>
-          itemLayout="horizontal"
-          dataSource={data}
-          renderItem={item => (
-            <List.Item actions={item.actions}>
-              <List.Item.Meta
-                title={item.title}
-                description={item.description}
-              />
-            </List.Item>
-          )}
-        />
-      </>
-    );
+  const {
+    data: configData,
+    loading,
+  }: {
+    data: ConfigSecurity;
+    loading: boolean;
+  } = useRequest(queryUserSecurity);
+
+  const getData = useCallback(() => {
+    return [
+      {
+        title: i18n.formatMessage(
+          { id: 'page.account.settings.security.password' },
+          {},
+        ),
+        description: (
+          <>
+            {i18n.formatMessage({
+              id: 'page.account.settings.security.password.description',
+            })}
+            ：{passwordStrength.strong}
+          </>
+        ),
+        actions: [
+          <a key="Modify">
+            <FormattedMessage
+              id="page.account.settings.security.modify"
+              defaultMessage="Modify"
+            />
+          </a>,
+        ],
+      },
+      {
+        title: i18n.formatMessage(
+          { id: 'page.account.settings.security.phone' },
+          {},
+        ),
+        description: `${i18n.formatMessage(
+          { id: 'page.account.settings.security.phone.description' },
+          {},
+        )}：138****8293`,
+        actions: [
+          <a key="Modify">
+            <FormattedMessage
+              id="page.account.settings.security.modify"
+              defaultMessage="Modify"
+            />
+          </a>,
+        ],
+      },
+      {
+        title: i18n.formatMessage(
+          { id: 'page.account.settings.security.email' },
+          {},
+        ),
+        description: `${i18n.formatMessage(
+          { id: 'page.account.settings.security.email.description' },
+          {},
+        )}：ant***sign.com`,
+        actions: [
+          <a key="Modify">
+            <FormattedMessage
+              id="page.account.settings.security.modify"
+              defaultMessage="Modify"
+            />
+          </a>,
+        ],
+      },
+      {
+        title: i18n.formatMessage(
+          { id: 'page.account.settings.security.mfa' },
+          {},
+        ),
+        description: i18n.formatMessage(
+          { id: 'page.account.settings.security.mfa.description' },
+          {},
+        ),
+        actions: [
+          <a key="bind">
+            <FormattedMessage
+              id="page.account.settings.security.bind"
+              defaultMessage="Bind"
+            />
+          </a>,
+        ],
+      },
+    ];
+  }, []);
+  if (loading || !configData) {
+    return <PageLoading />;
   }
-}
+  const data = getData();
+  return (
+    <Fragment>
+      <List<Unpacked<typeof data>>
+        itemLayout="horizontal"
+        dataSource={data}
+        renderItem={item => (
+          <List.Item actions={item.actions}>
+            <List.Item.Meta title={item.title} description={item.description} />
+          </List.Item>
+        )}
+      />
+    </Fragment>
+  );
+};
 
 export default SecurityView;

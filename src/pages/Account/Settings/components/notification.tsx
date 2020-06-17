@@ -14,7 +14,7 @@ const NotificationView: React.FC = () => {
   const i18n = useIntl();
 
   const {
-    data: notification,
+    data: configData,
     loading,
   }: {
     data: ConfigNotification;
@@ -56,7 +56,7 @@ const NotificationView: React.FC = () => {
       },
     ];
   }, []);
-  if (loading || !notification) {
+  if (loading || !configData) {
     return <PageLoading />;
   }
 
