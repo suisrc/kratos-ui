@@ -19,7 +19,7 @@ export default {
   'page.account.settings.base.geographic.message': '请输入您的所在省市!',
   'page.account.settings.base.address': '街道地址',
   'page.account.settings.base.address.message': '请输入您的街道地址!',
-  'page.account.settings.base.phone': '联系电话',
+  'page.account.settings.base.phone': '手机',
   'page.account.settings.base.phone.message': '请输入您的联系电话!',
   'page.account.settings.base.phone.2.message': '请输入正确的电话!',
   'page.account.settings.base.update': '更新基本信息',

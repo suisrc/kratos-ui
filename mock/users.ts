@@ -35,7 +35,7 @@ export default {
             id: '10000001', // 角色ID, 如果角色存在,那么id和name是必须存在的内容
             name: '管理员', // 角色名称
             // avatar: '/icons/logo-192x192.png', // 角色头像
-            show: true,
+            show: false,
           }, // 多角色用户,登陆系统后,是能使用单角色
           menus: [
             // UserMenuItem[]

@@ -49,7 +49,7 @@ export const UsedUrlParams: string[] = [
   'contentWidth',
   'fixedHeader',
   'fixSiderbar',
-  'primaryColor',
+  //'primaryColor',
   'colorWeak',
   'menuSearch',
 ];

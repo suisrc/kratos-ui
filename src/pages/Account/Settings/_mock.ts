@@ -19,7 +19,7 @@ export default {
     signature: '明月别枝惊鹊，清风半夜鸣蝉。',
     title: '南宋词人',
     group: '南宋－将领－词人－豪放派',
-    phone: '188****8888',
+    phone: '18812348888',
 
     geographic: {
       country: {
