@@ -249,7 +249,7 @@ const Layout = (
 export default Layout;
 
 // const fixOpenKeysByMenuData = (
-//   menuMap: API.ObjectMap<MenuDataItem>,
+//   menuMap:  Record<string, MenuDataItem>,
 //   keys: string[],
 // ) => {
 //   if (!keys || keys.length !== 1) {

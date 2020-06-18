@@ -27,7 +27,7 @@ export const isBrowser = () =>
  */
 export const initKeysFromMenuData = (
   menuData?: MenuDataItem[],
-  result?: API.ObjectMap<MenuDataItem>,
+  result?: Record<string, MenuDataItem>,
   parents?: string[],
 ) => {
   if (!menuData) {

@@ -2,42 +2,28 @@ import { Request, Response } from 'express';
 import { getResult } from './result';
 
 export default {
-  '/api/v1/signin/ipad': (req: Request, res: Response) => {
-    console.log(req.headers.cookie);
-    res.send({
-      cookie: req.headers.cookie,
-    });
-  },
-
+  // 正常登陆 admin 123456
+  // 密码错误 admin xxxxxx
+  // 角色登陆 role  123456
+  // 手机登陆 不限定
   'POST  /api/v1/signin/account': (req: Request, res: Response) => {
     const { password, username, type, mobile, captcha, role } = req.body;
     if (password === '123456' && username === 'admin') {
       res.send(
         getResult({
-          status: 'ok',
+          status: 'ok', // ok, error
           idToken: '12345678',
         }),
       );
       return;
     }
-    if (password === '123456' && username === 'user') {
-      res.send(
-        getResult({
-          status: 'ok',
-          role: 'user',
-        }),
-      );
-      return;
-    }
-    if (type === ':account:' && username === 'a') {
-      res.send(
-        getResult({
-          status: 'error', // 登陆失败
-        }),
-      );
+    if (username === 'admin') {
+      // 测试登陆失败
+      res.send(getResult({ status: 'error' }));
       return;
     }
     if (type === ':account:' && username === 'role' && !role) {
+      // 测试具有角色的用户
       res.send(
         getResult({
           status: 'error', // 登陆失败
@@ -50,7 +36,7 @@ export default {
       );
       return;
     }
-    if (type === ':account:' && username === 'role' && role === 'admin') {
+    if (type === ':account:' && username === 'role' && !!role) {
       res.send(
         getResult({
           status: 'ok',
@@ -60,14 +46,16 @@ export default {
       return;
     }
     if (type === ':mobile:') {
+      // 手机模式登陆测试
       res.send(
         getResult({
           status: 'ok',
-          role: 'admin',
+          idToken: '22345678',
         }),
       );
       return;
     }
+    // 登陆发生异常,不适合登陆
     res.send(
       getResult(null, {
         success: false,
@@ -77,6 +65,7 @@ export default {
     );
   },
   'GET /api/v1/signin/captcha': (req: Request, res: Response) => {
+    // 获取验证码
     res.send(
       getResult(null, {
         //success: false,
@@ -86,9 +75,11 @@ export default {
     );
   },
   'GET /api/v1/signin/signout': (req: Request, res: Response) => {
+    // 登出
     res.send(getResult(null));
   },
   'GET /api/v1/3rd/apps': {
+    // 获取可用于第三方登陆的APP
     success: true,
     data: [
       {
@@ -118,6 +109,7 @@ export default {
     ],
   },
   'GET /api/v1/3rd/signin': (req: Request, res: Response) => {
+    // 通过第三方登陆系统
     res.send(
       getResult(null, {
         success: false,

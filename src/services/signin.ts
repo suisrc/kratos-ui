@@ -25,7 +25,7 @@ export interface SigninParamsType {
  * <系统>:<类型>:<备注>, 如果不区分系统，可以直接使用 :user: 代替
  * 如果是都系统的情况下,登陆时候,需要增加系统前缀
  */
-export const SigninType: API.StringMap = {
+export const SigninType: Record<string, string> = {
   account: ':account:',
   mobile: ':mobile:',
   token: ':token:', // 主要用户刷新令牌

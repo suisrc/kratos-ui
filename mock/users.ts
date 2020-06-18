@@ -1,9 +1,8 @@
 import { Request, Response } from 'express';
 import { getResult } from './result';
 
-const getAccess = () => {
-  //return null;
-  return 'admin';
+const isSignin = () => {
+  return true;
 };
 
 // 代码中会兼容本地 service mock 以及部署站点的静态数据
@@ -11,11 +10,10 @@ export default {
   // 支持值为 Object 和 Array
   'GET /api/v1/user/current': (req: Request, res: Response) => {
     setTimeout(() => {
-      if (!getAccess()) {
+      // 设定时间延迟, 用于模仿真实的网络情况
+      if (!isSignin()) {
+        // 用于测试未登录的情况
         res.status(401).send({
-          data: {
-            //userid: null,
-          },
           errorCode: '401',
           errorMessage: '请先登录！',
           success: true,
@@ -46,6 +44,11 @@ export default {
         }),
       );
     }, 300);
+  },
+  'GET /api/v1/user/current/access': (req: Request, res: Response) => {
+    let result = {};
+    result[req.params.key] = true;
+    res.send(getResult(result));
   },
 };
 

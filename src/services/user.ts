@@ -13,6 +13,17 @@ export async function queryCurrentUser(): Promise<any> {
 }
 
 /**
+ * 动态验证用户权限问题
+ * @param params
+ */
+export async function checkCurrentUserAccess(params: any): Promise<any> {
+  return request('/api/v1/user/current/access', {
+    params: params,
+    skipErrorHandler: true,
+  });
+}
+
+/**
  * 查询当前用户消息
  */
 export async function queryCurrentUserNotices(): Promise<any> {

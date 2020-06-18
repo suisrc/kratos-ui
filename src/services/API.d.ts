@@ -91,10 +91,8 @@ declare namespace API {
    * status: 通过该状态,可以通知前端发生的异常,异常内容可以通过errorCode和errorMessage中得到
    */
   export interface SigninStateType {
-    status?: 'ok' | 'error';
-    message?: string; // 消息， 优先显示
-    roles?: any; // {id: string, name: string} 多角色的时候，返回角色，重新确认登录
-    [key: string]: any;
+    status?: 'ok' | 'error'; //不适用boolean类型是为了以后可以增加扩展
+
     // 以下内容,如果使用常规的sessionid, 不存在
     // token会持久化存储,这就导致浏览器重新打开,用户还是登陆状态
     // 基于这个问题,服务器会将用于唯一标识token_client_id存储在cookie中,以解决这个问题
@@ -107,17 +105,16 @@ declare namespace API {
     // 刷新令牌则每一个小时,会想认证服务器重新获取认证信息
     // 注意,重新获取的认证接口调用为后端服务器行为, 非前端直接调用
     refreshToken?: string; // 刷新令牌,比token有着更长的有效期,一般为7天,
+
+    // 消息， 优先显示
+    message?: string;
+    // {id: string, name: string}[] 多角色的时候，返回角色，重新确认登录
+    roles?: any[];
+    // 其他信息
+    [key: string]: any;
   }
 
   //====================================================================================
-
-  export interface StringMap {
-    [key: string]: string;
-  }
-
-  export interface ObjectMap<T> {
-    [key: string]: T;
-  }
 
   export type WithFalse<T> = T | false;
 }
