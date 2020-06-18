@@ -1,13 +1,13 @@
 export interface GeographicItemType {
-  name: string;
+  name?: string;
   id: string;
 }
 
 export interface GeographicType {
-  country: GeographicItemType;
-  province: GeographicItemType;
-  city: GeographicItemType;
-  address: string;
+  country?: GeographicItemType;
+  province?: GeographicItemType;
+  city?: GeographicItemType;
+  address?: string;
 }
 
 export interface ConfigBase {

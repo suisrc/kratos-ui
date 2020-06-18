@@ -158,3 +158,17 @@ export const getPrejudgeRoute = (
   });
   return result;
 };
+
+export const updateCurrentUser = (
+  initialState: any,
+  setInitialState: any,
+  data: any,
+) => {
+  setInitialState({
+    ...initialState,
+    currentUser: {
+      ...initialState?.currentUser,
+      ...data,
+    },
+  });
+};

@@ -1,13 +1,14 @@
-import { UploadOutlined } from '@ant-design/icons';
-import { Button, Input, Select, Upload, Form, message, Cascader } from 'antd';
+import { Button, Input, Select, Form, message, Cascader } from 'antd';
 import { Rule } from 'antd/es/form';
+import { Store } from 'antd/es/form/interface';
+import { LoadingOutlined } from '@ant-design/icons';
 
-import { FormattedMessage, useIntl, IntlShape, useRequest } from 'umi';
+import { FormattedMessage, useIntl, useRequest, useModel } from 'umi';
 // import { useDispatch,useSelector,useModel } from 'umi';
-
 import React, { useRef, useState } from 'react';
 
-import { queryUserBasic } from '../service';
+import { updateCurrentUser } from '@/utils/utils';
+import { queryUserBasic, postUserBasic } from '../service';
 
 import { ConfigBase } from '../data.d';
 
@@ -17,41 +18,18 @@ import {
   reloadResidences,
   loadResidencesData,
   getInitResidences,
+  getGeographicByIds,
 } from './Geographic';
+import AvatarView from './Avatar';
 
 import styles from './base.less';
 import PageLoading from '@/components/PageLoading';
 
 const { Option } = Select;
 
-// 头像组件
-const AvatarView = ({ avatar }: { avatar: string }) => (
-  <>
-    <div className={styles.avatar_title}>
-      <FormattedMessage
-        id="page.account.settings.base.avatar"
-        defaultMessage="Avatar"
-      />
-    </div>
-    <div className={styles.avatar}>
-      <img src={avatar} alt="avatar" />
-    </div>
-    <Upload showUploadList={false}>
-      <div className={styles.button_view}>
-        <Button>
-          <UploadOutlined />
-          <FormattedMessage
-            id="page.account.settings.base.avatar.change"
-            defaultMessage="更改头像"
-          />
-        </Button>
-      </div>
-    </Upload>
-  </>
-);
-
 const BaseView = (props: any) => {
   const i18n = useIntl();
+  const { initialState, setInitialState, refresh } = useModel('@@initialState');
 
   const [residences, setResidences] = useState<any>(undefined);
   const [reloadBase, setReloadBase] = useState(false);
@@ -78,13 +56,43 @@ const BaseView = (props: any) => {
     },
   });
 
-  const handleFinish = () => {
-    message.success(
-      i18n.formatMessage({
-        id: 'page.account.settings.base.update.success',
-        defaultMessage: '更新基本信息成功',
-      }),
-    );
+  const { run: handleSubmit, loading: submiting } = useRequest(postUserBasic, {
+    manual: true,
+    onSuccess: (data, params) => {
+      message.success(
+        i18n.formatMessage({
+          id: 'page.account.settings.base.update.success',
+          defaultMessage: '更新基本信息成功',
+        }),
+      );
+      // 更新成功后,修正全局的登陆信息
+      // setTimeout(refresh, 0); // 不是很推荐使用这种方式,它会导致所有内容重新刷新
+      if (data?.name && data?.avatar) {
+        updateCurrentUser(initialState, setInitialState, {
+          name: data.name,
+          avatar: data.avatar,
+        });
+        //setInitialState({
+        //  ...initialState,
+        //  currentUser: {
+        //    ...initialState?.currentUser,
+        //    name: data.name,
+        //    avatar: data.avatar,
+        //  }});
+      }
+    },
+  });
+
+  const handleFinish = (vs: Store) => {
+    let params: ConfigBase = { ...base, ...vs };
+    delete params['geographicAddress'];
+    delete params['geographicIds'];
+    params.geographic = {
+      ...getGeographicByIds(vs.geographicIds),
+      address: vs.geographicAddress,
+    };
+    //console.log(params);
+    handleSubmit(params);
   };
 
   const createFormItem = (
@@ -211,7 +219,8 @@ const BaseView = (props: any) => {
             <Input />
           </Form.Item>
           <Form.Item>
-            <Button htmlType="submit" type="primary">
+            <Button htmlType="submit" type="primary" disabled={submiting}>
+              {submiting && <LoadingOutlined />}
               <FormattedMessage
                 id="page.account.settings.base.update"
                 defaultMessage="Update Information"
@@ -221,7 +230,10 @@ const BaseView = (props: any) => {
         </Form>
       </div>
       <div className={styles.right}>
-        <AvatarView avatar={base?.avatar} />
+        <AvatarView
+          avatar={base?.avatar}
+          setAvatar={avatar => setBase({ ...base, avatar })}
+        />
       </div>
     </div>
   );

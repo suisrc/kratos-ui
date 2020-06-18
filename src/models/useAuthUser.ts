@@ -38,7 +38,6 @@ import {
   signout as logout,
   signin as login,
   SigninParamsType,
-  SigninType,
 } from '@/services/signin';
 
 // https://umijs.org/plugins/plugin-model
@@ -52,8 +51,11 @@ export default function(): {
   setSettings: (settings: DefaultSettings) => void;
   menus: MenuDataItem[];
   setMenus: (menus: MenuDataItem[]) => void;
+  //setCurrentUser: (user: API.CurrentUser) => void;
+  //updateCurrentUser: (userFields: {[key: string]: any}) => void;
 } {
   const { initialState, setInitialState, refresh } = useModel('@@initialState');
+  // 更新用户
   const setCurrentUser = useCallback(
     currentUser => setInitialState({ ...initialState, currentUser }),
     [],

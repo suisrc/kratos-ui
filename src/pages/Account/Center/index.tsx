@@ -104,7 +104,7 @@ const Center = (props: any) => {
   const [tabState, setTabState] = useState<string>('applications');
 
   useEffect(() => {
-    dispatch({ type: 'accountCenter/fetchUserDetail' });
+    if (detail) dispatch({ type: 'accountCenter/fetchUserDetail' });
   }, []);
 
   //console.log(detail);

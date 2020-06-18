@@ -21,7 +21,7 @@ export async function getInitialState(): Promise<{
   // settings?: Settings;
   currentUser?: API.CurrentUser;
   isSignin?: boolean;
-  systemInfo: SystemInfo;
+  systemInfo?: SystemInfo;
   // [key: string]: any;
 }> {
   const systemInfo = await querySystemInfo();

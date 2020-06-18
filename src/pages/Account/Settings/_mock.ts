@@ -37,6 +37,28 @@ export default {
       address: '历城区遥墙镇四风闸村',
     },
   }),
+  'PUT /api/v1/user/current/config/base/edit': (
+    req: Request,
+    res: Response,
+  ) => {
+    setTimeout(() => {
+      res.send(getResult(req.body));
+    }, 2000);
+  },
+  'POST /api/v1/user/current/avatar/upload': (req: Request, res: Response) => {
+    setTimeout(() => {
+      res.send(
+        getResult({
+          name: 'xxx.png',
+          status: 'done',
+          url:
+            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+          thumbUrl:
+            'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+        }),
+      );
+    }, 2000);
+  },
 
   //==============================================================
   'GET /api/v1/geographic/country1': getResult([

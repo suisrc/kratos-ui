@@ -1,6 +1,7 @@
 import { queryProvince, queryCity } from '../service';
 
 import { GeographicType } from '../data';
+import province from '../geographic/province.json';
 
 export const reloadResidences = (
   ss: string[],
@@ -30,6 +31,13 @@ export const getGeographicIds = (geo: GeographicType): string[] => [
   geo?.province?.id || '',
   geo?.city?.id || '',
 ];
+
+export const getGeographicByIds = (ids: string[]): GeographicType => {
+  return {
+    province: { id: ids[0] },
+    city: { id: ids[1] },
+  };
+};
 
 export const getInitResidences = (geo: GeographicType) => [
   {

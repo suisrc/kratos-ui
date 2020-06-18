@@ -1,5 +1,17 @@
 @import '~antd/es/style/themes/default.less';
 
+//:global {
+//  .antd-img-crop-modal {
+//    position: fixed;
+//    top: 0;
+//    right: 0;
+//    bottom: 0;
+//    left: 0;
+//    z-index: 1000;
+//    overflow: auto;
+//    outline: 0;
+//  }
+//}
 .baseView {
   display: flex;
   padding-top: 12px;
@@ -31,6 +43,10 @@
       overflow: hidden;
       img {
         width: 100%;
+      }
+      svg {
+        width: 144px;
+        height: 144px;
       }
     }
     .button_view {
