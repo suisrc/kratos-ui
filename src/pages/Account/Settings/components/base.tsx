@@ -34,6 +34,7 @@ const BaseView = (props: any) => {
   const [residences, setResidences] = useState<any>(undefined);
   const [reloadBase, setReloadBase] = useState(false);
   const view = useRef<HTMLDivElement | undefined>(undefined);
+
   const {
     data: base,
     loading,

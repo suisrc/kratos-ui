@@ -1,5 +1,10 @@
 import request from 'umi-request';
-import { ConfigBase } from './data';
+import {
+  ConfigBase,
+  ConfigNotification,
+  ConfigBinding,
+  ConfigSecurity,
+} from './data';
 import { format } from 'prettier';
 
 export async function queryUserBasic() {
@@ -31,17 +36,36 @@ export async function queryProvince() {
 export async function queryCity(province: string) {
   return request(`/api/v1/geographic/city/${province}`);
 }
+//===============================================================
 
 export async function queryUserSecurity() {
   return request('/api/v1/user/current/config/security');
+}
+export async function postUserSecurity(config: ConfigSecurity) {
+  return request('/api/v1/user/current/config/security/edit', {
+    method: 'PUT',
+    data: config,
+  });
 }
 
 export async function queryUserBinding() {
   return request('/api/v1/user/current/config/binding');
 }
+export async function postUserBinding(config: ConfigBinding) {
+  return request('/api/v1/user/current/config/binding/edit', {
+    method: 'PUT',
+    data: config,
+  });
+}
 
 export async function queryUserNotices() {
   return request('/api/v1/user/current/config/notices');
+}
+export async function postUserNotices(config: ConfigNotification) {
+  return request('/api/v1/user/current/config/notices/edit', {
+    method: 'PUT',
+    data: config,
+  });
 }
 
 //=========================================================

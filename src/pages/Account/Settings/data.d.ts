@@ -46,6 +46,6 @@ export interface ConfigBinding {
 }
 
 export interface ConfigNotification {
-  message: boolean;
-  todo: boolean;
+  message?: boolean;
+  todo?: boolean;
 }

@@ -45,8 +45,8 @@ export default {
   'page.account.settings.binding.binding.description': '当前未绑定{name}账号',
   'page.account.settings.binding.bind': '绑定',
 
-  'page.account.settings.notification.messages': '系统消息',
-  'page.account.settings.notification.messages.description':
+  'page.account.settings.notification.message': '系统消息',
+  'page.account.settings.notification.message.description':
     '系统消息将以站内信的形式通知',
   'page.account.settings.notification.todo': '待办任务',
   'page.account.settings.notification.todo.description':

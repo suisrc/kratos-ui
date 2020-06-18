@@ -118,7 +118,15 @@ export default {
     ],
   }),
   'GET /api/v1/user/current/config/notices': getResult({
-    message: true,
+    message: false,
     todo: true,
   }),
+  'PUT /api/v1/user/current/config/notices/edit': (
+    req: Request,
+    res: Response,
+  ) => {
+    setTimeout(() => {
+      res.send(getResult(req.body));
+    }, 100);
+  },
 };
