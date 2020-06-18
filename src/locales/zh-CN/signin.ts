@@ -27,4 +27,7 @@ export default {
   'page.auth.signin.check.forget-password.title': '忘记密码',
 
   'page.auth.signin.other.title': '其他登录方式',
+
+  'page.auth.signin.select.role.placeholder': '请选择角色',
+  'page.auth.signin.select.role.message': '选择角色',
 };

@@ -261,7 +261,7 @@ const Signin: React.FC<{}> = () => {
                 </>
               )}
             </Tab>
-            {(roles?.length || false) && (
+            {((roles as any)?.length || false) && (
               <div>
                 <SelectRole
                   name="role"
