@@ -30,7 +30,7 @@ const defaultSettings: DefaultSettings = {
   fixSiderbar: true,
   menuSearch: false,
   menuAccess: true,
-  menuDrawer: false,
+  menuDrawer: true,
   menu: {
     locale: true,
   },

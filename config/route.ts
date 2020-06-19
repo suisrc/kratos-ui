@@ -62,6 +62,11 @@ const demo = [
 // const routes: IBestAFSRoute[] =  [
 const routes = [
   {
+    path: '/test',
+    component: './Account/Change/Password',
+    exact: true,
+  },
+  {
     path: '/home',
     component: '@/home',
     exact: true,

@@ -10,7 +10,7 @@ import React, { useRef, useState } from 'react';
 import { updateCurrentUser } from '@/utils/utils';
 import { queryUserBasic, postUserBasic } from '../service';
 
-import { ConfigBase } from '../data.d';
+import { ConfigBase } from '../data';
 
 // 可以直接使用Geographic1替换,以获取具有国家的选项
 import {
@@ -22,8 +22,9 @@ import {
 } from './Geographic';
 import AvatarView from './Avatar';
 
-import styles from './base.less';
 import PageLoading from '@/components/PageLoading';
+
+import styles from './BaseView.less';
 
 const { Option } = Select;
 

@@ -5,7 +5,7 @@ import { getIcon } from '@/components/IconFont';
 
 import { List } from 'antd';
 import React, { Fragment } from 'react';
-import { queryUserBinding } from '../service';
+import { queryUserBinding, postUserBinding } from '../service';
 import PageLoading from '@/components/PageLoading';
 import { ConfigBinding, PlatformBinding } from '../data';
 
@@ -20,6 +20,14 @@ const BindingView: React.FC = () => {
     loading: boolean;
   } = useRequest(queryUserBinding);
 
+  //const { run: handleSubmit, loading: submiting } = useRequest(postUserBinding,
+  //  {
+  //    manual: true,
+  //    onSuccess: (data, params) => {
+  //    },
+  //  },
+  //);
+
   if (loading || !data?.platforms) {
     return <PageLoading />;
   }
@@ -31,7 +39,7 @@ const BindingView: React.FC = () => {
         renderItem={item => (
           <List.Item
             actions={[
-              <a key="Bind">
+              <a key="Bind" href="/auth/bind">
                 <FormattedMessage
                   id="page.account.settings.binding.bind"
                   defaultMessage="Bind"
@@ -41,17 +49,17 @@ const BindingView: React.FC = () => {
           >
             <List.Item.Meta
               avatar={
-                getIcon(item.avatar, 'default-app-binding') || (
+                getIcon(item.icon, 'default-app-binding') || (
                   <AppstoreOutlined className="default-app-binding" />
                 )
               }
               title={i18n.formatMessage(
                 { id: 'page.account.settings.binding.binding' },
-                { name: item.name },
+                { name: item.title },
               )}
               description={i18n.formatMessage(
                 { id: 'page.account.settings.binding.binding.description' },
-                { name: item.name },
+                { name: item.title },
               )}
             />
           </List.Item>

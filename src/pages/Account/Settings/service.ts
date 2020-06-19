@@ -4,8 +4,10 @@ import {
   ConfigNotification,
   ConfigBinding,
   ConfigSecurity,
+  PlatformBinding,
 } from './data';
 import { format } from 'prettier';
+import { stringify2 } from '@/utils/qs2';
 
 export async function queryUserBasic() {
   return request('/api/v1/user/current/config/base');
@@ -41,21 +43,24 @@ export async function queryCity(province: string) {
 export async function queryUserSecurity() {
   return request('/api/v1/user/current/config/security');
 }
-export async function postUserSecurity(config: ConfigSecurity) {
-  return request('/api/v1/user/current/config/security/edit', {
-    method: 'PUT',
-    data: config,
-  });
-}
 
 export async function queryUserBinding() {
   return request('/api/v1/user/current/config/binding');
 }
-export async function postUserBinding(config: ConfigBinding) {
-  return request('/api/v1/user/current/config/binding/edit', {
-    method: 'PUT',
-    data: config,
-  });
+/**
+ * 绑定
+ * 绑定过程需要跳转到第三方服务器进行, 所以必须是get请求
+ */
+export async function postUserBinding(config: PlatformBinding) {
+  let params = {
+    platform: config.platform,
+    appid: config.appid,
+    binding: config.binding,
+    signature: config.signature,
+  };
+  return request(
+    `/api/v1/user/current/config/binding/edit${stringify2(params)}`,
+  );
 }
 
 export async function queryUserNotices() {

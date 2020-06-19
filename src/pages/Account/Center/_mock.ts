@@ -1,7 +1,36 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Request, Response } from 'express';
 import { ListItemDataType } from './data.d';
-import { getResult } from '../../../../mock/result';
+/**
+ * 获取标准异常
+ * @param data
+ * @param props
+ */
+export const getResult = (
+  data: any,
+  props?: {
+    success?: boolean;
+    errorCode?: string;
+    errorMessage?: string;
+    showType?: number;
+    traceId?: string;
+    host?: string;
+    [propName: string]: any;
+  },
+) => {
+  let res: any = {
+    success: true,
+    traceId: 'demo-123456-12345678',
+    host: '127.0.0.1',
+  };
+  if (props) {
+    res = { ...res, ...props };
+  }
+  if (data) {
+    res.data = data;
+  }
+  return res;
+};
 
 export default {
   // 支持值为 Object 和 Array

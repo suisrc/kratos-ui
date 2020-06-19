@@ -29,11 +29,11 @@ export default {
   'page.account.settings.security.medium': '中',
   'page.account.settings.security.weak': '弱',
   'page.account.settings.security.password': '账户密码',
-  'page.account.settings.security.password.description': '当前密码强度：',
+  'page.account.settings.security.password.description': '当前密码强度',
   'page.account.settings.security.phone': '密保手机',
-  'page.account.settings.security.phone.description': '已绑定手机：',
+  'page.account.settings.security.phone.description': '已绑定手机',
   'page.account.settings.security.email': '备用邮箱',
-  'page.account.settings.security.email.description': '已绑定邮箱：',
+  'page.account.settings.security.email.description': '已绑定邮箱',
   'page.account.settings.security.mfa': 'MFA 设备',
   'page.account.settings.security.mfa.description':
     '未绑定 MFA 设备，绑定后，可以进行二次确认',
@@ -44,6 +44,7 @@ export default {
   'page.account.settings.binding.binding': '绑定{name}',
   'page.account.settings.binding.binding.description': '当前未绑定{name}账号',
   'page.account.settings.binding.bind': '绑定',
+  'page.account.settings.binding.unbind': '解绑',
 
   'page.account.settings.notification.message': '系统消息',
   'page.account.settings.notification.message.description':

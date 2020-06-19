@@ -1,14 +1,12 @@
 import { FormattedMessage, useIntl, useRequest } from 'umi';
 
-import { List } from 'antd';
-import React, { Fragment, useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import PageLoading from '@/components/PageLoading';
+import ConfigListView from '@/components/List/Config';
 
 import { queryUserSecurity } from '../service';
 import { ConfigSecurity } from '../data';
-
-type Unpacked<T> = T extends (infer U)[] ? U : T;
 
 const passwordStrength = {
   strong: (
@@ -33,7 +31,6 @@ const passwordStrength = {
         id="page.account.settings.security.weak"
         defaultMessage="Weak"
       />
-      Weak
     </span>
   ),
 };
@@ -52,16 +49,16 @@ const SecurityView: React.FC = () => {
   const getData = useCallback(() => {
     return [
       {
-        title: i18n.formatMessage(
-          { id: 'page.account.settings.security.password' },
-          {},
-        ),
+        title: i18n.formatMessage({
+          id: 'page.account.settings.security.password',
+        }),
         description: (
           <>
             {i18n.formatMessage({
               id: 'page.account.settings.security.password.description',
             })}
-            ：{passwordStrength.strong}
+            {': '}
+            {passwordStrength[configData?.password]}
           </>
         ),
         actions: [
@@ -74,14 +71,13 @@ const SecurityView: React.FC = () => {
         ],
       },
       {
-        title: i18n.formatMessage(
-          { id: 'page.account.settings.security.phone' },
-          {},
-        ),
-        description: `${i18n.formatMessage(
-          { id: 'page.account.settings.security.phone.description' },
-          {},
-        )}：138****8293`,
+        title: i18n.formatMessage({
+          id: 'page.account.settings.security.phone',
+        }),
+        description: `${i18n.formatMessage({
+          id: 'page.account.settings.security.phone.description',
+        })}:
+        ${configData?.phone}`,
         actions: [
           <a key="Modify">
             <FormattedMessage
@@ -92,14 +88,13 @@ const SecurityView: React.FC = () => {
         ],
       },
       {
-        title: i18n.formatMessage(
-          { id: 'page.account.settings.security.email' },
-          {},
-        ),
-        description: `${i18n.formatMessage(
-          { id: 'page.account.settings.security.email.description' },
-          {},
-        )}：ant***sign.com`,
+        title: i18n.formatMessage({
+          id: 'page.account.settings.security.email',
+        }),
+        description: `${i18n.formatMessage({
+          id: 'page.account.settings.security.email.description',
+        })}:
+        ${configData?.email}`,
         actions: [
           <a key="Modify">
             <FormattedMessage
@@ -110,14 +105,12 @@ const SecurityView: React.FC = () => {
         ],
       },
       {
-        title: i18n.formatMessage(
-          { id: 'page.account.settings.security.mfa' },
-          {},
-        ),
-        description: i18n.formatMessage(
-          { id: 'page.account.settings.security.mfa.description' },
-          {},
-        ),
+        title: i18n.formatMessage({
+          id: 'page.account.settings.security.mfa',
+        }),
+        description: i18n.formatMessage({
+          id: 'page.account.settings.security.mfa.description',
+        }),
         actions: [
           <a key="bind">
             <FormattedMessage
@@ -128,24 +121,12 @@ const SecurityView: React.FC = () => {
         ],
       },
     ];
-  }, []);
+  }, [configData]);
+
   if (loading || !configData) {
     return <PageLoading />;
   }
-  const data = getData();
-  return (
-    <Fragment>
-      <List<Unpacked<typeof data>>
-        itemLayout="horizontal"
-        dataSource={data}
-        renderItem={item => (
-          <List.Item actions={item.actions}>
-            <List.Item.Meta title={item.title} description={item.description} />
-          </List.Item>
-        )}
-      />
-    </Fragment>
-  );
+  return <ConfigListView data={getData() || []} />;
 };
 
 export default SecurityView;

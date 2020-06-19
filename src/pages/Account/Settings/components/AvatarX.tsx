@@ -10,12 +10,11 @@ import React, { useState } from 'react';
 import ImgCrop from 'antd-img-crop';
 
 import { UploadChangeParam } from 'antd/es/upload';
-import { postUploadAvatarFile } from '../service';
-
-import styles from './base.less';
 
 import 'antd/es/modal/style';
 import 'antd/es/slider/style';
+
+import styles from './BaseView.less';
 
 //const AvatarUpdateUrl = 'https://www.mocky.io/v2/5cc8019d300000980a055e76';
 const AvatarUpdateUrl = '/api/v1/user/current/avatar/upload';

@@ -3,10 +3,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FormattedMessage } from 'umi';
 import { GridContent } from '@ant-design/pro-layout';
 import { Menu, Empty } from 'antd';
-import BaseView from './components/base';
-import BindingView from './components/binding';
-import NotificationView from './components/notification';
-import SecurityView from './components/security';
+import BaseView from './components/BaseView';
+import BindingView from './components/BindingView';
+import NotificationView from './components/NotificationView';
+import SecurityView from './components/SecurityView';
 import styles from './style.less';
 
 const { Item } = Menu;

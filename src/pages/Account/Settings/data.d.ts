@@ -35,11 +35,13 @@ export interface ConfigSecurity {
 }
 
 export interface PlatformBinding {
-  id: string;
-  name: string;
-  avatar?: string;
+  platform: string; // 平台
+  appid: string; // 应用id, 对于同一平台，可能出现多ID问题
+  title: string; // 应用标题， 主要用于静态显示
+  signature?: string; // 签名，由后台给出，全局唯一，且随机生成
+  icon?: string; // 图标
+
   binding: boolean;
-  //description?: string;
 }
 export interface ConfigBinding {
   platforms: PlatformBinding[];

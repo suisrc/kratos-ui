@@ -5,11 +5,11 @@ import request from '@/utils/request';
  * 返回到平台的第三方Oauth2登陆平台
  */
 export interface Sign3rdType {
-  platform: string; // 平台, 用于决定显示的图标
+  platform: string; // 平台
   appid: string; // 应用id, 对于同一平台，可能出现多ID问题
   name: string; // 应用名称， 主要用于悬浮显示
   title: string; // 应用标题， 主要用于静态显示
-  signature: string; // 签名，由后台给出，全局唯一，且随机生成
+  signature?: string; // 签名，由后台给出，全局唯一，且随机生成
   icon?: string; // 图标
 }
 /**

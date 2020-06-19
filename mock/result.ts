@@ -14,8 +14,8 @@ export const getResult = (
     host?: string;
     [propName: string]: any;
   },
-): API.ErrorInfo<any> => {
-  let res: API.ErrorInfo<any> = {
+) => {
+  let res: any = {
     success: true,
     traceId: 'demo-123456-12345678',
     host: '127.0.0.1',

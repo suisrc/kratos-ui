@@ -4,7 +4,36 @@ import { Request, Response } from 'express';
 import city from './geographic/city.json';
 import province from './geographic/province.json';
 
-import { getResult } from '../../../../mock/result';
+/**
+ * 获取标准异常
+ * @param data
+ * @param props
+ */
+export const getResult = (
+  data: any,
+  props?: {
+    success?: boolean;
+    errorCode?: string;
+    errorMessage?: string;
+    showType?: number;
+    traceId?: string;
+    host?: string;
+    [propName: string]: any;
+  },
+) => {
+  let res: any = {
+    success: true,
+    traceId: 'demo-123456-12345678',
+    host: '127.0.0.1',
+  };
+  if (props) {
+    res = { ...res, ...props };
+  }
+  if (data) {
+    res.data = data;
+  }
+  return res;
+};
 
 // 代码中会兼容本地 service mock 以及部署站点的静态数据
 export default {
@@ -91,28 +120,28 @@ export default {
   'GET /api/v1/user/current/config/security': getResult({
     password: 'weak',
     phone: '188****8888',
-    email: 'kratos@quarkus.org',
+    email: 'kra****@quarkus.org',
     mfa: false,
   }),
   'GET /api/v1/user/current/config/binding': getResult({
     platforms: [
       {
-        id: '129832',
-        name: '支付宝',
-        avatar: 'iconalipay-circle-fill',
+        appid: '129832',
+        title: '支付宝',
+        icon: 'iconalipay-circle-fill',
         bingding: false,
       },
       {
-        id: '129833',
-        name: '微信',
-        avatar:
+        appid: '129833',
+        title: '微信',
+        icon:
           'https://open.weixin.qq.com/zh_CN/htmledition/res/assets/res-design-download/icon48_appwx_logo.png',
         bingding: true,
       },
       {
-        id: '129834',
-        name: '钉钉',
-        avatar: 'icondingtalk',
+        appid: '129834',
+        title: '钉钉',
+        icon: 'icondingtalk',
         bingding: true,
       },
     ],
