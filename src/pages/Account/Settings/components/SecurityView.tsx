@@ -1,6 +1,8 @@
-import { FormattedMessage, useIntl, useRequest, history, Link } from 'umi';
+import { FormattedMessage, useIntl, useRequest, Link } from 'umi';
+import { Modal } from 'antd';
+import React, { useCallback, useState } from 'react';
 
-import React, { useCallback } from 'react';
+import { ModalFuncProps } from 'antd/es/modal';
 
 import PageLoading from '@/components/PageLoading';
 import ConfigListView from '@/components/List/Config';
@@ -35,8 +37,21 @@ const passwordStrength = {
   ),
 };
 
+const WarnUnImplementContext: React.Context<any> = React.createContext({});
+const config: ModalFuncProps = {
+  title: '说明',
+  content: (
+    <div>
+      <WarnUnImplementContext.Consumer>
+        {() => '功能暂未开放...'}
+      </WarnUnImplementContext.Consumer>
+    </div>
+  ),
+};
+
 const SecurityView: React.FC = () => {
   const i18n = useIntl();
+  const [modal, contextHolder] = Modal.useModal();
 
   const {
     data: configData,
@@ -79,7 +94,7 @@ const SecurityView: React.FC = () => {
         })}:
         ${configData?.phone}`,
         actions: [
-          <a key="Modify">
+          <a key="Modify" onClick={() => modal.confirm(config)}>
             <FormattedMessage
               id="page.account.settings.security.modify"
               defaultMessage="Modify"
@@ -96,7 +111,7 @@ const SecurityView: React.FC = () => {
         })}:
         ${configData?.email}`,
         actions: [
-          <a key="Modify">
+          <a key="Modify" onClick={() => modal.confirm(config)}>
             <FormattedMessage
               id="page.account.settings.security.modify"
               defaultMessage="Modify"
@@ -112,7 +127,7 @@ const SecurityView: React.FC = () => {
           id: 'page.account.settings.security.mfa.description',
         }),
         actions: [
-          <a key="bind">
+          <a key="bind" onClick={() => modal.confirm(config)}>
             <FormattedMessage
               id="page.account.settings.security.bind"
               defaultMessage="Bind"
@@ -126,7 +141,14 @@ const SecurityView: React.FC = () => {
   if (loading || !configData) {
     return <PageLoading />;
   }
-  return <ConfigListView data={getData() || []} />;
+  return (
+    <>
+      <WarnUnImplementContext.Provider value="">
+        <ConfigListView data={getData() || []} />
+        {contextHolder}
+      </WarnUnImplementContext.Provider>
+    </>
+  );
 };
 
 export default SecurityView;
