@@ -10,6 +10,7 @@ export interface MobileCaptchaProps extends Partial<FormItemProps> {
   placeholder?: string;
   countDown?: number;
   getCaptchaButtonText?: string;
+  getCaptchaButtonDisable?: boolean;
   getCaptchaSecondText?: string;
   customProps?: { [key: string]: unknown };
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -46,6 +47,7 @@ const MobileCaptcha: React.FC<MobileCaptchaProps> = props => {
     queryCaptcha,
     getCaptchaButtonText,
     getCaptchaSecondText,
+    getCaptchaButtonDisable,
     ...restProps
   } = props;
 
@@ -92,7 +94,7 @@ const MobileCaptcha: React.FC<MobileCaptchaProps> = props => {
         <Col span={1} />
         <Col span={13}>
           <Button
-            disabled={timing}
+            disabled={timing || getCaptchaButtonDisable}
             style={{
               display: 'block',
               width: '100%',

@@ -14,14 +14,23 @@ export async function checkUserCaptcha(params: {
   value?: string;
 }) {
   //return request(`/api/v1/user/current/check/captcha${stringify2(params)}`)
-  return request(`/api/v1/user/current/check/captcha`, {
+  return request('/api/v1/user/current/check/captcha', {
     method: 'POST',
     data: params,
     skipErrorHandler: true,
   });
 }
+// 发送验证码
+export async function postSendUserCaptcha(params: {
+  type?: string; // 发送的方式, email or phone
+}) {
+  return request('/api/v1/user/current/send/captcha', {
+    method: 'POST',
+    data: params,
+  });
+}
 
-export async function submitNewPassword(data: {
+export async function postSubmitNewPassword(data: {
   signature?: string;
   password?: string;
 }) {

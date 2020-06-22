@@ -63,7 +63,7 @@ const demo = [
 const routes = [
   {
     path: '/test',
-    component: './Account/Change/Password',
+    component: './Account/Password/Change',
     exact: true,
   },
   {
@@ -81,6 +81,11 @@ const routes = [
         name: 'signin',
         path: 'signin',
         component: './Auth/Signin',
+      },
+      {
+        name: 'forget-password',
+        path: 'forget/password',
+        component: './Account/Password/Forget',
       },
     ],
   },
@@ -128,7 +133,7 @@ const routes = [
               {
                 name: 'password',
                 path: 'password',
-                component: './Account/Change/Password',
+                component: './Account/Password/Change',
               },
             ],
           },

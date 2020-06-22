@@ -55,7 +55,7 @@ const DefaultView: React.FC<{
     );
   }
 
-  const { validateFields, getFieldValue } = form;
+  const { validateFields } = form;
   const onChangePassword = async () => {
     const values = await validateFields();
     console.log(values);
@@ -95,27 +95,37 @@ const DefaultView: React.FC<{
             },
             ...(rules || []),
           ]}
+          validateFirst={true}
         >
           <Input.Password placeholder="请输入新密码" />
         </Form.Item>
         <Form.Item
           label="密码确认"
           name="password2"
+          dependencies={['password']}
           rules={[
             {
               required: true,
               message: '请在此输入密码',
             },
-            {
-              validator: (_, value, callback) => {
-                if (value && !(value === getFieldValue('password'))) {
-                  callback('两次输入密码不一致');
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue('password') === value) {
+                  return Promise.resolve();
                 }
-                {
-                  callback(undefined);
-                }
+                return Promise.reject('两次输入密码不一致');
               },
-            },
+            }),
+            //{
+            //  validator: async (_, value, callback) => {
+            //    if (value && !(value === getFieldValue('password'))) {
+            //      callback('两次输入密码不一致');
+            //    }
+            //    {
+            //      callback(undefined);
+            //    }
+            //  },
+            //},
           ]}
         >
           <Input.Password placeholder="请再次输入密码" />

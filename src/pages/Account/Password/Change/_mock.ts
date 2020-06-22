@@ -71,4 +71,10 @@ export default {
       }
     }, 300);
   },
+  'POST /api/v1/user/current/send/captcha': {
+    success: true,
+    data: {
+      message: '发送验证码成功,请注意查收',
+    },
+  },
 };

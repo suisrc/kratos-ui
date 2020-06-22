@@ -27,11 +27,11 @@ const DefaultView: React.FC<{
   //const i18n = useIntl();
 
   useEffect(() => {
-    if (!data?.phone && dispatch) {
+    if (!data?.email && dispatch) {
       dispatch({ type: 'accountPassword/fetchUserCheckInfo' });
     }
   }, []);
-  if (!data?.phone) {
+  if (!data?.email) {
     return <PageLoading />;
   }
 
@@ -49,8 +49,16 @@ const DefaultView: React.FC<{
     const values = await validateFields();
     if (dispatch) {
       dispatch({
-        type: 'accountPassword/verifyCaptchaByPhone',
-        payload: { captcha: values.captcha },
+        type: 'accountPassword/verifyCaptcha',
+        payload: { type: 'email', value: values.captcha },
+      });
+    }
+  };
+  const onSendCaptcha = async () => {
+    if (dispatch) {
+      dispatch({
+        type: 'accountPassword/sendCaptcha',
+        payload: { type: 'email' },
       });
     }
   };
@@ -65,23 +73,23 @@ const DefaultView: React.FC<{
         hideRequiredMark
         initialValues={data}
       >
-        {warn?.warnVerifyPhone && (
+        {warn?.warnVerifyMessage && (
           <Alert
             closable
             showIcon
-            message={warn?.warnVerifyPhone}
+            message={warn?.warnVerifyMessage}
             style={{ marginBottom: 24 }}
           />
         )}
-        <Form.Item label="手机号码" name="phone">
-          {data.phone}{' '}
-          <Link to="/account/settings">[手机不可用？点此修改]</Link>
+        <Form.Item label="邮箱地址" name="email">
+          {data.email}{' '}
+          <Link to="/account/settings">[邮箱不可用？点此修改]</Link>
         </Form.Item>
         <MobileCaptcha
           label="验证码"
           name="captcha"
           countDown={120}
-          getCaptchaButtonText="获取短信验证码"
+          getCaptchaButtonText="获取邮件验证码"
           placeholder="请输入验证码"
           rules={[
             {
@@ -93,7 +101,7 @@ const DefaultView: React.FC<{
               message: '请输入6位纯数字验证码',
             },
           ]}
-          queryCaptcha={async () => {}}
+          queryCaptcha={onSendCaptcha}
         />
         <Form.Item
           wrapperCol={{
@@ -114,11 +122,9 @@ const DefaultView: React.FC<{
       </Form>
       <Divider style={{ margin: '40px 0 24px' }} />
       <div className={styles.desc}>
-        <h3>没收到短信验证码？</h3>
-        <p>1、网络通讯异常可能会造成短信丢失，请重新获取或稍后再试。</p>
-        <p>2、请核实手机是否已欠费停机，或者屏蔽了系统短信。</p>
-        <p>3、如果手机已丢失或停用， 请选择其他验证方式。</p>
-        <p>4、您也可以尝试将SIM卡移动到另一部手机，然后重试。</p>
+        <h3>没收到邮箱验证码？</h3>
+        <p>1、网络通讯异常可能会造成邮件丢失，请重新获取或稍后再试。</p>
+        <p>2、请求确定邮箱服务器商不在垃圾邮件阻止名单中。</p>
       </div>
     </>
   );

@@ -292,7 +292,7 @@ const Signin: React.FC<{}> = () => {
                   id: 'page.auth.signin.check.auto-signin.title',
                 })}
               </Checkbox>
-              <a style={{ float: 'right' }} href="">
+              <a style={{ float: 'right' }} href="/auth/forget/password">
                 {i18n.formatMessage({
                   id: 'page.auth.signin.check.forget-password.title',
                 })}

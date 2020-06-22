@@ -1,10 +1,11 @@
-import { Effect, Reducer, Redirect } from 'umi';
+import { Effect, Reducer } from 'umi';
 
 import {
   queryUserCheckInfo,
-  checkUserCaptcha,
-  submitNewPassword,
   queryUserPasswordRuls,
+  checkUserCaptcha,
+  postSubmitNewPassword,
+  postSendUserCaptcha,
 } from './service';
 
 export interface StateType {
@@ -19,10 +20,7 @@ export interface StateType {
   };
   warnData?: {
     warnModifyMessage?: string;
-
-    warnVerifyPassword?: string; // 警告信息
-    warnVerifyEmail?: string; // 警告信息
-    warnVerifyPhone?: string; // 警告信息
+    warnVerifyMessage?: string; // 警告信息
   };
   passwordRules?: {
     pattern: RegExp;
@@ -36,10 +34,8 @@ export interface ModelType {
   effects: {
     submitNewPassword: Effect;
 
-    verifyOldPassword: Effect;
-    verifyCaptchaByEmail: Effect;
-    verifyCaptchaByPhone: Effect;
-
+    verifyCaptcha: Effect;
+    sendCaptcha: Effect;
     fetchUserCheckInfo: Effect;
     fetchUserPasswordRules: Effect;
   };
@@ -73,7 +69,7 @@ const Model: ModelType = {
       }
     },
     *submitNewPassword({ payload }, { call, put }) {
-      const res = yield call(submitNewPassword, payload);
+      const res = yield call(postSubmitNewPassword, payload);
       if (res?.success) {
         yield put({
           type: 'saveCurrentStep',
@@ -88,11 +84,8 @@ const Model: ModelType = {
         });
       }
     },
-    *verifyOldPassword({ payload }, { call, put }) {
-      const res = yield call(checkUserCaptcha, {
-        type: 'password',
-        value: payload['captcha'],
-      });
+    *verifyCaptcha({ payload }, { call, put }) {
+      const res = yield call(checkUserCaptcha, payload);
       if (res?.success) {
         yield put({
           type: 'saveSignature',
@@ -106,50 +99,19 @@ const Model: ModelType = {
         yield put({
           type: 'saveWarnData',
           payload: {
-            warnVerifyPassword: res?.data?.message || res?.errorMessage,
+            warnVerifyMessage: res?.data?.message || res?.errorMessage,
           },
         });
       }
     },
-    *verifyCaptchaByEmail({ payload }, { call, put }) {
-      const res = yield call(checkUserCaptcha, {
-        type: 'email',
-        value: payload['captcha'],
-      });
-      if (res?.success) {
-        yield put({
-          type: 'saveSignature',
-          payload: res?.data?.signature,
-        });
-        yield put({
-          type: 'saveCurrentStep',
-          payload: 'modify',
-        });
-      } else {
+    *sendCaptcha({ payload }, { call, put }) {
+      const res = yield call(postSendUserCaptcha, payload);
+      if (res?.success && res?.data?.message) {
         yield put({
           type: 'saveWarnData',
-          payload: { warnVerifyEmail: res?.data?.message || res?.errorMessage },
-        });
-      }
-    },
-    *verifyCaptchaByPhone({ payload }, { call, put }) {
-      const res = yield call(checkUserCaptcha, {
-        type: 'phone',
-        value: payload['captcha'],
-      });
-      if (res?.success) {
-        yield put({
-          type: 'saveSignature',
-          payload: res?.data?.signature,
-        });
-        yield put({
-          type: 'saveCurrentStep',
-          payload: 'modify',
-        });
-      } else {
-        yield put({
-          type: 'saveWarnData',
-          payload: { warnVerifyPhone: res?.data?.message || res?.errorMessage },
+          payload: {
+            warnVerifyMessage: res?.data?.message,
+          },
         });
       }
     },

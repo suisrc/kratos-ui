@@ -38,8 +38,8 @@ const DefaultView: React.FC<{
     const values = await validateFields();
     if (dispatch) {
       dispatch({
-        type: 'accountPassword/verifyOldPassword',
-        payload: { captcha: values.captcha },
+        type: 'accountPassword/verifyCaptcha',
+        payload: { type: 'password', value: values.captcha },
       });
     }
   };
@@ -54,11 +54,11 @@ const DefaultView: React.FC<{
         hideRequiredMark
         //initialValues={data}
       >
-        {warn?.warnVerifyPassword && (
+        {warn?.warnVerifyMessage && (
           <Alert
             closable
             showIcon
-            message={warn?.warnVerifyPassword}
+            message={warn?.warnVerifyMessage}
             style={{ marginBottom: 24 }}
           />
         )}
