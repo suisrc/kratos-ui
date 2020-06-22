@@ -41,6 +41,18 @@ export async function postSubmitNewPassword(data: {
   });
 }
 
+export async function postSubmitNewEmailOrPhone(data: {
+  signature?: string;
+  key?: string;
+  value?: string;
+}) {
+  return request('/api/v1/user/current/email/change', {
+    method: 'POST',
+    data: data,
+    skipErrorHandler: true,
+  });
+}
+
 // ChangeCheckType
 export async function queryUserPasswordRuls() {
   return request('/api/v1/user/current/password/rules');

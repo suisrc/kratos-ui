@@ -135,6 +135,16 @@ const routes = [
                 path: 'password',
                 component: './Account/Password/Change',
               },
+              {
+                name: 'email',
+                path: 'email',
+                component: './Account/Password/Change/ExtEmail',
+              },
+              {
+                name: 'phone',
+                path: 'phone',
+                component: './Account/Password/Change/ExtPhone',
+              },
             ],
           },
         ],

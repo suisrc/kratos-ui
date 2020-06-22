@@ -6,6 +6,7 @@ import {
   checkUserCaptcha,
   postSubmitNewPassword,
   postSendUserCaptcha,
+  postSubmitNewEmailOrPhone,
 } from './service';
 
 export interface StateType {
@@ -33,6 +34,7 @@ export interface ModelType {
   state: StateType;
   effects: {
     submitNewPassword: Effect;
+    submitNewEmailOrPhone: Effect;
 
     verifyCaptcha: Effect;
     sendCaptcha: Effect;
@@ -70,6 +72,22 @@ const Model: ModelType = {
     },
     *submitNewPassword({ payload }, { call, put }) {
       const res = yield call(postSubmitNewPassword, payload);
+      if (res?.success) {
+        yield put({
+          type: 'saveCurrentStep',
+          payload: 'result',
+        });
+      } else {
+        yield put({
+          type: 'saveWarnData',
+          payload: {
+            warnModifyMessage: res?.data?.message || res.errorMessage,
+          },
+        });
+      }
+    },
+    *submitNewEmailOrPhone({ payload }, { call, put }) {
+      const res = yield call(postSubmitNewEmailOrPhone, payload);
       if (res?.success) {
         yield put({
           type: 'saveCurrentStep',

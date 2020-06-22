@@ -94,12 +94,12 @@ const SecurityView: React.FC = () => {
         })}:
         ${configData?.phone}`,
         actions: [
-          <a key="Modify" onClick={() => modal.confirm(config)}>
+          <Link key="Modify" to="/account/change/phone">
             <FormattedMessage
               id="page.account.settings.security.modify"
               defaultMessage="Modify"
             />
-          </a>,
+          </Link>,
         ],
       },
       {
@@ -111,12 +111,12 @@ const SecurityView: React.FC = () => {
         })}:
         ${configData?.email}`,
         actions: [
-          <a key="Modify" onClick={() => modal.confirm(config)}>
+          <Link key="Modify" to="/account/change/email">
             <FormattedMessage
               id="page.account.settings.security.modify"
               defaultMessage="Modify"
             />
-          </a>,
+          </Link>,
         ],
       },
       {

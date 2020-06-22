@@ -77,4 +77,20 @@ export default {
       message: '发送验证码成功,请注意查收',
     },
   },
+  'POST  /api/v1/user/current/email/change': (req: Request, res: Response) => {
+    const { type, value } = req.body;
+    setTimeout(() => {
+      if (value === '12345678909' || value === 'kratos@quarkus.org') {
+        res.send({
+          success: true,
+        });
+      } else {
+        res.send({
+          success: false,
+          errorCode: 'CHPWD-001',
+          errorMessage: '密码签名异常' + value,
+        });
+      }
+    }, 300);
+  },
 };

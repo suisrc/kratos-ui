@@ -4,10 +4,10 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect, Dispatch } from 'umi';
 import { StateType } from './model';
 
-import Verify from './components/Verify';
-import Modify from './components/Modify';
+import Modify from './components/Modify/ExtEmail';
 import Result from './components/Result';
 
+import Verify from './components/Verify';
 import VerifyPassword from './components/Verify/Password';
 import VerifyEmail from './components/Verify/Email';
 import VerifyPhone from './components/Verify/Phone';
@@ -69,19 +69,17 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({ current, dispatch }) => {
   }, [current]);
 
   return (
-    //<PageHeaderWrapper title="修改密码">
     <Card bordered={false}>
       <>
         <Steps current={currentStep} className={styles.steps}>
           <Step title="验证方式" />
           <Step title="验证身份" />
-          <Step title="修改密码" />
+          <Step title="修改邮箱" />
           <Step title="完成" />
         </Steps>
         {stepComponent}
       </>
     </Card>
-    //</PageHeaderWrapper>
   );
 };
 

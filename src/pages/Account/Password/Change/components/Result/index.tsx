@@ -4,18 +4,7 @@ import { connect, Dispatch, history } from 'umi';
 import styles from './index.less';
 
 const DefaultView = (props: { dispatch: Dispatch }) => {
-  const { dispatch } = props;
-  useEffect(
-    () => () => {
-      if (dispatch) {
-        dispatch({
-          type: 'accountPassword/saveCurrentStep',
-          payload: 'verify',
-        });
-      }
-    },
-    [],
-  );
+  //const { dispatch } = props;
 
   return (
     <Result
