@@ -25,9 +25,14 @@ export async function submitNewPassword(data: {
   signature?: string;
   password?: string;
 }) {
-  return request('/api/v1/user/current/change/password', {
+  return request('/api/v1/user/current/password/change', {
     method: 'POST',
     data: data,
     skipErrorHandler: true,
   });
+}
+
+// ChangeCheckType
+export async function queryUserPasswordRuls() {
+  return request('/api/v1/user/current/password/rules');
 }

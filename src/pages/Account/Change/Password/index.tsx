@@ -57,19 +57,19 @@ const MultiStepForm: React.FC<MultiStepFormProps> = ({ current }) => {
   }, [current]);
 
   return (
-    <PageHeaderWrapper title="修改密码">
-      <Card bordered={false}>
-        <>
-          <Steps current={currentStep} className={styles.steps}>
-            <Step title="验证方式" />
-            <Step title="验证身份" />
-            <Step title="修改密码" />
-            <Step title="完成" />
-          </Steps>
-          {stepComponent}
-        </>
-      </Card>
-    </PageHeaderWrapper>
+    //<PageHeaderWrapper title="修改密码">
+    <Card bordered={false}>
+      <>
+        <Steps current={currentStep} className={styles.steps}>
+          <Step title="验证方式" />
+          <Step title="验证身份" />
+          <Step title="修改密码" />
+          <Step title="完成" />
+        </Steps>
+        {stepComponent}
+      </>
+    </Card>
+    //</PageHeaderWrapper>
   );
 };
 

@@ -4,31 +4,30 @@ import {
   queryUserCheckInfo,
   checkUserCaptcha,
   submitNewPassword,
+  queryUserPasswordRuls,
 } from './service';
 
 export interface StateType {
   // 执行的步骤verify, modify, result
   // 验证方式 verify-password, verify-mail, verify-phone
   current?: string;
-  // 表单数据
-  fromData?: {
-    signature?: string; // 用于更新密码使用的签名
-    password?: string; // 新密码
-  };
+  signature?: string; // 用于更新密码使用的签名
   stepData?: {
-    oldPassword?: string; // 旧密码
-    newPassword?: string; // 密码确认
-    captcha?: string; // 验证码
-
+    //captcha?: string; // 验证码
     email?: string;
     phone?: string;
   };
   warnData?: {
     warnModifyMessage?: string;
+
     warnVerifyPassword?: string; // 警告信息
     warnVerifyEmail?: string; // 警告信息
     warnVerifyPhone?: string; // 警告信息
   };
+  passwordRules?: {
+    pattern: RegExp;
+    message: string;
+  }[];
 }
 
 export interface ModelType {
@@ -42,12 +41,14 @@ export interface ModelType {
     verifyCaptchaByPhone: Effect;
 
     fetchUserCheckInfo: Effect;
+    fetchUserPasswordRules: Effect;
   };
   reducers: {
     saveCurrentStep: Reducer<StateType>;
-    saveFormData: Reducer<StateType>;
+    saveSignature: Reducer<StateType>;
     saveSetpData: Reducer<StateType>;
     saveWarnData: Reducer<StateType>;
+    savePasswordRules: Reducer<StateType>;
   };
 }
 
@@ -57,8 +58,8 @@ const Model: ModelType = {
   state: {
     current: 'verify',
     stepData: {},
-    fromData: {},
     warnData: {},
+    passwordRules: [],
   },
 
   effects: {
@@ -74,10 +75,6 @@ const Model: ModelType = {
     *submitNewPassword({ payload }, { call, put }) {
       const res = yield call(submitNewPassword, payload);
       if (res?.success) {
-        yield put({
-          type: 'saveFormData',
-          payload,
-        });
         yield put({
           type: 'saveCurrentStep',
           payload: 'result',
@@ -98,8 +95,12 @@ const Model: ModelType = {
       });
       if (res?.success) {
         yield put({
-          type: 'saveFormData',
-          payload: res.data,
+          type: 'saveSignature',
+          payload: res?.data?.signature,
+        });
+        yield put({
+          type: 'saveCurrentStep',
+          payload: 'modify',
         });
       } else {
         yield put({
@@ -117,8 +118,12 @@ const Model: ModelType = {
       });
       if (res?.success) {
         yield put({
-          type: 'saveFormData',
-          payload: res.data,
+          type: 'saveSignature',
+          payload: res?.data?.signature,
+        });
+        yield put({
+          type: 'saveCurrentStep',
+          payload: 'modify',
         });
       } else {
         yield put({
@@ -134,8 +139,8 @@ const Model: ModelType = {
       });
       if (res?.success) {
         yield put({
-          type: 'saveFormData',
-          payload: res.data,
+          type: 'saveSignature',
+          payload: res?.data?.signature,
         });
         yield put({
           type: 'saveCurrentStep',
@@ -145,6 +150,26 @@ const Model: ModelType = {
         yield put({
           type: 'saveWarnData',
           payload: { warnVerifyPhone: res?.data?.message || res?.errorMessage },
+        });
+      }
+    },
+    *fetchUserPasswordRules(_, { call, put }) {
+      const res = yield call(queryUserPasswordRuls);
+      if (res?.success) {
+        yield put({
+          type: 'savePasswordRules',
+          payload: res.data,
+        });
+      } else {
+        yield put({
+          type: 'savePasswordRules',
+          payload: [
+            {
+              //pattern: /^.*(?=.{6,64})(?=.*\d)(?=.*[A-Z]{2,})(?=.*[a-z]{2,})(?=.*[!@#$%^&*?\(\)]).*$/,
+              pattern: /^.{6,64}$/,
+              message: '最短6位，最长64位', // 该内容作为网络异常的保险,一般不会出现
+            },
+          ],
         });
       }
     },
@@ -158,10 +183,10 @@ const Model: ModelType = {
         warnData: {},
       };
     },
-    saveFormData(state, { payload }) {
+    saveSignature(state, { payload }) {
       return {
         ...state,
-        fromData: { ...state?.fromData, ...payload },
+        signature: payload,
       };
     },
     saveSetpData(state, { payload }) {
@@ -174,6 +199,12 @@ const Model: ModelType = {
       return {
         ...state,
         warnData: payload,
+      };
+    },
+    savePasswordRules(state, { payload }) {
+      return {
+        ...state,
+        passwordRules: payload,
       };
     },
   },

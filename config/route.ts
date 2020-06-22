@@ -121,6 +121,17 @@ const routes = [
             path: 'settings',
             component: './Account/Settings',
           },
+          {
+            name: 'change',
+            path: 'change',
+            routes: [
+              {
+                name: 'password',
+                path: 'password',
+                component: './Account/Change/Password',
+              },
+            ],
+          },
         ],
       },
       {

@@ -1,69 +1,41 @@
 import { Button, Result, Descriptions, Statistic } from 'antd';
-import React from 'react';
-import { connect, Dispatch } from 'umi';
-import { StateType } from '../../model';
+import React, { useEffect } from 'react';
+import { connect, Dispatch, history } from 'umi';
 import styles from './index.less';
 
-interface Step3Props {
-  data?: StateType['step'];
-  dispatch?: Dispatch<any>;
-}
+const DefaultView = (props: { dispatch: Dispatch }) => {
+  const { dispatch } = props;
+  useEffect(
+    () => () => {
+      if (dispatch) {
+        dispatch({
+          type: 'accountPassword/saveCurrentStep',
+          payload: 'verify',
+        });
+      }
+    },
+    [],
+  );
 
-const Step3: React.FC<Step3Props> = props => {
-  const { data, dispatch } = props;
-  if (!data) {
-    return null;
-  }
-  const { payAccount, receiverAccount, receiverName, amount } = data;
-  const onFinish = () => {
-    if (dispatch) {
-      dispatch({
-        type: 'formStepForm/saveCurrentStep',
-        payload: 'info',
-      });
-    }
-  };
-  const information = (
-    <div className={styles.information}>
-      <Descriptions column={1}>
-        <Descriptions.Item label="付款账户"> {payAccount}</Descriptions.Item>
-        <Descriptions.Item label="收款账户">
-          {' '}
-          {receiverAccount}
-        </Descriptions.Item>
-        <Descriptions.Item label="收款人姓名">
-          {' '}
-          {receiverName}
-        </Descriptions.Item>
-        <Descriptions.Item label="转账金额">
-          <Statistic value={amount} suffix="元" />
-        </Descriptions.Item>
-      </Descriptions>
-    </div>
-  );
-  const extra = (
-    <>
-      <Button type="primary" onClick={onFinish}>
-        再转一笔
-      </Button>
-      <Button>查看账单</Button>
-    </>
-  );
   return (
     <Result
       status="success"
-      title="操作成功"
-      subTitle="预计两小时内到账"
-      extra={extra}
+      title="密码修改成功"
+      extra={[
+        <Button
+          type="primary"
+          key="settings"
+          onClick={e => history.push('/account/settings')}
+        >
+          返回配置页
+        </Button>,
+        <Button key="home" onClick={e => history.push('/home')}>
+          返回首页
+        </Button>,
+      ]}
       className={styles.result}
-    >
-      {information}
-    </Result>
+    />
   );
 };
 
-export default connect(
-  ({ accountPassword }: { accountPassword: StateType }) => ({
-    data: accountPassword.step,
-  }),
-)(Step3);
+export default connect()(DefaultView);

@@ -1,4 +1,4 @@
-import { FormattedMessage, useIntl, useRequest } from 'umi';
+import { FormattedMessage, useIntl, useRequest, history, Link } from 'umi';
 
 import React, { useCallback } from 'react';
 
@@ -62,12 +62,12 @@ const SecurityView: React.FC = () => {
           </>
         ),
         actions: [
-          <a key="Modify">
+          <Link key="Modify" to="/account/change/password">
             <FormattedMessage
               id="page.account.settings.security.modify"
               defaultMessage="Modify"
             />
-          </a>,
+          </Link>,
         ],
       },
       {

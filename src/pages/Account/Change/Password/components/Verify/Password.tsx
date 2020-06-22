@@ -1,11 +1,11 @@
-import React from 'react';
-import { Form, Button, Divider, Input, Select } from 'antd';
-import { connect, Dispatch } from 'umi';
-import { StateType } from '../../model';
-import styles from './index.less';
-import PageLoading from '@/components/PageLoading';
+import React, { useEffect } from 'react';
 
-const { Option } = Select;
+import { Form, Button, Divider, Input, Alert } from 'antd';
+import { connect, Dispatch, useIntl } from 'umi';
+
+import { StateType } from '../../model';
+
+import styles from './index.less';
 
 const formItemLayout = {
   labelCol: {
@@ -15,32 +15,35 @@ const formItemLayout = {
     span: 19,
   },
 };
-interface Props {
+
+const DefaultView: React.FC<{
   data?: StateType['stepData'];
+  warn?: StateType['warnData'];
   dispatch?: Dispatch;
-}
-
-const DefaultView: React.FC<Props> = ({ dispatch, data }) => {
+}> = ({ data, warn, dispatch }) => {
   const [form] = Form.useForm();
+  //const i18n = useIntl();
 
-  if (!data) {
-    return <PageLoading />;
-  }
-
-  const { validateFields } = form;
-  const onValidateForm = async () => {
-    const values = await validateFields();
+  const gotoPreStep = async () => {
     if (dispatch) {
       dispatch({
-        type: 'formStepForm/saveStepFormData',
-        payload: values,
-      });
-      dispatch({
-        type: 'formStepForm/saveCurrentStep',
-        payload: 'confirm',
+        type: 'accountPassword/saveCurrentStep',
+        payload: 'verify',
       });
     }
   };
+
+  const { validateFields } = form;
+  const onCheckPassword = async () => {
+    const values = await validateFields();
+    if (dispatch) {
+      dispatch({
+        type: 'accountPassword/verifyOldPassword',
+        payload: { captcha: values.captcha },
+      });
+    }
+  };
+
   return (
     <>
       <Form
@@ -49,57 +52,27 @@ const DefaultView: React.FC<Props> = ({ dispatch, data }) => {
         layout="horizontal"
         className={styles.stepForm}
         hideRequiredMark
-        initialValues={data}
+        //initialValues={data}
       >
+        {warn?.warnVerifyPassword && (
+          <Alert
+            closable
+            showIcon
+            message={warn?.warnVerifyPassword}
+            style={{ marginBottom: 24 }}
+          />
+        )}
         <Form.Item
-          label="付款账户"
-          name="payAccount"
-          rules={[{ required: true, message: '请选择付款账户' }]}
-        >
-          <Select placeholder="test@example.com">
-            <Option value="ant-design@alipay.com">ant-design@alipay.com</Option>
-          </Select>
-        </Form.Item>
-        <Form.Item label="收款账户">
-          <Input.Group compact>
-            <Select defaultValue="alipay" style={{ width: 100 }}>
-              <Option value="alipay">支付宝</Option>
-              <Option value="bank">银行账户</Option>
-            </Select>
-            <Form.Item
-              noStyle
-              name="receiverAccount"
-              rules={[
-                { required: true, message: '请输入收款人账户' },
-                { type: 'email', message: '账户名应为邮箱格式' },
-              ]}
-            >
-              <Input
-                style={{ width: 'calc(100% - 100px)' }}
-                placeholder="test@example.com"
-              />
-            </Form.Item>
-          </Input.Group>
-        </Form.Item>
-        <Form.Item
-          label="收款人姓名"
-          name="receiverName"
-          rules={[{ required: true, message: '请输入收款人姓名' }]}
-        >
-          <Input placeholder="请输入收款人姓名" />
-        </Form.Item>
-        <Form.Item
-          label="转账金额"
-          name="amount"
+          label="原始密码"
+          name="captcha"
           rules={[
-            { required: true, message: '请输入转账金额' },
             {
-              pattern: /^(\d+)((?:\.\d+)?)$/,
-              message: '请输入合法金额数字',
+              required: true,
+              message: '请输入原始密码',
             },
           ]}
         >
-          <Input prefix="￥" placeholder="请输入金额" />
+          <Input.Password placeholder="请输入原始密码" />
         </Form.Item>
         <Form.Item
           wrapperCol={{
@@ -110,23 +83,15 @@ const DefaultView: React.FC<Props> = ({ dispatch, data }) => {
             },
           }}
         >
-          <Button type="primary" onClick={onValidateForm}>
+          <Button className={styles.stepPreButton} onClick={gotoPreStep}>
+            上一步
+          </Button>
+          <Button type="primary" onClick={onCheckPassword}>
             下一步
           </Button>
         </Form.Item>
       </Form>
       <Divider style={{ margin: '40px 0 24px' }} />
-      <div className={styles.desc}>
-        <h3>说明</h3>
-        <h4>转账到支付宝账户</h4>
-        <p>
-          如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。
-        </p>
-        <h4>转账到银行卡</h4>
-        <p>
-          如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。如果需要，这里可以放一些关于产品的常见问题说明。
-        </p>
-      </div>
     </>
   );
 };
@@ -134,5 +99,6 @@ const DefaultView: React.FC<Props> = ({ dispatch, data }) => {
 export default connect(
   ({ accountPassword }: { accountPassword: StateType }) => ({
     data: accountPassword.stepData,
+    warn: accountPassword.warnData,
   }),
 )(DefaultView);

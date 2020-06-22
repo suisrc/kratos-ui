@@ -1,15 +1,10 @@
-import React from 'react';
-import {
-  Form,
-  Alert,
-  Button,
-  Descriptions,
-  Divider,
-  Statistic,
-  Input,
-} from 'antd';
-import { connect, Dispatch } from 'umi';
+import React, { useEffect } from 'react';
+
+import { Form, Button, Divider, Input, Alert } from 'antd';
+import { connect, Dispatch, useIntl, Link } from 'umi';
+
 import { StateType } from '../../model';
+
 import styles from './index.less';
 
 const formItemLayout = {
@@ -20,117 +15,140 @@ const formItemLayout = {
     span: 19,
   },
 };
-interface Step2Props {
-  data?: StateType['step'];
-  dispatch?: Dispatch<any>;
-  submitting?: boolean;
-}
 
-const Step2: React.FC<Step2Props> = props => {
+const DefaultView: React.FC<{
+  signature?: StateType['signature'];
+  warn?: StateType['warnData'];
+  rules?: StateType['passwordRules'];
+  dispatch?: Dispatch;
+}> = ({ signature, warn, rules, dispatch }) => {
   const [form] = Form.useForm();
-  const { data, dispatch, submitting } = props;
-  if (!data) {
-    return null;
-  }
-  const { validateFields, getFieldsValue } = form;
-  const onPrev = () => {
-    if (dispatch) {
-      const values = getFieldsValue();
-      dispatch({
-        type: 'formStepForm/saveStepFormData',
-        payload: {
-          ...data,
-          ...values,
-        },
-      });
-      dispatch({
-        type: 'formStepForm/saveCurrentStep',
-        payload: 'info',
-      });
+  //const i18n = useIntl();
+
+  useEffect(() => {
+    if (dispatch && !rules?.length) {
+      dispatch({ type: 'accountPassword/fetchUserPasswordRules' });
     }
-  };
-  const onValidateForm = async () => {
-    const values = await validateFields();
+  }, []);
+
+  const gotoPreStep = async () => {
     if (dispatch) {
       dispatch({
-        type: 'formStepForm/submitStepForm',
-        payload: {
-          ...data,
-          ...values,
-        },
+        type: 'accountPassword/saveCurrentStep',
+        payload: 'verify',
       });
     }
   };
 
-  const { payAccount, receiverAccount, receiverName, amount } = data;
+  if (!signature) {
+    return (
+      <div className={styles.stepForm}>
+        <Alert
+          showIcon
+          message="获取更改密码的权限时候发生未知异常,请通知系统管理员处理(签名丢失)"
+          style={{ marginBottom: 24 }}
+        />
+        <Button type={'primary'} onClick={gotoPreStep}>
+          返回
+        </Button>
+      </div>
+    );
+  }
+
+  const { validateFields, getFieldValue } = form;
+  const onChangePassword = async () => {
+    const values = await validateFields();
+    console.log(values);
+    if (dispatch) {
+      dispatch({
+        type: 'accountPassword/submitNewPassword',
+        payload: { password: values.password, signature },
+      });
+    }
+  };
+
   return (
-    <Form
-      {...formItemLayout}
-      form={form}
-      layout="horizontal"
-      className={styles.stepForm}
-      initialValues={{ password: '123456' }}
-    >
-      <Alert
-        closable
-        showIcon
-        message="确认转账后，资金将直接打入对方账户，无法退回。"
-        style={{ marginBottom: 24 }}
-      />
-      <Descriptions column={1}>
-        <Descriptions.Item label="付款账户"> {payAccount}</Descriptions.Item>
-        <Descriptions.Item label="收款账户">
-          {' '}
-          {receiverAccount}
-        </Descriptions.Item>
-        <Descriptions.Item label="收款人姓名">
-          {' '}
-          {receiverName}
-        </Descriptions.Item>
-        <Descriptions.Item label="转账金额">
-          <Statistic value={amount} suffix="元" />
-        </Descriptions.Item>
-      </Descriptions>
-      <Divider style={{ margin: '24px 0' }} />
-      <Form.Item
-        label="支付密码"
-        name="password"
-        required={false}
-        rules={[{ required: true, message: '需要支付密码才能进行支付' }]}
+    <>
+      <Form
+        {...formItemLayout}
+        form={form}
+        layout="horizontal"
+        className={styles.stepForm}
+        hideRequiredMark
+        //initialValues={data}
       >
-        <Input type="password" autoComplete="off" style={{ width: '80%' }} />
-      </Form.Item>
-      <Form.Item
-        style={{ marginBottom: 8 }}
-        wrapperCol={{
-          xs: { span: 24, offset: 0 },
-          sm: {
-            span: formItemLayout.wrapperCol.span,
-            offset: formItemLayout.labelCol.span,
-          },
-        }}
-      >
-        <Button type="primary" onClick={onValidateForm} loading={submitting}>
-          提交
-        </Button>
-        <Button onClick={onPrev} style={{ marginLeft: 8 }}>
-          上一步
-        </Button>
-      </Form.Item>
-    </Form>
+        {warn?.warnModifyMessage && (
+          <Alert
+            closable
+            showIcon
+            message={warn?.warnModifyMessage}
+            style={{ marginBottom: 24 }}
+          />
+        )}
+        <Form.Item
+          label="新密码"
+          name="password"
+          rules={[
+            {
+              required: true,
+              message: '请署入新密码',
+            },
+            ...(rules || []),
+          ]}
+        >
+          <Input.Password placeholder="请输入新密码" />
+        </Form.Item>
+        <Form.Item
+          label="密码确认"
+          name="password2"
+          rules={[
+            {
+              required: true,
+              message: '请在此输入密码',
+            },
+            {
+              validator: (_, value, callback) => {
+                if (value && !(value === getFieldValue('password'))) {
+                  callback('两次输入密码不一致');
+                }
+                {
+                  callback(undefined);
+                }
+              },
+            },
+          ]}
+        >
+          <Input.Password placeholder="请再次输入密码" />
+        </Form.Item>
+        <Form.Item
+          wrapperCol={{
+            xs: { span: 24, offset: 0 },
+            sm: {
+              span: formItemLayout.wrapperCol.span,
+              offset: formItemLayout.labelCol.span,
+            },
+          }}
+        >
+          <Button type="primary" onClick={onChangePassword}>
+            修改密码
+          </Button>
+        </Form.Item>
+      </Form>
+      <Divider style={{ margin: '40px 0 24px' }} />
+      <div className={styles.desc}>
+        <h3>密码规则如下:</h3>
+        {(rules || []).map((item, idx) => (
+          <p key={idx}>{`${idx + 1}、${item.message}`}</p>
+        ))}
+      </div>
+    </>
   );
 };
+
 export default connect(
-  ({
-    accountPassword,
-    loading,
-  }: {
-    accountPassword: StateType;
-    loading: {
-      effects: { [key: string]: boolean };
-    };
-  }) => ({
-    submitting: loading.effects['accountPassword/submitStepForm'],
-    data: accountPassword.step,
+  ({ accountPassword }: { accountPassword: StateType }) => ({
+    signature: accountPassword.signature,
+    warn: accountPassword.warnData,
+    rules: accountPassword.passwordRules,
   }),
-)(Step2);
+)(DefaultView);
