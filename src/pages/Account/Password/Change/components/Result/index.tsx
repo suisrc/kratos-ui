@@ -3,13 +3,14 @@ import React, { useEffect } from 'react';
 import { connect, Dispatch, history } from 'umi';
 import styles from './index.less';
 
-const DefaultView = (props: { dispatch: Dispatch }) => {
+const DefaultView = () => {
+  //const DefaultView = (props: { dispatch: Dispatch }) => {
   //const { dispatch } = props;
 
   return (
     <Result
       status="success"
-      title="密码修改成功"
+      title="修改成功"
       extra={[
         <Button
           type="primary"
@@ -27,4 +28,5 @@ const DefaultView = (props: { dispatch: Dispatch }) => {
   );
 };
 
-export default connect()(DefaultView);
+//export default connect()(DefaultView);
+export default DefaultView;

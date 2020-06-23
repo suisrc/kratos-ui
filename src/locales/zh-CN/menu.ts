@@ -15,6 +15,6 @@ export default {
   'menu.account.signout': '退出登录',
 
   'menu.system': '系统页',
-  'menu.system.center': '系统中心',
   'menu.system.settings': '系统配置',
+  'menu.system.gateway': 'API网关',
 };

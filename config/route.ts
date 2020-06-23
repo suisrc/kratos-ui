@@ -63,7 +63,7 @@ const demo = [
 const routes = [
   {
     path: '/test',
-    component: './Account/Password/Change',
+    component: './System/Gateway',
     exact: true,
   },
   {
@@ -158,6 +158,11 @@ const routes = [
             name: 'settings',
             path: 'settings',
             component: './System/Settings',
+          },
+          {
+            name: 'gateway',
+            path: 'gateway',
+            component: './System/Gateway',
           },
         ],
       },

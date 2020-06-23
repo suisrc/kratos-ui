@@ -62,13 +62,6 @@ const menus: MenuDataItem[] = [
       },
     ],
   },
-  {
-    name: 'system',
-    key: '002',
-    locale: 'menu.system.settings',
-    icon1: 'iconcontrol',
-    path: '/system/settings',
-  },
 ];
 
 export default menus;

@@ -85,8 +85,22 @@ const menus: any[] = [
   {
     name: 'system',
     key: '003',
-    locale: 'menu.system.settings',
+    //locale: 'menu.system.settings',
     icon1: 'iconcontrol',
-    path: '/system/settings',
+    //path: '/system/settings',
+    children: [
+      {
+        name: 'settings',
+        key: '003001',
+        icon1: 'iconcontrol',
+        path: '/system/settings',
+      },
+      {
+        name: 'gateway',
+        key: '003002',
+        icon1: 'iconcontrol',
+        path: '/system/gateway',
+      },
+    ],
   },
 ];
