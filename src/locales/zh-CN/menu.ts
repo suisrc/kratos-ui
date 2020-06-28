@@ -16,5 +16,4 @@ export default {
 
   'menu.system': '系统页',
   'menu.system.settings': '系统配置',
-  'menu.system.gateway': 'API网关',
 };

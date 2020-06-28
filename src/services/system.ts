@@ -24,3 +24,27 @@ export async function querySystemInfo(): Promise<SystemInfo> {
   }
   return {};
 }
+
+/**
+ * 获取locale内容
+ *
+ * data:
+ * {
+ *   'zh-CN': {
+ *     'menu': {
+ *        lang: 'zh-CN',
+ *        label: '简体中文',
+ *        icon: '🇨🇳',
+ *        title: '语言',
+ *     }
+ *     'data': {
+ *       'menu.system.settings': '系统配置',
+ *     }
+ *   }
+ * }
+ */
+export async function queryLocales() {
+  return request('/api/v1/system/locales', {
+    skipErrorHandler: true,
+  });
+}
