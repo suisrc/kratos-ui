@@ -38,6 +38,7 @@ const defaultLangUConfigMap = {
   },
 };
 
+// https://umijs.org/plugins/plugin-locale
 export default function(): {
   allLangUIConfig: LocalData[];
 } {

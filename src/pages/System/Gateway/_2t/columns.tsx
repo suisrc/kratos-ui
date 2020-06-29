@@ -1,8 +1,8 @@
 import React from 'react';
-import { FormattedMessage, IntlShape } from 'umi';
-import { ProColumns } from '@ant-design/pro-table';
+import { FormattedMessage, Link, IntlShape } from 'umi';
+import { ColumnType } from 'antd/es/table';
 
-import { Tag, Switch, Popconfirm, Space, Divider } from 'antd';
+import { Input, Tag, Switch, Select, Divider } from 'antd';
 import {
   CheckOutlined,
   CloseOutlined,
@@ -10,8 +10,9 @@ import {
   EditOutlined,
 } from '@ant-design/icons';
 
-import { QueryTableItem } from './data';
-import styles from './index.less';
+import { QueryTableItem } from '../data';
+
+import styles from '../index.less';
 
 // https://ant.design/components/tag-cn/
 const colors = {
@@ -22,34 +23,20 @@ const colors = {
   DEF: 'purple',
   DOMAIN: 'blue',
 };
-
-//https://protable.ant.design/getting-started
-// 这里使用pro-table取代umijs中的table
-// https://protable.ant.design/api#columns
-export const createColumns = (
+const createColumns: (
   i18n: IntlShape,
-  actions?: {
-    removeRow?: (item: QueryTableItem) => void;
-    editRow?: (item: QueryTableItem) => void;
-    [key: string]: any;
-  },
-): ProColumns<QueryTableItem>[] => {
+) => ColumnType<QueryTableItem>[] = i18n => {
   return [
     {
-      order: 30,
       title: i18n.formatMessage({
         id: 'page.system.gateway.table.unique.title',
         defaultMessage: 'Unique',
       }),
+      //condition: <Input />,
       dataIndex: 'unique',
       key: 'unique',
       render: (text, record) => (
-        //<Link to={`/system/gateway/edit?id=${record.id}`}>{text}</Link>
-        <a //href="#"
-          onClick={() => !!actions?.editRow && actions.editRow(record)}
-        >
-          {text}
-        </a>
+        <Link to={`/system/gateway/edit?id=${record.id}`}>{text}</Link>
       ),
     },
     {
@@ -59,8 +46,7 @@ export const createColumns = (
           defaultMessage="Name"
         />
       ),
-      shouldCellUpdate: (cur, pre) => true,
-      shouldUpdate: true,
+      //condition: <Input />,
       dataIndex: 'name',
       key: 'name',
     },
@@ -69,30 +55,26 @@ export const createColumns = (
         id: 'page.system.gateway.table.method.title',
         defaultMessage: 'Method',
       }),
+      condition: (
+        <Select allowClear mode="multiple">
+          <Select.Option value="GET">GET</Select.Option>
+          <Select.Option value="POST">POST</Select.Option>
+          <Select.Option value="PUT">PUT</Select.Option>
+          <Select.Option value="DELETE">DELETE</Select.Option>
+        </Select>
+      ),
       dataIndex: 'methods',
       key: 'method',
-      filters: undefined,
-      valueEnum: {
-        GET: 'GET',
-        POST: 'POST',
-        PUT: 'PUT',
-        DELETE: 'DELETE',
-      },
-      formItemProps: {
-        allowClear: true,
-        clearIcon: <CloseOutlined />,
-        mode: 'multiple',
-      },
-      render: (_, record) => (
+      render: (methods: string[]) => (
         <>
-          {record.methods?.length ? (
-            record.methods.map((tag, idx) => (
-              <Tag color={colors[tag] || colors.DEF} key={idx}>
+          {methods?.length ? (
+            methods.map(tag => (
+              <Tag color={colors[tag] || colors.DEF} key={tag || 'def'}>
                 {tag || '*'}
               </Tag>
             ))
           ) : (
-            <Tag color={colors.DEF} key={0}>
+            <Tag color={colors.DEF} key="def">
               *
             </Tag>
           )}
@@ -104,19 +86,24 @@ export const createColumns = (
         id: 'page.system.gateway.table.domain.title',
         defaultMessage: 'Domain',
       }),
+      //condition: <Input />,
       dataIndex: 'domains',
       key: 'domain',
-      render: (_, record) => (
-        <>
-          {record.domains?.length
-            ? record.domains.map((item, idx) => (
-                <span key={idx}>
-                  {item}
+      //render: (domains: string[]) =>
+      //  domains?.length
+      //    ? domains.reduce((pre, cur, idx) => pre + (idx ? '|' : '') + cur, '')
+      //    : '*',
+      render: (domains: string[]) => (
+        <div>
+          {domains?.length
+            ? domains.map(item => (
+                <>
+                  <span>{item}</span>
                   <br />
-                </span>
+                </>
               ))
             : '*'}
-        </>
+        </div>
       ),
     },
     {
@@ -124,19 +111,20 @@ export const createColumns = (
         id: 'page.system.gateway.table.path.title',
         defaultMessage: 'Path',
       }),
+      //condition: <Input />,
       dataIndex: 'paths',
       key: 'path',
-      render: (_, record) => (
-        <>
-          {record.paths?.length
-            ? record.paths.map((item, idx) => (
-                <span key={idx}>
-                  {item}
+      renderText: (paths: string[]) => (
+        <div>
+          {paths?.length
+            ? paths.map(item => (
+                <>
+                  <span>{item}</span>
                   <br />
-                </span>
+                </>
               ))
             : '*'}
-        </>
+        </div>
       ),
     },
     {
@@ -146,47 +134,43 @@ export const createColumns = (
       }),
       dataIndex: 'priority',
       key: 'priority',
-      sorter: true,
-      //defaultSortOrder: 'ascend',
-      hideInSearch: true,
     },
     {
       title: i18n.formatMessage({
         id: 'page.system.gateway.table.netmask.title',
         defaultMessage: 'Netmask',
       }),
+      //condition: <Input />,
       dataIndex: 'netmask',
       key: 'netmask',
-      // hideInTable: true,
     },
     {
-      order: 20,
       title: i18n.formatMessage({
         id: 'page.system.gateway.table.allow.title',
         defaultMessage: 'Allow',
       }),
+      //condition: (
+      //  <Select allowClear>
+      //    <Select.Option value="true">
+      //      <FormattedMessage
+      //        id="page.system.gateway.condition.allow.allow"
+      //        defaultMessage="Allow"
+      //      />
+      //    </Select.Option>
+      //    <Select.Option value="false">
+      //      <FormattedMessage
+      //        id="page.system.gateway.condition.allow.block"
+      //        defaultMessage="Block"
+      //      />
+      //    </Select.Option>
+      //  </Select>
+      //),
       dataIndex: 'allow',
       key: 'allow',
-      //sorter: true,
-      filters: undefined,
-      valueEnum: {
-        true: i18n.formatMessage({
-          id: 'page.system.gateway.table.allow.allow',
-          defaultMessage: 'Allow',
-        }),
-        false: i18n.formatMessage({
-          id: 'page.system.gateway.table.allow.block',
-          defaultMessage: 'Block',
-        }),
-      },
-      formItemProps: {
-        allowClear: true,
-        clearIcon: <CloseOutlined />,
-      },
-      render: (_, record) => (
+      render: (allow, record) => (
         <Switch
-          checked={!!record.allow}
-          //disabled
+          defaultChecked={allow || true}
+          disabled
           checkedChildren={<CheckOutlined />}
           unCheckedChildren={<CloseOutlined />}
         />
@@ -214,34 +198,23 @@ export const createColumns = (
         defaultMessage: 'Action',
       }),
       key: 'action',
-      valueType: 'option',
-      dataIndex: 'id',
       render: (_, record) => (
         <>
           <span className={styles.operating}>
-            <a // href="#"
-              onClick={() => !!actions?.editRow && actions.editRow(record)}
-            >
-              {<EditOutlined />}
-            </a>
+            <Link to={`/system/gateway/edit?id=${record.id}`}>
+              <EditOutlined />
+            </Link>
           </span>
+          <Divider type="vertical" />
           <span className={styles.operating}>
-            <Popconfirm
-              title={i18n.formatMessage({
-                id: 'page.system.gateway.table.action.delete.message',
-                defaultMessage: 'Are you sure delete this row?',
-              })}
-              onConfirm={() =>
-                !!actions?.removeRow && actions.removeRow(record)
-              }
-            >
-              <a href="#">
-                <DeleteOutlined />
-              </a>
-            </Popconfirm>
+            <a>
+              <DeleteOutlined />
+            </a>
           </span>
         </>
       ),
     },
   ];
 };
+
+export default createColumns;

@@ -163,6 +163,12 @@ const routes = [
             name: 'gateway',
             path: 'gateway',
             component: './System/Gateway',
+            //component: './System/Gateway/_2t',
+          },
+          {
+            name: 'gateway',
+            path: 'gateway/edit',
+            component: './System/Gateway/components/EditView',
           },
         ],
       },

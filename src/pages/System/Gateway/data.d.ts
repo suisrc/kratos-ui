@@ -1,26 +1,51 @@
 // 数据模型
 
-/**
- * 页面查询需要的条件对象
- */
-export interface QueryCondition {
-  name?: string;
-  path?: string;
-  //regexp?: string;
+export interface QueryParams {
+  pageSize?: number | undefined;
+  current?: number | undefined;
+  [key: string]: any;
 
-  // 分页通用
-  current?: number;
-  pageSize?: number;
-  total?: number;
+  //total?: number | undefined; // 不为空,表示不用计算total内容,直接返回即可
+  //pageNo?: number;
+  //unique?: string; // 左对齐精准匹配
+  //name?: string; // 左右模糊匹配
+  //method?: string[]; // 精准匹配匹配
+  //domain?: string; // 左对齐精准匹配
+  //path?: string; // 左对齐精准匹配
+  //allow?: boolean; // 精准匹配
+  //netmask?: string; // 精准匹配
 }
+export interface QuerySort {
+  [key: string]: 'ascend' | 'descend';
+  //[key: string]: string;
+}
+
+export interface QueryFilter {
+  [key: string]: React.ReactText[];
+}
+
+// export interface QueryResult extends RequestData {
+//   data: QueryTableItem[];
+//   success?: boolean;
+//   total?: number;
+//   [key: string]: any;
+// }
 
 /**
  * 展示的数据类型
  */
-export interface QueryData {
-  id: string;
-  name: string;
-  path: string;
-  email: string;
-  address: string;
+export interface QueryTableItem {
+  id: string; // ID
+  unique: string; // 全局唯一标识
+  name: string; // 名称
+
+  methods?: string[]; // 方法 GET, POST, PUT DELETE, *(如果为Empty)
+  domains?: string[]; // 域名
+  paths?: string[]; // 路径, *(如果为空)
+  allow?: boolean; // 允许, 默认为true, false: 标识阻止=>block
+  priority?: number; // 数字越小,优先级越高,默认为 32
+  netmask?: string; // 网络掩码, 默认为0.0.0.0/0, 标识全部作用
+
+  updateAt: string;
+  createAt: string;
 }

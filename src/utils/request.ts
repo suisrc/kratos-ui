@@ -76,3 +76,23 @@ const errorHandler = (error: { response: Response }): Response => {
 //export const reques2 = (url: any, options?: any) => {
 //  return request(url, { ...options, skipErrorHandler: true });
 //};
+
+export const addSortParams = (params: any, sort: any, key: string) => {
+  let sortArrs = !sort
+    ? undefined
+    : Object.keys(sort).map(key => {
+        let val = key + '_' + sort[key];
+        if (val.endsWith('end')) {
+          val = val.substring(0, val.length - 3);
+        }
+        return val;
+      });
+  if (sortArrs?.length) {
+    params[key] = sortArrs;
+  }
+};
+
+export const fixPageParams = (params: any) => {
+  params['pageNo'] = params.current;
+  delete params.current;
+};

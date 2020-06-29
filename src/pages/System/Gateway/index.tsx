@@ -1,65 +1,66 @@
 // 主页面
 
-import React, { useState } from 'react';
-import { useRequest } from 'umi';
-import { Table, Pagination } from 'antd';
+import React, { useState, useRef } from 'react';
+import { useRequest, useIntl } from 'umi';
+import ProTable, { ActionType } from '@ant-design/pro-table';
 
-import PageLoading from '@/components/PageLoading';
-
-import Condition from './components/ConditionView';
-import { queryGatewayApis } from './service';
-import { QueryCondition } from './data';
-import createColumns from './columns';
+import warpToolBar from './components/WarpToolBar';
+import { QueryTableItem, QueryParams, QuerySort, QueryFilter } from './data';
+import { queryTableList, createActions } from './service';
+import { createColumns } from './columns';
 import styles from './index.less';
 
+// https://protable.ant.design/getting-started
+// https://protable.ant.design/api#table
 const DefaultView = () => {
-  const [condition, setCondition] = useState<QueryCondition>({});
-  const [total, setTotal] = useState(undefined);
+  const i18n = useIntl();
+  const [pageSign, setPageSign] = useState(undefined);
 
-  const { data, loading, pagination } = useRequest(
-    ({ current, pageSize }) =>
-      queryGatewayApis({ ...condition, current, pageSize, total }),
+  const actionRef = useRef<ActionType>();
+  const { run: queryTableItems } = useRequest(
+    (params: QueryParams, sort: QuerySort, filter: QueryFilter) =>
+      queryTableList({ ...params, pageSign }, sort, filter),
     {
-      refreshDeps: [condition],
-      paginated: true,
+      manual: true,
       formatResult: (res: any) => {
-        if (typeof res?.data?.total === 'number') {
-          setTotal(res.data.total); // 缓存total, 不用重复计算
+        if (res?.data?.sign) {
+          setPageSign(res.data.sign);
         }
-        return res.data;
+        return {
+          data: res?.data?.list || [],
+          total: res?.data?.total || 0,
+          success: !!res?.success,
+        };
       },
     },
   );
-
-  const [columns] = useState(() => createColumns()); //  只加载一次
-  //const columns = useCallback(() => createColumns(), []); // 每次换页都会更新
-
-  if (!data || loading) {
-    return <PageLoading />;
-  }
+  const actions = createActions(i18n, { actionRef });
+  const [columns] = useState(() => createColumns(i18n, actions)); //  只加载一次
 
   return (
-    <div className={styles.container}>
-      <Condition
-        setCondition={qc => {
-          setCondition(qc);
-          setTotal(undefined); // 条件发生变更,需要重新计算total
-        }}
-      />
-      <Table
-        columns={columns}
-        dataSource={data?.list}
-        rowKey="id"
-        pagination={false}
-      />
-      <Pagination
-        {...(pagination as any)}
-        showQuickJumper
-        showSizeChanger
-        onShowSizeChange={pagination.onChange}
-        style={{ marginTop: 16, textAlign: 'right' }}
-      />
-    </div>
+    //<PageHeaderWrapper className={styles.pageHeader}>
+    <ProTable<QueryTableItem>
+      className={styles.container}
+      actionRef={actionRef}
+      rowKey="id"
+      //headerTitle="网关管理"
+      //dataSource onSubmit onReset loading
+      pagination={{ defaultPageSize: 20, pageSizeOptions: ['10', '20', '50'] }}
+      request={queryTableItems}
+      toolBarRender={(action, rows) => warpToolBar(i18n, action, rows, actions)}
+      tableAlertRender={false}
+      //tableAlertRender={({ selectedRowKeys, selectedRows }) => (
+      //  <div>已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a>&nbsp;项&nbsp;</div>
+      //)}
+      columns={columns}
+      rowSelection={{}}
+      search={true}
+      //options={{
+      //  density: false,
+      //  fullScreen: false,
+      //}}
+    />
+    //</PageHeaderWrapper>
   );
 };
 

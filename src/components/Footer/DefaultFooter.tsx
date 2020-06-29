@@ -58,7 +58,7 @@ export default ({
       {beian && (
         <div className="ant-pro-global-footer-copyright">
           <a href="http://www.beian.miit.gov.cn">
-            <img src="http://www.beian.gov.cn/img/new/gongan.png" />
+            <img src="/icons/gongan.png" />
             <span>{beian}</span>
           </a>
         </div>
