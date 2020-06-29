@@ -39,7 +39,7 @@ export default {
       data,
     });
   },
-  'DELETE /api/v1/system/gateway/delete': {
+  'DELETE /api/v1/system/gateway/remove': {
     success: true,
     errorMessage: '操作失败',
   },
