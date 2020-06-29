@@ -30,7 +30,7 @@ const warpToolBar = (
       <PlusOutlined />{' '}
       {i18n.formatMessage({
         id: 'page.system.gateway.toolbar.new.text',
-        defaultMessage: '新建',
+        defaultMessage: 'New',
       })}
     </Button>,
     rows?.selectedRows && rows.selectedRows.length > 0 && (
@@ -47,7 +47,7 @@ const warpToolBar = (
             <Menu.Item key="remove">
               {i18n.formatMessage({
                 id: 'page.system.gateway.toolbar.delete.text',
-                defaultMessage: '批量删除',
+                defaultMessage: 'Delete',
               })}
             </Menu.Item>
           </Menu>
@@ -56,7 +56,7 @@ const warpToolBar = (
         <Button>
           {i18n.formatMessage({
             id: 'page.system.gateway.toolbar.operations.text',
-            defaultMessage: '批量操作',
+            defaultMessage: 'Batch',
           })}{' '}
           <DownOutlined />
         </Button>
