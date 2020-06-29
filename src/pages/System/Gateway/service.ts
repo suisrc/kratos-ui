@@ -34,6 +34,9 @@ export function postRemoveGatewayApis(ids: string[]) {
 
 //===============================================================================================
 // 系统中处理queryTableList外所有的操作动作, 这里主要通过columns.tsx和components中的内容作用使用
+// columns.tsx 页面的table和search的内容描述
+// service.ts  页面中除拉取操作外的所有操作动作（queryTableList，拉去数据的请求)
+// data.d.ts   定义数据类型
 //
 export function createActions(i18n: IntlShape, ref: any) {
   const { run: removeRowsByIds } = useRequest(

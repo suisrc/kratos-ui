@@ -5,7 +5,6 @@ export interface QueryParams {
   current?: number | undefined;
   [key: string]: any;
 
-  //total?: number | undefined; // 不为空,表示不用计算total内容,直接返回即可
   //pageNo?: number;
   //unique?: string; // 左对齐精准匹配
   //name?: string; // 左右模糊匹配
@@ -14,6 +13,8 @@ export interface QueryParams {
   //path?: string; // 左对齐精准匹配
   //allow?: boolean; // 精准匹配
   //netmask?: string; // 精准匹配
+  //pageSign?: string; // 页面签名，主要用户减少计算
+  //_timestamp?: number; // 请求时间
 }
 export interface QuerySort {
   [key: string]: 'ascend' | 'descend';
