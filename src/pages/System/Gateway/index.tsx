@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react';
 import { useRequest, useIntl } from 'umi';
 import ProTable, { ActionType } from '@ant-design/pro-table';
 
-import warpToolBar from './components/WarpToolBar';
+import warpToolBar from './WarpToolBar';
 import { QueryTableItem, QueryParams, QuerySort, QueryFilter } from './data';
 import { queryTableList, createActions } from './service';
 import { createColumns } from './columns';

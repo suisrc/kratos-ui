@@ -10,7 +10,7 @@ import { IntlShape } from 'umi';
 import { Button, Dropdown, Menu } from 'antd';
 import { PlusOutlined, DownOutlined } from '@ant-design/icons';
 
-import { QueryTableItem } from '../data';
+import { QueryTableItem } from './data';
 
 const warpToolBar = (
   i18n: IntlShape,
