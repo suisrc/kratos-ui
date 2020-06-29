@@ -40,11 +40,11 @@ const DefaultView = () => {
   return (
     //<PageHeaderWrapper className={styles.pageHeader}>
     <ProTable<QueryTableItem>
+      //headerTitle="网关管理"
+      //dataSource onSubmit onReset loading
       className={styles.container}
       actionRef={actionRef}
       rowKey="id"
-      //headerTitle="网关管理"
-      //dataSource onSubmit onReset loading
       pagination={{ defaultPageSize: 20, pageSizeOptions: ['10', '20', '50'] }}
       request={queryTableItems}
       toolBarRender={(action, rows) => warpToolBar(i18n, action, rows, actions)}
