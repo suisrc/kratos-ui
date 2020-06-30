@@ -48,9 +48,12 @@ export function createActions(i18n: IntlShape, ref: any) {
   );
   return {
     newRow: () => history.push('/system/gateway/edit?id='),
+
     editRow: (item: QueryTableItem) =>
       history.push(`/system/gateway/edit?id=${item.id}`),
+
     removeRow: (item: QueryTableItem) => removeRowsByIds([item.id]),
+
     removeRows: (items: QueryTableItem[]) =>
       removeRowsByIds(items.map(item => item.id)),
   };
