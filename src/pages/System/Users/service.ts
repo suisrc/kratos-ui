@@ -57,9 +57,9 @@ export function createActions(i18n: IntlShape, ref: any) {
     removeRows: (items: QueryTableItem[]) =>
       removeRowsByIds(items.map(item => item.id)),
 
-    gotoRole: (key: string) => history.push(`/system/roles/edit?iq=${key}`),
+    gotoRole: (key: string) => history.push(`/system/roles/edit?id=${key}`),
 
     gotoGateway: (key: string) =>
-      history.push(`/system/gateway/edit?iq=${key}`),
+      history.push(`/system/gateway/edit?id=${key}`),
   };
 }

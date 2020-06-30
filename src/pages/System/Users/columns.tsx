@@ -3,7 +3,7 @@ import { FormattedMessage, IntlShape } from 'umi';
 import { ProColumns } from '@ant-design/pro-table';
 
 import { Tag, Switch, Popconfirm, Space, Divider } from 'antd';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, CloseOutlined } from '@ant-design/icons';
 
 import { QueryTableItem } from './data';
 import styles from './index.less';
@@ -62,20 +62,46 @@ export const createColumns = (
     },
     {
       title: i18n.formatMessage({
-        id: 'page.system.users.table.roles.title',
+        id: 'page.system.users.table.tag.title',
+        defaultMessage: 'Tag',
+      }),
+      dataIndex: 'tags',
+      key: 'tag',
+      render: (_, record) => (
+        <>
+          {record.tags &&
+            record.tags.map((tag, idx) => (
+              <Tag color={primaryColor} key={idx}>
+                {tag.name}&nbsp;
+                <a>
+                  <CloseOutlined />
+                </a>
+              </Tag>
+            ))}
+        </>
+      ),
+    },
+    {
+      title: i18n.formatMessage({
+        id: 'page.system.users.table.role.title',
         defaultMessage: 'Role',
       }),
       dataIndex: 'roles',
       key: 'role',
       render: (_, record) => (
         <>
-          {record.roles.map((tag, idx) => (
-            <Tag color={primaryColor} key={idx}>
-              <a onClick={() => !!actions?.gotoRole && actions.gotoRole(tag)}>
-                {tag}
-              </a>
-            </Tag>
-          ))}
+          {record.roles &&
+            record.roles.map((tag, idx) => (
+              <Tag color={primaryColor} key={idx}>
+                <a
+                  onClick={() =>
+                    !!actions?.gotoRole && actions.gotoRole(tag.id)
+                  }
+                >
+                  {tag.name}
+                </a>
+              </Tag>
+            ))}
         </>
       ),
     },
@@ -88,17 +114,18 @@ export const createColumns = (
       key: 'gateway',
       render: (_, record) => (
         <>
-          {record.gateways.map((tag, idx) => (
-            <Tag color={primaryColor} key={idx}>
-              <a
-                onClick={() =>
-                  !!actions?.gotoGateway && actions.gotoGateway(tag)
-                }
-              >
-                {tag}
-              </a>
-            </Tag>
-          ))}
+          {record.gateways &&
+            record.gateways.map((tag, idx) => (
+              <Tag color={primaryColor} key={idx}>
+                <a
+                  onClick={() =>
+                    !!actions?.gotoGateway && actions.gotoGateway(tag.id)
+                  }
+                >
+                  {tag.name}
+                </a>
+              </Tag>
+            ))}
         </>
       ),
     },

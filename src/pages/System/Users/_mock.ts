@@ -18,8 +18,9 @@ export default {
           name: '@cname',
           nickname: '@ctitle(3, 5)',
 
-          'roles|1-2': ['@word'],
-          'gateways|1-2': ['@word'],
+          'tags|1-2': [{ id: '@integer(1, 10000)', name: '@cword(2,4)' }],
+          'roles|1-4': [{ id: '@integer(1, 10000)', name: '@cword(2,4)' }],
+          'gateways|1-2': [{ id: '@integer(1, 10000)', name: '@cword(2,4)' }],
 
           updateAt: '@datetime',
           createAt: '@datetime',
