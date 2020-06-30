@@ -1,20 +1,14 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 
 import ProLayout, {
   MenuDataItem,
   BasicLayoutProps,
+  //SettingDrawer,
   //Settings,
   //PageHeaderWrapper,
 } from '@ant-design/pro-layout';
 
-import {
-  useIntl,
-  IRouteComponentProps,
-  NavLink,
-  useModel,
-  useRouteMatch,
-  IRoute,
-} from 'umi';
+import { useIntl, IRouteComponentProps, NavLink, useModel, IRoute } from 'umi';
 import { stringify } from 'qs';
 //import useMergeValue from 'use-merge-value'
 
@@ -23,7 +17,7 @@ import GlobalHeaderRight from '@/components/GlobalHeader/RightContent';
 import Footer from '@/components/Footer';
 import SettingDrawer from '@/components/SettingDrawer';
 import { fixIcon } from '@/components/IconFont';
-import { filterThreeData, getPrejudgeRoute } from '@/utils/utils';
+import { findFirstNodeByTree, getPrejudgeRoute } from '@/utils/utils';
 import Error403 from '@/exceptions/403';
 
 import SearchMenu, { filterByMenuDate } from './SearchMenu';
@@ -34,54 +28,6 @@ import defaultSettings, {
 } from '../../config/defaultSettings';
 
 import './layouts.less';
-
-/**
- * 修复选中后,菜单展开的问题
- *
- * @param menus
- * @param keys
- */
-const fixOpenKeysByMenuData = (
-  keys: string[],
-  menus?: Map<string, any>,
-): string[] => {
-  if (!menus || !keys || keys.length > 1) {
-    return keys ? keys : [];
-  }
-  let item: MenuDataItem = menus.get(keys[0]);
-  if (!item || item.children?.length) {
-    return keys;
-  }
-  // console.log(keys);
-  // console.log(item);
-  if (!item.parentKeys) {
-    item.parentKeys = ((item?.pro_layout_parentKeys
-      ? item.pro_layout_parentKeys
-      : []) as string[]).reduce<string[]>((pre, cur) => {
-      cur.startsWith('/') ? pre.push(cur.substr(1)) : pre.push(cur);
-      return pre;
-    }, [] as string[]);
-  }
-  return item.parentKeys;
-};
-
-//const filterAccessByMenuDate = (
-//  data: MenuDataItem[],
-//  filter: (item: MenuDataItem) => boolean,
-//): MenuDataItem[] =>
-//  filterThreeData(
-//    data,
-//    filter
-//  ) as MenuDataItem[];
-
-const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
-  menuList.map(item => {
-    let localItem = {
-      ...item,
-      children: item.children ? menuDataRender(item.children) : [],
-    };
-    return localItem;
-  });
 
 /**
  * 修正UrlPath内容
@@ -109,9 +55,6 @@ const getDifferentSettingPath = (state: Partial<DefaultSettings>) => {
       stateObj[key] = state[key];
     }
   });
-  delete stateObj.menu;
-  delete stateObj.title;
-  delete stateObj.iconfontUrl;
 
   if (Object.keys(stateObj).length < 1) {
     return undefined;
@@ -126,7 +69,6 @@ const Layout = (
 
   //const { initialState, setInitialState } = useModel('@@initialState');
   const { menus, settings, setSettings } = useModel('useAuthUser');
-  //const [settings, setSettings] = useState<any>({ ...initialState?.settings });
 
   const uriParams = settings.menuDrawer
     ? getDifferentSettingPath({ ...settings })
@@ -139,33 +81,46 @@ const Layout = (
 
   // const [uriParams, setUriParams] = useState<string>(); // => SettingDrawer.onDiffUriParams
   const [keyword, setKeyword] = useState('');
-
-  // 主要给openKey使用
-  const menuMap = useRef(new Map<string, any>());
-  // 默认展开的内容 & 缓存
   const [openKeys, setOpenKeys] = useState<string[]>([]);
-  //const openKeys = useRef<string[]>([]);
   const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [selected, setSelected] = useState<string[]>([]);
+
+  useEffect(() => {
+    let path = props.location.pathname;
+    let inms: any[] = findFirstNodeByTree(menus, item => item?.path === path);
+    if (inms?.length > 1) {
+      setOpenKeys(
+        inms
+          .slice(1)
+          .reverse()
+          .map(v => v.key),
+      );
+    }
+    if (inms?.length) {
+      setSelected([inms[0].key]);
+    }
+    //console.log(inms);
+  }, []);
 
   // 配置路由权限 & 缓存
   const routeAcc = useCallback(() => {
-    const routeMap = useRef(new Map<string, any>());
+    const routes = useRef(new Map<string, any>());
     let key = props.location.pathname;
     let proute = props.route;
-    let route = routeMap.current.get(key);
+    let route = routes.current.get(key);
     if (!route) {
       let croute = getPrejudgeRoute(key, [proute as IRoute]);
-      routeMap.current.set(
+      routes.current.set(
         key,
         (route = { unaccessible: croute?.unaccessible || false }),
       );
     }
-    //console.log(routeMap);
+    //console.log(routes);
     return route.unaccessible;
   }, [props.location.pathname, props.route]);
   const unaccessible = settings.menuAccess && routeAcc();
 
-  //console.log(routeMap.current);
+  //console.log(menus);
   return (
     <div>
       <ProLayout
@@ -173,39 +128,29 @@ const Layout = (
         // location={{pathname: '/welcom'}}
         logo={<LogoIcon style={{ width: '54px', padding: '10px 0px' }} />}
         title={settings.title}
-        // title={i18n.formatMessage({
-        //   id: 'app.layout.basic.title',
-        //   defaultMessage: settings.title,
-        // })}
-        openKeys={openKeys}
-        onOpenChange={data => {
-          setOpenKeys(fixOpenKeysByMenuData(data || [], menuMap.current));
-          //console.log(data);
-        }}
-        collapsed={collapsed}
-        onCollapse={setCollapsed}
         //menu={{ locale: true }}
         formatMessage={msg =>
           msg.id ? i18n.formatMessage(msg) : msg.defaultMessage || ''
         }
-        // menuData={menuData}
-        // route={[]}
-        menuDataRender={old => menus}
-        // path => itemPath, parentKeys => pro_layout_parentKeys
-        menuItemRender={(item, dom) => {
-          if (typeof item.key === 'string')
-            menuMap.current.set(item.key, {
-              path: item.path,
-              parentKeys: item.parentKeys,
-              pro_layout_parentKeys: item.pro_layout_parentKeys,
-            });
-          return !item.itemPath
-            ? fixIcon(item, dom)
-            : fixIcon(
-                item,
-                <NavLink to={getPath(item.itemPath, uriParams)}>{dom}</NavLink>,
-              );
+        collapsed={collapsed}
+        onCollapse={setCollapsed}
+        menuProps={{
+          openKeys: openKeys,
+          onOpenChange: setOpenKeys,
+          selectedKeys: selected,
+          onSelect: param => setSelected(param.selectedKeys),
         }}
+        menuDataRender={_ => menus}
+        menuItemRender={(item, dom) =>
+          fixIcon(
+            item,
+            !item.itemPath ? (
+              dom
+            ) : (
+              <NavLink to={getPath(item.itemPath, uriParams)}>{dom}</NavLink>
+            ),
+          )
+        }
         subMenuItemRender={(item, dom) => fixIcon(item, dom)}
         focusable={true}
         forceSubMenuRender={true}
@@ -216,7 +161,7 @@ const Layout = (
           />
         )}
         footerRender={() => <Footer />}
-        menuHeaderRender={(logo, title, props) => (
+        menuHeaderRender={(logo, title) => (
           <>
             <NavLink to="/" replace={true}>
               {logo}
@@ -265,3 +210,21 @@ export default Layout;
 //    const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
 //    return Authorized.check(item.authority, localItem, null) as MenuDataItem;
 //});
+
+//const filterAccessByMenuDate = (
+//  data: MenuDataItem[],
+//  filter: (item: MenuDataItem) => boolean,
+//): MenuDataItem[] =>
+//  filterThreeData(
+//    data,
+//    filter
+//  ) as MenuDataItem[];
+
+//const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
+//  menuList.map(item => {
+//    let localItem = {
+//      ...item,
+//      children: item.children ? menuDataRender(item.children) : [],
+//    };
+//    return localItem;
+//  });

@@ -132,6 +132,34 @@ export const filterThreeData = (
     .filter(item => !!item && filter(item));
 
 /**
+ *
+ * @param path
+ * @param routeData
+ */
+export const findFirstNodeByTree = (
+  current: {
+    children?: any;
+    [key: string]: any;
+  }[],
+  test: (item: any) => boolean,
+) => {
+  let result: any | undefined = undefined;
+  current.find(item => {
+    if (test(item)) {
+      result = [item];
+      return item;
+    }
+    if (item.children) {
+      result = findFirstNodeByTree(item.children, test);
+      if (result) {
+        result.push(item);
+        return item;
+      }
+    }
+  });
+  return result;
+};
+/**
  * 获取匹配的路由, 主要用于上层节点预判匹配的路由节点
  * @param path
  * @param routeData
@@ -153,6 +181,9 @@ export const getPrejudgeRoute = (
       }
       if (!result && route.path === path) {
         result = route;
+      }
+      if (result) {
+        return route; // 结束查询
       }
     }
   });

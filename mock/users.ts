@@ -61,7 +61,7 @@ const menus: any[] = [
   {
     name: 'account',
     //locale: 'menu.account', // 通过name字段合并
-    key: '002',
+    key: '001',
     icon1: 'iconuser',
     children: [
       {

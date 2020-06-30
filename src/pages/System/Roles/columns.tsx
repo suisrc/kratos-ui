@@ -74,6 +74,7 @@ export const createColumns = (
         id: 'page.system.roles.table.desc.title',
         defaultMessage: 'Description',
       }),
+      ellipsis: true,
       hideInSearch: true,
       dataIndex: 'desc',
       key: 'desc',
