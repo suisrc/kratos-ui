@@ -171,6 +171,17 @@ const routes = [
             component: './System/Users/components/EditView',
           },
           {
+            name: 'roles',
+            path: 'roles',
+            component: './System/Roles',
+            //component: './System/Gateway/_2t',
+          },
+          {
+            name: 'roles',
+            path: 'roles/edit',
+            component: './System/Roles/components/EditView',
+          },
+          {
             name: 'gateway',
             path: 'gateway',
             component: './System/Gateway',
