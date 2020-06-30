@@ -59,8 +59,6 @@ export const createColumns = (
           defaultMessage="Name"
         />
       ),
-      shouldCellUpdate: (cur, pre) => true,
-      shouldUpdate: true,
       dataIndex: 'name',
       key: 'name',
     },

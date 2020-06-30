@@ -40,6 +40,9 @@ import {
   SigninParamsType,
 } from '@/services/signin';
 
+// 主题颜色
+export const primaryColor = defaultSettings.primaryColor;
+
 // https://umijs.org/plugins/plugin-model
 // 用于完成用户权限认证和获取用户
 export default function(): {

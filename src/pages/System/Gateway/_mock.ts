@@ -6,7 +6,7 @@ import Mock, { Random } from 'mockjs';
 
 export default {
   'GET  /api/v1/system/gateway/list': (req: Request, res: Response) => {
-    const { pageNo, pageSize, total } = req.query;
+    const { pageNo, pageSize } = req.query;
     //console.log(req.params);
     const data = Mock.mock({
       sign: 'KdickdixcjkDisd',

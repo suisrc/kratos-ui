@@ -160,6 +160,17 @@ const routes = [
             component: './System/Settings',
           },
           {
+            name: 'users',
+            path: 'users',
+            component: './System/Users',
+            //component: './System/Gateway/_2t',
+          },
+          {
+            name: 'users',
+            path: 'users/edit',
+            component: './System/Users/components/EditView',
+          },
+          {
             name: 'gateway',
             path: 'gateway',
             component: './System/Gateway',
