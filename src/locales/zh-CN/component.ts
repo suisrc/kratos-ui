@@ -11,4 +11,12 @@ export default {
   'exception.404.button': '返回首页',
   'exception.500.subTitle': '服务器发生错误，请检查服务器。',
   'exception.500.button': '返回首页',
+
+  'component.form.placeholder.input': '请输入',
+  'component.form.placeholder.select': '请选择',
+  'component.form.placeholder.optional': '(选填)',
+  'component.form.button.ok': '确认',
+  'component.form.button.cancel': '取消',
+  'component.form.button.submit': '提交',
+  'component.form.button.save': '保存',
 };

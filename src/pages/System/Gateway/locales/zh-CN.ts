@@ -21,4 +21,11 @@ export default {
   'page.system.gateway.toolbar.new.text': '新建',
   'page.system.gateway.toolbar.operations.text': '批量操作',
   'page.system.gateway.toolbar.delete.text': '批量删除',
+
+  'page.system.gateway.edit.title': '编辑',
+  'page.system.gateway.new.title': '新建',
+  'page.system.gateway.edit.success': '请求成功',
+
+  'page.system.gateway.edit.unique.title': '唯一标识',
+  'page.system.gateway.edit.unique.tooltip': '全局唯一标识,用于角色/账户绑定',
 };

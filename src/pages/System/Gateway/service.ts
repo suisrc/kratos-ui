@@ -17,6 +17,24 @@ export function queryTableList(
   return request(`/api/v1/system/gateway/list${stringify2(params)}`);
 }
 
+export function queryTableItem(id: string) {
+  return request(`/api/v1/system/gateway/item?id=${id}`);
+}
+
+export function postEditTableItem(item: QueryTableItem) {
+  return request(`/api/v1/system/gateway/item`, {
+    method: 'put',
+    data: item,
+  });
+}
+
+export function postNewTableItem(item: QueryTableItem) {
+  return request(`/api/v1/system/gateway/item`, {
+    method: 'post',
+    data: item,
+  });
+}
+
 export function postRemoveGatewayApis(ids: string[]) {
   return request(`/api/v1/system/gateway/remove`, {
     method: 'delete',

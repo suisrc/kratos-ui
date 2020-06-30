@@ -36,9 +36,9 @@ export interface QueryFilter {
  * 展示的数据类型
  */
 export interface QueryTableItem {
-  id: string; // ID
-  unique: string; // 全局唯一标识
-  name: string; // 名称
+  id?: string; // ID
+  unique?: string; // 全局唯一标识
+  name?: string; // 名称
 
   methods?: string[]; // 方法 GET, POST, PUT DELETE, *(如果为Empty)
   domains?: string[]; // 域名
@@ -47,6 +47,6 @@ export interface QueryTableItem {
   priority?: number; // 数字越小,优先级越高,默认为 32
   netmask?: string; // 网络掩码, 默认为0.0.0.0/0, 标识全部作用
 
-  updateAt: string;
-  createAt: string;
+  updateAt?: string;
+  createAt?: string;
 }
