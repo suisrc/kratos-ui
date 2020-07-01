@@ -19,4 +19,7 @@ export default {
   'component.form.button.cancel': '取消',
   'component.form.button.submit': '提交',
   'component.form.button.save': '保存',
+  'component.form.title.new': '新建',
+  'component.form.title.edit': '编辑',
+  'component.form.result.success': '操作成功',
 };

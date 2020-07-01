@@ -1,11 +1,12 @@
-import React, { FC, useState } from 'react';
+import React, { useState } from 'react';
 
-import { Button, Card, Input, Form, InputNumber, Select, message } from 'antd';
-import { useIntl, FormattedMessage, useRequest } from 'umi';
+import { IntlShape, FormattedMessage } from 'umi';
+import { Tooltip } from 'antd';
+
+import { InfoCircleOutlined, CloseOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-import { getPageQuery } from '@/utils/utils';
-import PageLoading from '@/components/PageLoading';
+import BasicEditForm, { FormItemProps } from '@/components/BasicEditForm';
 
 import {
   postNewTableItem,
@@ -13,169 +14,177 @@ import {
   queryTableItem,
 } from '../service';
 
-import { createFormItems } from './EditFormItems';
-import { QueryTableItem } from '../data';
-
 import styles from '../index.less';
+import { getPageQuery } from '@/utils/utils';
 
-const FormItem = Form.Item;
-const { Option } = Select;
-const { TextArea } = Input;
-
-interface FormBasicFormProps {}
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 7 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 12 },
-    md: { span: 10 },
-  },
-};
-
-const formSubmitLayout = {
-  wrapperCol: {
-    xs: { span: 24, offset: 0 },
-    sm: { span: 10, offset: 7 },
-  },
-};
-
-const EditForm: FC<FormBasicFormProps> = _ => {
-  // 表单
-  const [form] = Form.useForm();
-  const i18n = useIntl();
-
-  const { id } = getPageQuery();
-  const [data, setData] = useState(undefined);
-  const formItems = createFormItems(i18n, { form });
-  if (!!id) {
-    // 初始化数据
-    useRequest(() => queryTableItem(id as string), {
-      onSuccess: data => {
-        formItems.forEach(
-          v => !!v.formatGet && (data[v.key] = v.formatGet(data[v.key])),
-        );
-        setData(data);
-      },
-    });
-  }
-  const { run: submit, loading: submitting } = useRequest(
-    (item: QueryTableItem) =>
-      (data ? postEditTableItem : postNewTableItem)(item),
+const createFormItems = (
+  i18n: IntlShape,
+  ref: { [key: string]: any },
+): FormItemProps[] => {
+  return [
     {
-      manual: true,
-      onSuccess: data => {
-        formItems.forEach(
-          v => !!v.formatGet && (data[v.key] = v.formatGet(data[v.key])),
-        );
-        setData(data);
-        message.success(
-          i18n.formatMessage({
-            id: 'page.system.gateway.edit.success',
-            defaultMessage: 'Success',
-          }),
-        );
-        form.resetFields();
+      key: 'unique',
+      props: {
+        label: (
+          <span>
+            <FormattedMessage id="page.system.gateway.edit.unique.title" />
+            &nbsp;
+            <em className={styles.optional}>
+              <Tooltip
+                title={
+                  <FormattedMessage id="page.system.gateway.edit.unique.tooltip" />
+                }
+              >
+                <InfoCircleOutlined style={{ marginRight: 4 }} />
+              </Tooltip>
+            </em>
+          </span>
+        ),
+        name: 'unique',
+        rules: [
+          {
+            required: true,
+            message: '请输入网关唯一标识',
+          },
+        ],
+      },
+      valueType: 'string',
+    },
+    {
+      key: 'name',
+      props: {
+        label: '名称',
+        name: 'name',
+        rules: [
+          {
+            required: true,
+            message: '请输入网关名称',
+          },
+        ],
+      },
+      valueType: 'string',
+    },
+    {
+      key: 'allow',
+      props: {
+        label: '允许/阻止',
+        name: 'allow',
+        rules: [
+          {
+            required: true,
+            message: '请选择处理方式',
+          },
+        ],
+      },
+      valueEnum: {
+        true: i18n.formatMessage({
+          id: 'page.system.gateway.table.allow.allow',
+          defaultMessage: 'Allow',
+        }),
+        false: i18n.formatMessage({
+          id: 'page.system.gateway.table.allow.block',
+          defaultMessage: 'Block',
+        }),
+      },
+      formatGetter: text => (text ? 'true' : 'false'),
+      formatSetter: text => (text === 'true' ? true : false),
+    },
+    {
+      key: 'priority',
+      props: {
+        label: '优先级',
+        name: 'priority',
+        rules: [
+          {
+            required: true,
+            message: '请输入优先级',
+          },
+        ],
+      },
+      valueType: 'number',
+    },
+    {
+      key: 'methods',
+      props: {
+        label: '方法',
+        name: 'methods',
+      },
+      formItemProps: {
+        allowClear: true,
+        clearIcon: <CloseOutlined />,
+        mode: 'multiple',
+        placeholder: '不填,所有方法有效',
+      },
+      valueEnum: {
+        GET: 'GET',
+        POST: 'POST',
+        PUT: 'PUT',
+        DELETE: 'DELETE',
       },
     },
-  );
+    {
+      key: 'domains',
+      props: {
+        label: '域名',
+        name: 'domains',
+      },
+      formItemProps: {
+        style: { minHeight: 32 },
+        rows: 4,
+        placeholder: '不填,所有域名有效,每条规则一行',
+      },
+      valueType: 'text',
+      formatGetter: text => (!text ? undefined : text.join('\n')),
+      formatSetter: text => (!text ? undefined : text.trim().split('\n')),
+    },
+    {
+      key: 'paths',
+      props: {
+        label: '路径',
+        name: 'paths',
+      },
+      formItemProps: {
+        style: { minHeight: 32 },
+        rows: 4,
+        placeholder: '不填,所有路径有效,每条规则一行',
+      },
+      valueType: 'text',
+      formatGetter: text => (!text ? undefined : text.join('\n')),
+      formatSetter: text => (!text ? undefined : text.trim().split('\n')),
+    },
+    {
+      key: 'netmask',
+      props: {
+        label: '网络掩码',
+        name: 'netmask',
+      },
+      formItemProps: {
+        placeholder: '不填,所有IP有效',
+      },
+      valueType: 'string',
+    },
+    {
+      key: 'submit',
+      valueType: 'submit',
+    },
+  ];
+};
 
-  if (!!id && !data) {
-    return <PageLoading />;
-  }
-
-  const onFinish = (values: { [key: string]: any }) => {
-    let params = { ...(data || {}), ...values };
-    formItems.forEach(
-      v => !!v.formatSet && (params[v.key] = v.formatSet(params[v.key])),
-    );
-    submit(params);
-  };
-
+export default () => {
+  const [title, setTitle] = useState('');
+  const { id } = getPageQuery() || {};
   return (
-    <PageHeaderWrapper
-      title={i18n.formatMessage({
-        id: data
-          ? 'page.system.gateway.edit.title'
-          : 'page.system.gateway.new.title',
-        defaultMessage: 'Edit',
-      })}
-      className={styles.pageHeader}
-    >
-      <Card bordered={false}>
-        <Form
-          hideRequiredMark
-          //style={{ marginTop: 8 }}
-          form={form}
-          name="edit"
-          initialValues={data}
-          onFinish={onFinish}
-          //onFinishFailed={onFinishFailed}
-          //onValuesChange={onValuesChange}
-        >
-          {formItems.map(item => (
-            <FormItem
-              key={item.key}
-              {...(item.valueType === 'submit'
-                ? formSubmitLayout
-                : formItemLayout)}
-              {...item.props}
-            >
-              {item.child ||
-                (item.valueEnum && (
-                  <Select
-                    placeholder={i18n.formatMessage({
-                      id: 'component.form.placeholder.select',
-                    })}
-                    {...item.formItemProps}
-                  >
-                    {Object.entries(item.valueEnum).map(kv => (
-                      <Option key={kv[0]} value={kv[0]}>
-                        {kv[1]}
-                      </Option>
-                    ))}
-                  </Select>
-                )) ||
-                (item.valueType === 'string' && (
-                  <Input
-                    placeholder={i18n.formatMessage({
-                      id: 'component.form.placeholder.input',
-                    })}
-                    {...item.formItemProps}
-                  />
-                )) ||
-                (item.valueType === 'number' && (
-                  <InputNumber
-                    placeholder={i18n.formatMessage({
-                      id: 'component.form.placeholder.input',
-                    })}
-                    {...item.formItemProps}
-                  />
-                )) ||
-                (item.valueType === 'text' && (
-                  <TextArea
-                    placeholder={i18n.formatMessage({
-                      id: 'component.form.placeholder.input',
-                    })}
-                    {...item.formItemProps}
-                  />
-                )) ||
-                (item.valueType === 'submit' && (
-                  <Button type="primary" htmlType="submit" loading={submitting}>
-                    {item.label || (
-                      <FormattedMessage id="component.form.button.submit" />
-                    )}
-                  </Button>
-                ))}
-            </FormItem>
-          ))}
-        </Form>
-      </Card>
+    <PageHeaderWrapper title={title || 'Loading'} className={styles.pageHeader}>
+      <BasicEditForm
+        formItemId={id as string}
+        {...{
+          createFormItems,
+          queryTableItem,
+          postNewTableItem,
+          postEditTableItem,
+        }}
+        titleSetter={setTitle}
+      />
     </PageHeaderWrapper>
   );
 };
-
-export default EditForm;
