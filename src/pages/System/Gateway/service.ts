@@ -70,9 +70,9 @@ export function createActions(i18n: IntlShape, ref: any) {
     editRow: (item: QueryTableItem) =>
       history.push(`/system/gateway/edit?id=${item.id}`),
 
-    removeRow: (item: QueryTableItem) => removeRowsByIds([item.id]),
+    removeRow: (item: QueryTableItem) => removeRowsByIds([item.id as string]),
 
     removeRows: (items: QueryTableItem[]) =>
-      removeRowsByIds(items.map(item => item.id)),
+      removeRowsByIds(items.map(item => item.id) as string[]),
   };
 }

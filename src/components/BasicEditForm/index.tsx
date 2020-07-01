@@ -43,7 +43,7 @@ export interface FormItemProps {
     placeholder?: string;
     [key: string]: any;
   };
-  child?: React.ReactNode;
+  render?: (item: FormItemProps) => React.ReactNode;
   valueEnum?: {
     [key: string]: any;
   };
@@ -73,6 +73,8 @@ interface FormBasicFormProps {
   postNewTableItem: (item: any) => Promise<any>;
   titleSetter?: (string: any) => void;
   refFormItemsProps?: { [key: string]: any };
+
+  className?: any;
 }
 
 const EditForm: FC<FormBasicFormProps> = ({
@@ -83,6 +85,8 @@ const EditForm: FC<FormBasicFormProps> = ({
   postNewTableItem,
   titleSetter,
   refFormItemsProps,
+
+  className,
 }) => {
   // 表单
   const [form] = Form.useForm();
@@ -152,7 +156,7 @@ const EditForm: FC<FormBasicFormProps> = ({
   };
 
   return (
-    <Card bordered={false}>
+    <Card bordered={false} className={className}>
       <Form
         hideRequiredMark
         //style={{ marginTop: 8 }}
@@ -171,7 +175,7 @@ const EditForm: FC<FormBasicFormProps> = ({
               : formItemLayout)}
             {...item.props}
           >
-            {item.child ||
+            {(item.render && item.render(item)) ||
               (item.valueEnum && (
                 <Select
                   placeholder={i18n.formatMessage({
