@@ -54,6 +54,7 @@ const createFormItems = (
       props: {
         label: '开发水印',
         name: 'developer',
+        valuePropName: 'checked',
       },
       render: _ => (
         <Switch
@@ -76,15 +77,16 @@ const createFormItems = (
 };
 
 export default () => {
-  const { id } = getPageQuery() || {};
   return (
-    <BasicEditForm
-      //className={styles.content}
-      formItemId="1"
-      createFormItems={createFormItems}
-      queryTableItem={querySystemInfo}
-      postNewTableItem={postEditSystemInfo}
-      postEditTableItem={postEditSystemInfo}
-    />
+    <div style={{ marginTop: '30px' }}>
+      <BasicEditForm
+        //className={styles.content}
+        formItemId="1"
+        createFormItems={createFormItems}
+        queryTableItem={querySystemInfo}
+        postNewTableItem={postEditSystemInfo}
+        postEditTableItem={postEditSystemInfo}
+      />
+    </div>
   );
 };

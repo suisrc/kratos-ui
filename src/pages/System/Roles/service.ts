@@ -5,7 +5,7 @@ import { IntlShape, useRequest, history } from 'umi';
 
 import { QueryParams, QuerySort, QueryFilter, QueryTableItem } from './data';
 
-export function queryTableList(
+export async function queryTableList(
   params: QueryParams,
   sort?: QuerySort,
   fitler?: QueryFilter,
@@ -17,7 +17,7 @@ export function queryTableList(
   return request(`/api/v1/system/roles/list${stringify2(params)}`);
 }
 
-export function postRemoveGatewayApis(ids: string[]) {
+export async function postRemoveGatewayApis(ids: string[]) {
   return request(`/api/v1/system/roles/remove`, {
     method: 'delete',
     data: ids,
@@ -47,14 +47,17 @@ export function createActions(i18n: IntlShape, ref: any) {
     },
   );
   return {
-    newRow: () => history.push('/system/roles/edit?id='),
-
-    editRow: (item: QueryTableItem) =>
-      history.push(`/system/roles/edit?id=${item.id}`),
-
-    removeRow: (item: QueryTableItem) => removeRowsByIds([item.id]),
-
-    removeRows: (items: QueryTableItem[]) =>
-      removeRowsByIds(items.map(item => item.id)),
+    newRow: () => {
+      history.push('/system/roles/edit?id=');
+    },
+    editRow: (item: QueryTableItem) => {
+      history.push(`/system/roles/edit?id=${item.id}`);
+    },
+    removeRow: (item: QueryTableItem) => {
+      removeRowsByIds([item.id]);
+    },
+    removeRows: (items: QueryTableItem[]) => {
+      removeRowsByIds(items.map(item => item.id));
+    },
   };
 }

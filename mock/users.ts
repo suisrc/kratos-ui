@@ -123,11 +123,11 @@ const menus: any[] = [
       },
       {
         //name: 'lang',
-        name: '语言管理',
+        name: '国际化',
         locale: false,
         key: '003005',
         icon1: 'iconcontrol',
-        path: '/system/lang',
+        path: '/system/language',
       },
     ],
   },

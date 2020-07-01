@@ -163,7 +163,6 @@ const routes = [
             name: 'users',
             path: 'users',
             component: './System/Users',
-            //component: './System/Gateway/_2t',
           },
           {
             name: 'users',
@@ -174,7 +173,6 @@ const routes = [
             name: 'roles',
             path: 'roles',
             component: './System/Roles',
-            //component: './System/Gateway/_2t',
           },
           {
             name: 'roles',
@@ -191,6 +189,11 @@ const routes = [
             name: 'gateway',
             path: 'gateway/edit',
             component: './System/Gateway/components/EditView',
+          },
+          {
+            name: 'language',
+            path: 'language',
+            component: './System/Language',
           },
         ],
       },

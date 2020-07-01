@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { IntlShape, FormattedMessage } from 'umi';
-import { Tooltip } from 'antd';
+import { Tooltip, Card } from 'antd';
 
 import { InfoCircleOutlined, CloseOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -175,16 +175,18 @@ export default () => {
   const { id } = getPageQuery() || {};
   return (
     <PageHeaderWrapper title={title || 'Loading'} className={styles.pageHeader}>
-      <BasicEditForm
-        formItemId={id as string}
-        {...{
-          createFormItems,
-          queryTableItem,
-          postNewTableItem,
-          postEditTableItem,
-        }}
-        titleSetter={setTitle}
-      />
+      <Card bordered={false}>
+        <BasicEditForm
+          formItemId={id as string}
+          {...{
+            createFormItems,
+            queryTableItem,
+            postNewTableItem,
+            postEditTableItem,
+          }}
+          titleSetter={setTitle}
+        />
+      </Card>
     </PageHeaderWrapper>
   );
 };

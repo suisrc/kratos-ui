@@ -14,41 +14,40 @@ export async function queryTableList(
   fixPageParams(params);
   addSortParams(params, sort, 'sort');
   // params = {...fitler, ...params}; // 合并过滤器中的内容
-  return request(`/api/v1/system/gateway/list${stringify2(params)}`);
+  return request(`/api/v1/system/language/list${stringify2(params)}`);
 }
 
 export async function queryTableItem(id: string) {
-  return request(`/api/v1/system/gateway/item?id=${id}`);
+  return request(`/api/v1/system/language/item?id=${id}`);
 }
 
 export async function postEditTableItem(item: QueryTableItem) {
-  return request(`/api/v1/system/gateway/item`, {
+  return request(`/api/v1/system/language/item`, {
     method: 'put',
     data: item,
   });
 }
 
 export async function postNewTableItem(item: QueryTableItem) {
-  return request(`/api/v1/system/gateway/item`, {
+  return request(`/api/v1/system/language/item`, {
     method: 'post',
     data: item,
   });
 }
 
-export async function postRemoveGatewayApis(ids: string[]) {
-  return request(`/api/v1/system/gateway/remove`, {
+async function postRemoveTableItem(ids: string[]) {
+  return request(`/api/v1/system/language/remove`, {
     method: 'delete',
     data: ids,
   });
 }
 
-//const { run: removeRowsByIds } = useRequest((ids: string[]) => ({
-//  url: '/api/v1/system/gateway/delete',
-//  method: 'delete',
-//  data: ids,
-//}), {
-//  manual: true,
-//});
+export async function queryKindLang() {
+  return request('/api/v1/system/language/kinds/lang');
+}
+export async function queryKindSystem() {
+  return request('/api/v1/system/language/kinds/system');
+}
 
 //===============================================================================================
 // 系统中处理queryTableList外所有的操作动作, 这里主要通过columns.tsx和components中的内容作用使用
@@ -58,18 +57,24 @@ export async function postRemoveGatewayApis(ids: string[]) {
 //
 export function createActions(i18n: IntlShape, ref: any) {
   const { run: removeRowsByIds } = useRequest(
-    (ids: string[]) => postRemoveGatewayApis(ids),
+    (ids: string[]) => postRemoveTableItem(ids),
     {
       manual: true,
       onSuccess: _ => ref?.actionRef?.current?.reload(),
     },
   );
+  const { data: kindLangs } = useRequest(queryKindLang);
+  const { data: kindSystem } = useRequest(queryKindSystem);
   return {
+    kindLangs,
+    kindSystem,
     newRow: () => {
-      history.push('/system/gateway/edit?id=');
+      ref?.setEditItemId(undefined);
+      ref?.setEditModalVisible(true);
     },
     editRow: (item: QueryTableItem) => {
-      history.push(`/system/gateway/edit?id=${item.id}`);
+      ref?.setEditItemId(item.id);
+      ref?.setEditModalVisible(true);
     },
     removeRow: (item: QueryTableItem) => {
       removeRowsByIds([item.id as string]);
