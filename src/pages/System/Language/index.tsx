@@ -36,12 +36,12 @@ const DefaultView = () => {
     },
   );
 
-  const [editItemId, setEditItemId] = useState(undefined);
+  const [editItem, setEditItem] = useState(undefined);
   const [editModalVisible, setEditModalVisible] = useState(false);
 
   const actions = createActions(i18n, {
     actionRef,
-    setEditItemId,
+    setEditItem,
     setEditModalVisible,
   });
   const columns = createColumns(i18n, actions);
@@ -79,7 +79,8 @@ const DefaultView = () => {
         //}}
       />
       <EditView
-        editItemId={editItemId}
+        data={editItem}
+        setData={setEditItem}
         editModalVisible={editModalVisible}
         closeModalVisible={() => setEditModalVisible(false)}
         refFormItemsProps={{ actions }}

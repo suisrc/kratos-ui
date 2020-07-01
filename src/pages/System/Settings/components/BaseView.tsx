@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
 
-import { IntlShape, FormattedMessage } from 'umi';
+import { IntlShape } from 'umi';
 import { Switch } from 'antd';
 
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-
 import BasicEditForm, { FormItemProps } from '@/components/BasicEditForm';
-import { getPageQuery } from '@/utils/utils';
 
 import { postEditSystemInfo, querySystemInfo } from '../service';
-
 import styles from '../style.less';
 
-const createFormItems = (
+const createFormItemProps = (
   i18n: IntlShape,
   ref: { [key: string]: any },
 ): FormItemProps[] => {
@@ -82,7 +79,7 @@ export default () => {
       <BasicEditForm
         //className={styles.content}
         formItemId="1"
-        createFormItems={createFormItems}
+        createFormItemProps={createFormItemProps}
         queryTableItem={querySystemInfo}
         postNewTableItem={postEditSystemInfo}
         postEditTableItem={postEditSystemInfo}

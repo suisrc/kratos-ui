@@ -17,7 +17,7 @@ import {
 import styles from '../index.less';
 import { getPageQuery } from '@/utils/utils';
 
-const createFormItems = (
+const createFormItemProps = (
   i18n: IntlShape,
   ref: { [key: string]: any },
 ): FormItemProps[] => {
@@ -179,7 +179,7 @@ export default () => {
         <BasicEditForm
           formItemId={id as string}
           {...{
-            createFormItems,
+            createFormItemProps,
             queryTableItem,
             postNewTableItem,
             postEditTableItem,

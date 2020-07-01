@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 import { IntlShape } from 'umi';
 import { Modal } from 'antd';
 
 import { CloseOutlined } from '@ant-design/icons';
+import { FormInstance } from 'antd/es/form';
 
-import BasicEditForm, { FormItemProps } from '@/components/BasicEditForm';
+import { FormItemProps } from '@/components/BasicEditForm';
+import ModalEditForm from '@/components/BasicEditForm/ModalEditForm';
 
 import {
   postNewTableItem,
@@ -13,7 +15,7 @@ import {
   queryTableItem,
 } from '../service';
 
-const createFormItems = (
+const createFormItemProps = (
   i18n: IntlShape,
   ref: { [key: string]: any },
 ): FormItemProps[] => {
@@ -82,40 +84,42 @@ const createFormItems = (
 };
 
 interface EditViewProps {
-  editItemId: string | undefined;
+  data: any;
+  setData: (data: any) => void;
+
   editModalVisible: boolean;
   closeModalVisible: () => void;
-  refFormItemsProps: {
-    [key: string]: any;
-  };
+  refFormItemsProps: { [key: string]: any };
 }
 const EditView: React.FC<EditViewProps> = ({
-  editItemId,
+  data,
+  setData,
   editModalVisible,
   closeModalVisible,
   refFormItemsProps,
 }) => {
+  const [title, setTitle] = useState('Loading');
   return (
-    <Modal
-      width={480}
-      bodyStyle={{ padding: '32px 40px 48px' }}
-      destroyOnClose
-      title="规则配置"
-      visible={editModalVisible}
-      //footer={renderFooter()}
-      onCancel={() => closeModalVisible()}
-    >
-      <BasicEditForm
-        formItemId={editItemId as string}
-        {...{
-          createFormItems,
-          queryTableItem,
-          postNewTableItem,
-          postEditTableItem,
-        }}
-        refFormItemsProps={refFormItemsProps}
-      />
-    </Modal>
+    <ModalEditForm
+      titleSetter={setTitle}
+      //onSubmit={form => form.submit()}
+      onSubmitSuccess={(_, data) => {
+        setData(data);
+        closeModalVisible();
+      }}
+      data={data}
+      createFormItemProps={createFormItemProps}
+      postNewTableItem={postNewTableItem}
+      postEditTableItem={postEditTableItem}
+      refFormItemsProps={refFormItemsProps}
+      refModalProps={{
+        title: title,
+        width: 640,
+        bodyStyl: { padding: '32px 40px 48px' },
+        visible: editModalVisible,
+        onCancel: closeModalVisible,
+      }}
+    />
   );
 };
 

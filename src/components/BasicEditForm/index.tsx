@@ -1,36 +1,17 @@
-import React, { FC, useState, ReactNode, useEffect } from 'react';
+import React, { FC, useState, useEffect, ReactNode } from 'react';
 
-import { Button, Input, Form, InputNumber, Select, message } from 'antd';
+import { Form, message } from 'antd';
 import { useIntl, useRequest, IntlShape } from 'umi';
 
 import { Rule, FormInstance } from 'antd/es/form';
 import { ButtonProps } from 'antd/es/button';
 
-import PageLoading from '@/components/PageLoading';
+import EditForm from './EditForm';
+import PageLoading from '../PageLoading';
 
-const FormItem = Form.Item;
-const { Option } = Select;
-const { TextArea } = Input;
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 7 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 12 },
-    md: { span: 10 },
-  },
-};
-
-const formSubmitLayout = {
-  wrapperCol: {
-    xs: { span: 24, offset: 0 },
-    sm: { span: 10, offset: 7 },
-  },
-};
-
+/**
+ *
+ */
 export interface FormItemProps {
   key: string;
   props?: {
@@ -65,8 +46,10 @@ export interface FormItemProps {
 }
 
 interface FormBasicFormProps {
-  formItemId: string;
-  createFormItems: (
+  formItemId?: string;
+  formItem?: any;
+
+  createFormItemProps: (
     i18n: IntlShape,
     ref: {
       // data, setData, submitting,
@@ -74,32 +57,38 @@ interface FormBasicFormProps {
       [key: string]: any;
     },
   ) => FormItemProps[];
-  queryTableItem: (id: string) => Promise<any>;
+
+  queryTableItem?: (id: string) => Promise<any>;
   postEditTableItem: (item: any) => Promise<any>;
   postNewTableItem: (item: any) => Promise<any>;
-  titleSetter?: (string: any) => void;
+
+  titleSetter?: (title: string) => void;
   refFormItemsProps?: { [key: string]: any };
 }
 
-const EditForm: FC<FormBasicFormProps> = ({
-  formItemId: id,
-  createFormItems,
+const DefaultForm: FC<FormBasicFormProps> = ({
+  formItemId,
+  formItem,
+
+  createFormItemProps,
   queryTableItem,
   postEditTableItem,
   postNewTableItem,
+
   titleSetter,
+
   refFormItemsProps,
 }) => {
   // 表单
   const [form] = Form.useForm();
   const i18n = useIntl();
 
-  const [data, setData] = useState(undefined);
-  if (!!id) {
+  const [data, setData] = useState(formItem);
+  if (!!formItemId && queryTableItem) {
     // 初始化数据
-    useRequest(() => queryTableItem(id as string), {
+    useRequest(() => queryTableItem(formItemId as string), {
       onSuccess: data => {
-        formItems.forEach(
+        formItemProps.forEach(
           v => !!v.formatGetter && (data[v.key] = v.formatGetter(data[v.key])),
         );
         setData(data);
@@ -111,7 +100,7 @@ const EditForm: FC<FormBasicFormProps> = ({
     {
       manual: true,
       onSuccess: data => {
-        formItems.forEach(
+        formItemProps.forEach(
           v => !!v.formatGetter && (data[v.key] = v.formatGetter(data[v.key])),
         );
         setData(data);
@@ -126,6 +115,14 @@ const EditForm: FC<FormBasicFormProps> = ({
     },
   );
 
+  const onFinish = (values: { [key: string]: any }) => {
+    let params = { ...(data || {}), ...values };
+    formItemProps.forEach(
+      v => !!v.formatSetter && (params[v.key] = v.formatSetter(params[v.key])),
+    );
+    submit(params);
+  };
+
   if (titleSetter) {
     useEffect(() => {
       titleSetter(
@@ -137,7 +134,7 @@ const EditForm: FC<FormBasicFormProps> = ({
     }, [data]);
   }
 
-  const formItems = createFormItems(i18n, {
+  const formItemProps = createFormItemProps(i18n, {
     form,
     data,
     setData,
@@ -145,100 +142,16 @@ const EditForm: FC<FormBasicFormProps> = ({
     ...(refFormItemsProps || {}),
   });
 
-  if (!!id && !data) {
+  if (!!formItemId && !data) {
     return <PageLoading />;
   }
 
-  const onFinish = (values: { [key: string]: any }) => {
-    let params = { ...(data || {}), ...values };
-    formItems.forEach(
-      v => !!v.formatSetter && (params[v.key] = v.formatSetter(params[v.key])),
-    );
-    submit(params);
-  };
-
   return (
-    <Form
-      hideRequiredMark
-      //style={{ marginTop: 8 }}
-      form={form}
-      name="edit"
-      initialValues={data}
-      onFinish={onFinish}
-      //onFinishFailed={onFinishFailed}
-      //onValuesChange={onValuesChange}
-    >
-      {formItems.map(item => (
-        <FormItem
-          key={item.key}
-          {...(item.layout ||
-            (item.valueType === 'submit' ? formSubmitLayout : formItemLayout))}
-          {...item.props}
-        >
-          {(item.render && item.render(item)) ||
-            (item.valueEnum && (
-              <Select
-                placeholder={i18n.formatMessage({
-                  id: 'component.form.placeholder.select',
-                })}
-                {...item.formItemProps}
-              >
-                {Object.entries(item.valueEnum).map(kv => (
-                  <Option key={kv[0]} value={kv[0]}>
-                    {kv[1]}
-                  </Option>
-                ))}
-              </Select>
-            )) ||
-            (item.valueType === 'number' && (
-              <InputNumber
-                placeholder={i18n.formatMessage({
-                  id: 'component.form.placeholder.input',
-                })}
-                {...item.formItemProps}
-              />
-            )) ||
-            (item.valueType === 'text' && (
-              <TextArea
-                placeholder={i18n.formatMessage({
-                  id: 'component.form.placeholder.input',
-                })}
-                {...item.formItemProps}
-              />
-            )) ||
-            (item.valueType === 'submit' &&
-              (item.buttons ? (
-                item.buttons.map((v, idx) => (
-                  <Button
-                    key={idx}
-                    {...(idx > 0 && { style: { marginLeft: 8 } })}
-                    {...(v.submit && {
-                      type: 'primary',
-                      htmlType: 'submit',
-                      loading: submitting,
-                    })}
-                    {...v.props}
-                  >
-                    {v.label}
-                  </Button>
-                ))
-              ) : (
-                <Button type="primary" htmlType="submit" loading={submitting}>
-                  {i18n.formatMessage({ id: 'component.form.button.submit' })}
-                </Button>
-              ))) ||
-            (item.valueType === 'string' && (
-              <Input
-                placeholder={i18n.formatMessage({
-                  id: 'component.form.placeholder.input',
-                })}
-                {...item.formItemProps}
-              />
-            ))}
-        </FormItem>
-      ))}
-    </Form>
+    <EditForm
+      formItem={data}
+      {...{ form, formItemProps, onFinish, submitting }}
+    />
   );
 };
 
-export default EditForm;
+export default DefaultForm;

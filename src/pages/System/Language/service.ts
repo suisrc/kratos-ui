@@ -69,11 +69,11 @@ export function createActions(i18n: IntlShape, ref: any) {
     kindLangs,
     kindSystem,
     newRow: () => {
-      ref?.setEditItemId(undefined);
+      ref?.setEditItem(undefined);
       ref?.setEditModalVisible(true);
     },
     editRow: (item: QueryTableItem) => {
-      ref?.setEditItemId(item.id);
+      ref?.setEditItem(item);
       ref?.setEditModalVisible(true);
     },
     removeRow: (item: QueryTableItem) => {
