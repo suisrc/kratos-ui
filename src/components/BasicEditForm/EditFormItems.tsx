@@ -52,21 +52,21 @@ const EditFormItems: FC<EditFormItemProps> = ({
     <>
       {formItemProps.map(
         (item, idx) =>
-          (item.renderFormItem && item.renderFormItem(item)) || (
+          (item.renderFormItem && item.renderFormItem(item, idx)) || (
             <span key={`fitem-${idx}`}>
-              {item.renderHeader && item.renderHeader(item)}
+              {item.renderHeader && item.renderHeader(item, idx)}
               <FormItem
-                key={item.key}
+                //key={item.key}
                 {...(item.layout ||
-                  (item.valueType === 'submit'
+                  (item.valueType === 'submit' || item.valueType === 'none'
                     ? formSubmitLayout
                     : formItemLayout))}
-                {...item.props}
                 {...(item.valueType === 'switch'
                   ? { valuePropName: 'checked' }
                   : {})}
+                {...item.props}
               >
-                {(item.render && item.render(item)) ||
+                {(item.render && item.render(item, idx)) ||
                   (item.valueEnum && (
                     <Select
                       placeholder={i18n.formatMessage({
@@ -140,7 +140,7 @@ const EditFormItems: FC<EditFormItemProps> = ({
                     />
                   ))}
               </FormItem>
-              {item.renderFooter && item.renderFooter(item)}
+              {item.renderFooter && item.renderFooter(item, idx)}
             </span>
           ),
       )}

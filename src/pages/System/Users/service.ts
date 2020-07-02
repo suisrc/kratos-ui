@@ -63,11 +63,7 @@ export function createViewService(i18n: IntlShape, ref: any) {
       onSuccess: _ => ref?.actionRef?.current?.reload(),
     },
   );
-  const { data: ruleDataSources } = useRequest(queryRuleDataSources);
-  const { data: gatewayDataSources } = useRequest(queryGatewayDataSources);
   return {
-    ruleDataSources,
-    gatewayDataSources,
     newRow: () => {
       history.push('/system/users/edit?id=');
     },
@@ -86,5 +82,13 @@ export function createViewService(i18n: IntlShape, ref: any) {
     gotoGateway: (key: string) => {
       history.push(`/system/gateway/edit?id=${key}`);
     },
+  };
+}
+export function createEditService(i18n: IntlShape, ref: any) {
+  const { data: ruleDataSources } = useRequest(queryRuleDataSources);
+  const { data: gatewayDataSources } = useRequest(queryGatewayDataSources);
+  return {
+    ruleDataSources,
+    gatewayDataSources,
   };
 }

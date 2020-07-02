@@ -35,8 +35,8 @@ const DefaultView = () => {
     },
   );
   const services = createViewService(i18n, { actionRef });
-  const columns = createColumns(i18n, services);
-  //const [columns] = useState(() => createColumns(i18n, services)); //  只加载一次
+  //const columns = createColumns(i18n, services);
+  const [columns] = useState(() => createColumns(i18n, services)); //  只加载一次
 
   return (
     //<PageHeaderWrapper className={styles.pageHeader}>

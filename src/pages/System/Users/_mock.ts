@@ -76,11 +76,13 @@ export default {
       res.send(
         Mock.mock({
           success: true,
-          'data|20': {
-            id: '@integer(10, 1000)',
-            name: '@word(4, 7)',
-            desc: '@cword(4, 7',
-          },
+          ['data|20']: [
+            {
+              id: '@integer(1, 100000)',
+              name: '@word(4, 7)',
+              desc: '@cword(4, 7)',
+            },
+          ],
         }),
       );
     }, 1000),
@@ -90,11 +92,13 @@ export default {
         res.send(
           Mock.mock({
             success: true,
-            'data|20': {
-              id: '@integer(10, 1000)',
-              name: '@word(4, 7)',
-              desc: '@cword(4, 7',
-            },
+            ['data|20']: [
+              {
+                id: '@integer(1, 100000)',
+                name: '@word(4, 7)',
+                desc: '@cword(4, 7)',
+              },
+            ],
           }),
         ),
       1000,

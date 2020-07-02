@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
 
-import { IntlShape } from 'umi';
-import { Divider, Card, Transfer, Tag, Empty } from 'antd';
+import { IntlShape, useIntl } from 'umi';
+import {
+  Divider,
+  Card,
+  Transfer,
+  Tag,
+  Empty,
+  Space,
+  Tooltip,
+  Switch,
+} from 'antd';
 import { FormInstance } from 'antd/es/form';
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -12,6 +21,7 @@ import {
   postNewTableItem,
   postEditTableItem,
   queryTableItem,
+  createEditService,
 } from '../service';
 
 import styles from '../index.less';
@@ -27,12 +37,13 @@ const createFormCardProps = (
   },
 ): FormItemCards[] => {
   const { form, services } = ref;
+  const [ruleShowSearch, setRuleShowSearch] = useState(false);
+  const [gateShowSearch, setGateShowSearch] = useState(false);
   return [
     {
       title: '基本配置',
       formItems: [
         {
-          key: 'unique',
           props: {
             label: '编码',
             name: 'unique',
@@ -43,7 +54,6 @@ const createFormCardProps = (
           valueType: 'string',
         },
         {
-          key: 'name',
           props: {
             label: '名称',
             name: 'name',
@@ -57,7 +67,6 @@ const createFormCardProps = (
           valueType: 'string',
         },
         {
-          key: 'nickname',
           props: {
             label: '昵称',
             name: 'nickname',
@@ -71,7 +80,6 @@ const createFormCardProps = (
           valueType: 'string',
         },
         {
-          key: 'tags',
           props: {
             label: '标签',
             name: 'tags',
@@ -96,7 +104,6 @@ const createFormCardProps = (
       title: '权限配置',
       formItems: [
         {
-          key: 'roles',
           props: {
             label: '角色',
             name: 'roles',
@@ -107,17 +114,36 @@ const createFormCardProps = (
             return (
               <>
                 <Transfer
-                  dataSource={services?.ruleDataSources || {}}
                   listStyle={{
                     width: '100%',
+                    height: 300,
                   }}
+                  dataSource={services?.ruleDataSources || []}
+                  rowKey={item => item.id}
+                  render={item => (
+                    <Tooltip title={item.desc}>{item.name}</Tooltip>
+                  )}
+                  showSearch={ruleShowSearch}
+                  filterOption={(inputValue, item) =>
+                    item.name.indexOf(inputValue) !== -1
+                  }
                 />
               </>
             );
           },
         },
         {
-          key: 'gateways',
+          valueType: 'none',
+          render: _ => (
+            <Switch
+              checkedChildren={<span>搜索</span>}
+              unCheckedChildren={<span>搜索</span>}
+              checked={ruleShowSearch}
+              onChange={setRuleShowSearch}
+            />
+          ),
+        },
+        {
           props: {
             label: '网关',
             name: 'gateways',
@@ -130,20 +156,40 @@ const createFormCardProps = (
                 <Transfer
                   listStyle={{
                     width: '100%',
+                    height: 300,
                   }}
+                  dataSource={services?.ruleDataSources || []}
+                  rowKey={item => item.id}
+                  render={item => (
+                    <Tooltip title={item.desc}>{item.name}</Tooltip>
+                  )}
+                  showSearch={gateShowSearch}
+                  filterOption={(inputValue, item) =>
+                    item.name.indexOf(inputValue) !== -1
+                  }
                 />
               </>
             );
           },
+        },
+        {
+          valueType: 'none',
+          render: _ => (
+            <Switch
+              checkedChildren={<span>搜索</span>}
+              unCheckedChildren={<span>搜索</span>}
+              checked={gateShowSearch}
+              onChange={setGateShowSearch}
+            />
+          ),
         },
       ],
     },
     {
       formItems: [
         {
-          key: 'submit',
           valueType: 'submit',
-          renderHeader: _ => <Divider />,
+          renderHeader: _ => <Divider style={{ marginTop: -50 }} />,
         },
       ],
     },
@@ -151,8 +197,10 @@ const createFormCardProps = (
 };
 
 export default () => {
+  const i18n = useIntl();
   const [title, setTitle] = useState('');
   const { id } = getPageQuery() || {};
+  const services = createEditService(i18n, {});
   return (
     <PageHeaderWrapper title={title || 'Loading'} className={styles.pageHeader}>
       <Card bordered={false}>
@@ -165,6 +213,7 @@ export default () => {
             postEditTableItem,
           }}
           titleSetter={setTitle}
+          refFormItemParams={{ services }}
         />
       </Card>
     </PageHeaderWrapper>

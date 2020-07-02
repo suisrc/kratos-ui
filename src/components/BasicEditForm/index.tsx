@@ -15,7 +15,7 @@ import FormCard, { FormCardProps } from './FormCard';
  *
  */
 export interface FormItemProps {
-  key: string;
+  //key: string;
   props?: {
     label?: string | ReactNode;
     name?: string;
@@ -32,22 +32,23 @@ export interface FormItemProps {
     placeholder?: string;
     [key: string]: any;
   };
-  render?: (item: FormItemProps, form?: any) => React.ReactNode;
-  renderFormItem?: (item: FormItemProps) => React.ReactNode;
-  renderHeader?: (item: FormItemProps) => React.ReactNode;
-  renderFooter?: (item: FormItemProps) => React.ReactNode;
+  render?: (item?: FormItemProps, idx?: number, form?: any) => React.ReactNode;
+  renderFormItem?: (item?: FormItemProps, idx?: number) => React.ReactNode;
+  renderHeader?: (item?: FormItemProps, idx?: number) => React.ReactNode;
+  renderFooter?: (item?: FormItemProps, idx?: number) => React.ReactNode;
   valueEnum?: {
     [key: string]: any;
   };
   valueParser?: (value: any) => any;
   valueFormatter?: (value: any) => any;
-  valueType?: 'submit' | 'string' | 'number' | 'text' | 'switch';
+  valueType?: 'submit' | 'string' | 'number' | 'text' | 'switch' | 'none';
   buttons?: {
     // 只有在valueType=submit才有效
     label: string;
     submit?: boolean;
     props?: ButtonProps; //& { [key: string]: any };
   }[];
+  [key: string]: any;
 }
 
 /**
@@ -122,7 +123,9 @@ const DefaultForm: FC<FormBasicFormProps> = ({
     let params = { ...(data || {}), ...values };
     formItemProps.forEach(
       v =>
-        !!v.valueFormatter && (params[v.key] = v.valueFormatter(params[v.key])),
+        !!v.valueFormatter &&
+        !!v.props?.name &&
+        (params[v.props?.name] = v.valueFormatter(params[v.props?.name])),
     );
     submit(params);
   };
@@ -133,7 +136,10 @@ const DefaultForm: FC<FormBasicFormProps> = ({
     //console.log(data);
     let params = { ...(data || {}) };
     formItemProps.forEach(
-      v => !!v.valueParser && (params[v.key] = v.valueParser(params[v.key])),
+      v =>
+        !!v.valueParser &&
+        !!v.props?.name &&
+        (params[v.props?.name] = v.valueParser(params[v.props?.name])),
     );
     return params;
   }, [data]);

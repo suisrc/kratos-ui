@@ -71,7 +71,9 @@ const DefaultForm: FC<ModalEditFormProps> = ({
     let params = { ...(data || {}), ...values };
     formItemProps.forEach(
       v =>
-        !!v.valueFormatter && (params[v.key] = v.valueFormatter(params[v.key])),
+        !!v.valueFormatter &&
+        !!v.props?.name &&
+        (params[v.props?.name] = v.valueFormatter(params[v.props?.name])),
     );
     submit(params);
   };
@@ -82,7 +84,10 @@ const DefaultForm: FC<ModalEditFormProps> = ({
     //console.log(data);
     let params = { ...(data || {}) };
     formItemProps.forEach(
-      v => !!v.valueParser && (params[v.key] = v.valueParser(params[v.key])),
+      v =>
+        !!v.valueParser &&
+        !!v.props?.name &&
+        (params[v.props?.name] = v.valueParser(params[v.props?.name])),
     );
     return params;
   }, [data]);
