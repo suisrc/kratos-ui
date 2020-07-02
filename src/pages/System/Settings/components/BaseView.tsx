@@ -51,14 +51,15 @@ const createFormItemProps = (
       props: {
         label: '开发水印',
         name: 'developer',
-        valuePropName: 'checked',
+        //valuePropName: 'checked',
       },
-      render: _ => (
-        <Switch
-          checkedChildren={<CheckOutlined />}
-          unCheckedChildren={<CloseOutlined />}
-        />
-      ),
+      valueType: 'switch',
+      //render: _ => (
+      //  <Switch
+      //    checkedChildren={<CheckOutlined />}
+      //    unCheckedChildren={<CloseOutlined />}
+      //  />
+      //),
     },
     {
       key: 'submit',
@@ -78,7 +79,7 @@ export default () => {
     <div style={{ marginTop: '30px' }}>
       <BasicEditForm
         //className={styles.content}
-        formItemId="1"
+        dataId="1"
         createFormItemProps={createFormItemProps}
         queryTableItem={querySystemInfo}
         postNewTableItem={postEditSystemInfo}

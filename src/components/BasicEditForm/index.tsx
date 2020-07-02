@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, ReactNode } from 'react';
+import React, { FC, useState, useEffect, ReactNode, useCallback } from 'react';
 
 import { Form, message } from 'antd';
 import { useIntl, useRequest, IntlShape } from 'umi';
@@ -34,9 +34,9 @@ export interface FormItemProps {
   valueEnum?: {
     [key: string]: any;
   };
-  formatGetter?: (value: any) => any;
-  formatSetter?: (value: any) => any;
-  valueType?: 'submit' | 'string' | 'number' | 'text';
+  valueParser?: (value: any) => any;
+  valueFormatter?: (value: any) => any;
+  valueType?: 'submit' | 'string' | 'number' | 'text' | 'switch';
   buttons?: {
     // 只有在valueType=submit才有效
     label: string;
@@ -46,8 +46,13 @@ export interface FormItemProps {
 }
 
 interface FormBasicFormProps {
-  formItemId?: string;
-  formItem?: any;
+  dataId?: string;
+  data?: any;
+
+  queryTableItem?: (id: string) => Promise<any>;
+  postEditTableItem: (item: any) => Promise<any>;
+  postNewTableItem: (item: any) => Promise<any>;
+  titleSetter?: (title: string) => void;
 
   createFormItemProps: (
     i18n: IntlShape,
@@ -57,42 +62,28 @@ interface FormBasicFormProps {
       [key: string]: any;
     },
   ) => FormItemProps[];
-
-  queryTableItem?: (id: string) => Promise<any>;
-  postEditTableItem: (item: any) => Promise<any>;
-  postNewTableItem: (item: any) => Promise<any>;
-
-  titleSetter?: (title: string) => void;
-  refFormItemsProps?: { [key: string]: any };
+  refFormItemParams?: { [key: string]: any };
 }
 
 const DefaultForm: FC<FormBasicFormProps> = ({
-  formItemId,
-  formItem,
+  dataId,
 
-  createFormItemProps,
   queryTableItem,
   postEditTableItem,
   postNewTableItem,
-
   titleSetter,
-
-  refFormItemsProps,
+  createFormItemProps,
+  refFormItemParams,
 }) => {
   // 表单
   const [form] = Form.useForm();
   const i18n = useIntl();
 
-  const [data, setData] = useState(formItem);
-  if (!!formItemId && queryTableItem) {
+  const [data, setData] = useState();
+  if (!!dataId && queryTableItem) {
     // 初始化数据
-    useRequest(() => queryTableItem(formItemId as string), {
-      onSuccess: data => {
-        formItemProps.forEach(
-          v => !!v.formatGetter && (data[v.key] = v.formatGetter(data[v.key])),
-        );
-        setData(data);
-      },
+    useRequest(() => queryTableItem(dataId as string), {
+      onSuccess: data => setData(data),
     });
   }
   const { run: submit, loading: submitting } = useRequest(
@@ -100,9 +91,6 @@ const DefaultForm: FC<FormBasicFormProps> = ({
     {
       manual: true,
       onSuccess: data => {
-        formItemProps.forEach(
-          v => !!v.formatGetter && (data[v.key] = v.formatGetter(data[v.key])),
-        );
         setData(data);
         message.success(
           i18n.formatMessage({
@@ -118,10 +106,22 @@ const DefaultForm: FC<FormBasicFormProps> = ({
   const onFinish = (values: { [key: string]: any }) => {
     let params = { ...(data || {}), ...values };
     formItemProps.forEach(
-      v => !!v.formatSetter && (params[v.key] = v.formatSetter(params[v.key])),
+      v =>
+        !!v.valueFormatter && (params[v.key] = v.valueFormatter(params[v.key])),
     );
     submit(params);
   };
+  const initData = useCallback(() => {
+    if (!data || !formItemProps) {
+      return {};
+    }
+    //console.log(data);
+    let params = { ...(data || {}) };
+    formItemProps.forEach(
+      v => !!v.valueParser && (params[v.key] = v.valueParser(params[v.key])),
+    );
+    return params;
+  }, [data]);
 
   if (titleSetter) {
     useEffect(() => {
@@ -139,16 +139,16 @@ const DefaultForm: FC<FormBasicFormProps> = ({
     data,
     setData,
     submitting,
-    ...(refFormItemsProps || {}),
+    ...(refFormItemParams || {}),
   });
 
-  if (!!formItemId && !data) {
+  if (!!dataId && !data) {
     return <PageLoading />;
   }
 
   return (
     <EditForm
-      formItem={data}
+      data={initData()}
       {...{ form, formItemProps, onFinish, submitting }}
     />
   );

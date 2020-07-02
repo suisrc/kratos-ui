@@ -89,14 +89,14 @@ interface EditViewProps {
 
   editModalVisible: boolean;
   closeModalVisible: () => void;
-  refFormItemsProps: { [key: string]: any };
+  refFormItemParams: { [key: string]: any };
 }
 const EditView: React.FC<EditViewProps> = ({
   data,
   setData,
   editModalVisible,
   closeModalVisible,
-  refFormItemsProps,
+  refFormItemParams,
 }) => {
   const [title, setTitle] = useState('Loading');
   return (
@@ -111,7 +111,7 @@ const EditView: React.FC<EditViewProps> = ({
       createFormItemProps={createFormItemProps}
       postNewTableItem={postNewTableItem}
       postEditTableItem={postEditTableItem}
-      refFormItemsProps={refFormItemsProps}
+      refFormItemParams={refFormItemParams}
       refModalProps={{
         title: title,
         width: 640,

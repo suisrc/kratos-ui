@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC, useEffect, useRef, useState, useCallback } from 'react';
 
 import { Form, message, Modal } from 'antd';
 import { useIntl, useRequest, IntlShape } from 'umi';
@@ -11,6 +11,10 @@ import { FormItemProps } from './index';
 interface ModalEditFormProps {
   data: any;
 
+  postEditTableItem: (item: any) => Promise<any>;
+  postNewTableItem: (item: any) => Promise<any>;
+  titleSetter?: (title: string) => void;
+
   createFormItemProps: (
     i18n: IntlShape,
     ref: {
@@ -19,28 +23,25 @@ interface ModalEditFormProps {
       [key: string]: any;
     },
   ) => FormItemProps[];
+  refFormItemParams?: { [key: string]: any };
 
-  postEditTableItem: (item: any) => Promise<any>;
-  postNewTableItem: (item: any) => Promise<any>;
-
-  titleSetter?: (title: string) => void;
-  refFormItemsProps?: { [key: string]: any };
   refModalProps?: { [key: string]: any };
-
   onSubmit?: (form: FormInstance) => void;
-  onSubmitSuccess?: (form: FormInstance, data: any) => void;
+  onSubmitSuccess?: (form: FormInstance, data: any, params: any) => void;
+  onSubmitError?: (form: FormInstance, error: any, params: any) => void;
 }
 
 const DefaultForm: FC<ModalEditFormProps> = ({
   data,
-  createFormItemProps,
   postEditTableItem,
   postNewTableItem,
   titleSetter,
-  refFormItemsProps,
+  createFormItemProps,
+  refFormItemParams,
   refModalProps,
   onSubmit,
   onSubmitSuccess,
+  onSubmitError,
 }) => {
   // 表单
   const [form] = Form.useForm();
@@ -51,14 +52,17 @@ const DefaultForm: FC<ModalEditFormProps> = ({
     (item: any) => (data ? postEditTableItem : postNewTableItem)(item),
     {
       manual: true,
-      onSuccess: data => {
+      onSuccess: (data, params) => {
         message.success(
           i18n.formatMessage({
             id: 'component.form.result.success',
             defaultMessage: 'Success',
           }),
         );
-        onSubmitSuccess && onSubmitSuccess(form, data);
+        !!onSubmitSuccess && onSubmitSuccess(form, data, params);
+      },
+      onError: (error, params) => {
+        !!onSubmitError && onSubmitError(form, error, params);
       },
     },
   );
@@ -66,22 +70,32 @@ const DefaultForm: FC<ModalEditFormProps> = ({
   const onFinish = (values: { [key: string]: any }) => {
     let params = { ...(data || {}), ...values };
     formItemProps.forEach(
-      v => !!v.formatSetter && (params[v.key] = v.formatSetter(params[v.key])),
+      v =>
+        !!v.valueFormatter && (params[v.key] = v.valueFormatter(params[v.key])),
     );
     submit(params);
   };
+  const initData = useCallback(() => {
+    if (!data || !formItemProps) {
+      return {};
+    }
+    //console.log(data);
+    let params = { ...(data || {}) };
+    formItemProps.forEach(
+      v => !!v.valueParser && (params[v.key] = v.valueParser(params[v.key])),
+    );
+    return params;
+  }, [data]);
 
   useEffect(() => {
-    titleSetter &&
+    if (titleSetter) {
       titleSetter(
         i18n.formatMessage({
           id: data ? 'component.form.title.edit' : 'component.form.title.new',
           defaultMessage: 'Edit',
         }),
       );
-    formItemProps.forEach(
-      v => !!v.formatGetter && (data[v.key] = v.formatGetter(data[v.key])),
-    );
+    }
     (first.current && ((first.current = false) || true)) || form.resetFields();
   }, [data]);
 
@@ -89,7 +103,7 @@ const DefaultForm: FC<ModalEditFormProps> = ({
     form,
     data,
     submitting,
-    ...(refFormItemsProps || {}),
+    ...(refFormItemParams || {}),
   });
 
   return (
@@ -106,7 +120,7 @@ const DefaultForm: FC<ModalEditFormProps> = ({
       //onCancel={closeModalVisible}
     >
       <EditForm
-        formItem={data}
+        data={initData()}
         {...{ form, formItemProps, onFinish, submitting }}
       />
     </Modal>

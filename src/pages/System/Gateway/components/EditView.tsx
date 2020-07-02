@@ -69,25 +69,23 @@ const createFormItemProps = (
       props: {
         label: '允许/阻止',
         name: 'allow',
-        rules: [
-          {
-            required: true,
-            message: '请选择处理方式',
-          },
-        ],
       },
-      valueEnum: {
-        true: i18n.formatMessage({
-          id: 'page.system.gateway.table.allow.allow',
-          defaultMessage: 'Allow',
-        }),
-        false: i18n.formatMessage({
-          id: 'page.system.gateway.table.allow.block',
-          defaultMessage: 'Block',
-        }),
+      valueType: 'switch',
+      formItemProps: {
+        defaultChecked: true,
       },
-      formatGetter: text => (text ? 'true' : 'false'),
-      formatSetter: text => (text === 'true' ? true : false),
+      //valueEnum: {
+      //  true: i18n.formatMessage({
+      //    id: 'page.system.gateway.table.allow.allow',
+      //    defaultMessage: 'Allow',
+      //  }),
+      //  false: i18n.formatMessage({
+      //    id: 'page.system.gateway.table.allow.block',
+      //    defaultMessage: 'Block',
+      //  }),
+      //},
+      //valueParser: text => (text === true ? 'true' : 'false'),
+      //valueFormatter: text => (text === 'true' ? true : false),
     },
     {
       key: 'priority',
@@ -134,8 +132,8 @@ const createFormItemProps = (
         placeholder: '不填,所有域名有效,每条规则一行',
       },
       valueType: 'text',
-      formatGetter: text => (!text ? undefined : text.join('\n')),
-      formatSetter: text => (!text ? undefined : text.trim().split('\n')),
+      valueParser: text => (!text ? undefined : text.join('\n')),
+      valueFormatter: text => (!text ? undefined : text.trim().split('\n')),
     },
     {
       key: 'paths',
@@ -149,8 +147,8 @@ const createFormItemProps = (
         placeholder: '不填,所有路径有效,每条规则一行',
       },
       valueType: 'text',
-      formatGetter: text => (!text ? undefined : text.join('\n')),
-      formatSetter: text => (!text ? undefined : text.trim().split('\n')),
+      valueParser: text => (!text ? undefined : text.join('\n')),
+      valueFormatter: text => (!text ? undefined : text.trim().split('\n')),
     },
     {
       key: 'netmask',
@@ -177,7 +175,7 @@ export default () => {
     <PageHeaderWrapper title={title || 'Loading'} className={styles.pageHeader}>
       <Card bordered={false}>
         <BasicEditForm
-          formItemId={id as string}
+          dataId={id as string}
           {...{
             createFormItemProps,
             queryTableItem,

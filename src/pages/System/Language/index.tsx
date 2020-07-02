@@ -83,7 +83,7 @@ const DefaultView = () => {
         setData={setEditItem}
         editModalVisible={editModalVisible}
         closeModalVisible={() => setEditModalVisible(false)}
-        refFormItemsProps={{ actions }}
+        refFormItemParams={{ actions }}
       />
     </div>
     //</PageHeaderWrapper>

@@ -1,9 +1,12 @@
 import React, { FC } from 'react';
 
-import { Button, Input, Form, InputNumber, Select } from 'antd';
 import { useIntl } from 'umi';
 
+import { Button, Input, Form, InputNumber, Select, Switch } from 'antd';
 import { FormInstance } from 'antd/es/form';
+
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
+
 import { FormItemProps } from './index';
 
 const FormItem = Form.Item;
@@ -30,19 +33,19 @@ const formSubmitLayout = {
 };
 
 interface EditFormProps {
-  formItem?: any;
   formItemProps: FormItemProps[];
   onFinish: (values: { [key: string]: any }) => void;
   submitting: boolean;
   form: FormInstance;
+  data?: any;
 }
 
 const EditForm: FC<EditFormProps> = ({
-  formItem,
   formItemProps,
   onFinish,
   submitting,
   form,
+  data,
 }) => {
   const i18n = useIntl();
   return (
@@ -51,7 +54,7 @@ const EditForm: FC<EditFormProps> = ({
       //style={{ marginTop: 8 }}
       form={form}
       name="edit"
-      initialValues={formItem}
+      initialValues={data}
       onFinish={onFinish}
       //onFinishFailed={onFinishFailed}
       //onValuesChange={onValuesChange}
@@ -62,6 +65,7 @@ const EditForm: FC<EditFormProps> = ({
           {...(item.layout ||
             (item.valueType === 'submit' ? formSubmitLayout : formItemLayout))}
           {...item.props}
+          {...(item.valueType === 'switch' ? { valuePropName: 'checked' } : {})}
         >
           {(item.render && item.render(item)) ||
             (item.valueEnum && (
@@ -92,6 +96,13 @@ const EditForm: FC<EditFormProps> = ({
                   id: 'component.form.placeholder.input',
                 })}
                 {...item.formItemProps}
+              />
+            )) ||
+            (item.valueType === 'switch' && (
+              <Switch
+                defaultChecked={item.formItemProps?.defaultChecked}
+                checkedChildren={<CheckOutlined />}
+                unCheckedChildren={<CloseOutlined />}
               />
             )) ||
             (item.valueType === 'submit' &&
