@@ -109,8 +109,8 @@ const createFormCardProps = (
             name: 'roles',
           },
           render: _ => {
-            //const value = ref?.form?.getFieldValue('gateways');
-            //console.log(value);
+            //const value = ref?.form?.getFieldValue('roles');
+            const [targetKeys, setTargetKeys] = useState<string[]>([]);
             return (
               <>
                 <Transfer
@@ -119,6 +119,10 @@ const createFormCardProps = (
                     height: 300,
                   }}
                   dataSource={services?.ruleDataSources || []}
+                  targetKeys={targetKeys}
+                  onChange={(nextTargetKeys, direction, moveKeys) => {
+                    setTargetKeys(nextTargetKeys);
+                  }}
                   rowKey={item => item.id}
                   render={item => (
                     <Tooltip title={item.desc}>{item.name}</Tooltip>
@@ -150,7 +154,7 @@ const createFormCardProps = (
           },
           render: _ => {
             //const value = ref?.form?.getFieldValue('gateways');
-            //console.log(value);
+            const [targetKeys, setTargetKeys] = useState<string[]>([]);
             return (
               <>
                 <Transfer
@@ -159,6 +163,10 @@ const createFormCardProps = (
                     height: 300,
                   }}
                   dataSource={services?.ruleDataSources || []}
+                  targetKeys={targetKeys}
+                  onChange={(nextTargetKeys, direction, moveKeys) => {
+                    setTargetKeys(nextTargetKeys);
+                  }}
                   rowKey={item => item.id}
                   render={item => (
                     <Tooltip title={item.desc}>{item.name}</Tooltip>
@@ -189,7 +197,7 @@ const createFormCardProps = (
       formItems: [
         {
           valueType: 'submit',
-          renderHeader: _ => <Divider style={{ marginTop: -50 }} />,
+          renderHeader: _ => <Divider style={{ marginTop: -32 }} />,
         },
       ],
     },
