@@ -6,7 +6,7 @@ import ProTable, { ActionType } from '@ant-design/pro-table';
 
 import warpToolBar from './WarpToolBar';
 import { QueryTableItem, QueryParams, QuerySort, QueryFilter } from './data';
-import { queryTableList, createActions } from './service';
+import { queryTableList, createViewService } from './service';
 import { createColumns } from './columns';
 import styles from './index.less';
 
@@ -34,8 +34,9 @@ const DefaultView = () => {
       },
     },
   );
-  const actions = createActions(i18n, { actionRef });
-  const [columns] = useState(() => createColumns(i18n, actions)); //  只加载一次
+  const services = createViewService(i18n, { actionRef });
+  const columns = createColumns(i18n, services);
+  //const [columns] = useState(() => createColumns(i18n, services)); //  只加载一次
 
   return (
     //<PageHeaderWrapper className={styles.pageHeader}>
@@ -50,7 +51,9 @@ const DefaultView = () => {
         pageSizeOptions: ['10', '20', '50', '100', '200'],
       }}
       request={queryTableItems}
-      toolBarRender={(action, rows) => warpToolBar(i18n, action, rows, actions)}
+      toolBarRender={(action, rows) =>
+        warpToolBar(i18n, action, rows, services)
+      }
       tableAlertRender={false}
       //tableAlertRender={({ selectedRowKeys, selectedRows }) => (
       //  <div>已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a>&nbsp;项&nbsp;</div>

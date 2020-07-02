@@ -3,64 +3,13 @@ import React, { FC, useState, useEffect, ReactNode, useCallback } from 'react';
 import { Form, message } from 'antd';
 import { useIntl, useRequest, IntlShape } from 'umi';
 
-import { Rule, FormInstance } from 'antd/es/form';
-import { CardProps } from 'antd/es/card';
-import { ButtonProps } from 'antd/es/button';
+import { FormInstance } from 'antd/es/form';
 
 import PageLoading from '../PageLoading';
-import EditFormItems from './EditFormItems';
-import FormCard, { FormCardProps } from './FormCard';
+import EditFormCards from './EditFormCards';
+import { FormItemCards } from '.';
 
-/**
- *
- */
-export interface FormItemProps {
-  key: string;
-  props?: {
-    label?: string | ReactNode;
-    name?: string;
-    rules?: Rule[];
-    [key: string]: any;
-  };
-  layout?:
-    | true
-    | {
-        labelCol?: any;
-        wrapperCol?: any;
-      };
-  formItemProps?: {
-    placeholder?: string;
-    [key: string]: any;
-  };
-  render?: (item: FormItemProps, form?: any) => React.ReactNode;
-  renderFormItem?: (item: FormItemProps) => React.ReactNode;
-  renderHeader?: (item: FormItemProps) => React.ReactNode;
-  renderFooter?: (item: FormItemProps) => React.ReactNode;
-  valueEnum?: {
-    [key: string]: any;
-  };
-  valueParser?: (value: any) => any;
-  valueFormatter?: (value: any) => any;
-  valueType?: 'submit' | 'string' | 'number' | 'text' | 'switch';
-  buttons?: {
-    // 只有在valueType=submit才有效
-    label: string;
-    submit?: boolean;
-    props?: ButtonProps; //& { [key: string]: any };
-  }[];
-}
-
-/**
- *
- */
-export interface FormItemCards {
-  formItems: FormItemProps[];
-  cardProps?: CardProps;
-  title?: string;
-  render?: (items: FormItemProps[]) => React.ReactNode;
-}
-
-interface FormBasicFormProps {
+export interface FormCardProps {
   dataId?: string;
   data?: any;
 
@@ -69,25 +18,25 @@ interface FormBasicFormProps {
   postNewTableItem: (item: any) => Promise<any>;
   titleSetter?: (title: string) => void;
 
-  createFormItemProps: (
+  createFormCardProps: (
     i18n: IntlShape,
     ref: {
       // data, setData, submitting,
       form: FormInstance;
       [key: string]: any;
     },
-  ) => FormItemProps[];
+  ) => FormItemCards[];
   refFormItemParams?: { [key: string]: any };
 }
 
-const DefaultForm: FC<FormBasicFormProps> = ({
+const DefaultForm: FC<FormCardProps> = ({
   dataId,
 
   queryTableItem,
   postEditTableItem,
   postNewTableItem,
   titleSetter,
-  createFormItemProps,
+  createFormCardProps,
   refFormItemParams,
 }) => {
   // 表单
@@ -120,20 +69,25 @@ const DefaultForm: FC<FormBasicFormProps> = ({
 
   const onFinish = (values: { [key: string]: any }) => {
     let params = { ...(data || {}), ...values };
-    formItemProps.forEach(
-      v =>
-        !!v.valueFormatter && (params[v.key] = v.valueFormatter(params[v.key])),
+    cfp.forEach(f =>
+      f.formItems.forEach(
+        v =>
+          !!v.valueFormatter &&
+          (params[v.key] = v.valueFormatter(params[v.key])),
+      ),
     );
     submit(params);
   };
   const initData = useCallback(() => {
-    if (!data || !formItemProps) {
+    if (!data || !cfp) {
       return {};
     }
     //console.log(data);
     let params = { ...(data || {}) };
-    formItemProps.forEach(
-      v => !!v.valueParser && (params[v.key] = v.valueParser(params[v.key])),
+    cfp.forEach(f =>
+      f.formItems.forEach(
+        v => !!v.valueParser && (params[v.key] = v.valueParser(params[v.key])),
+      ),
     );
     return params;
   }, [data]);
@@ -149,7 +103,7 @@ const DefaultForm: FC<FormBasicFormProps> = ({
     }, [data]);
   }
 
-  const formItemProps = createFormItemProps(i18n, {
+  const cfp = createFormCardProps(i18n, {
     form,
     data,
     setData,
@@ -171,10 +125,9 @@ const DefaultForm: FC<FormBasicFormProps> = ({
       //onFinishFailed={onFinishFailed}
       //onValuesChange={onValuesChange}
     >
-      <EditFormItems {...{ formItemProps, submitting }} />
+      <EditFormCards {...{ formItemCards: cfp, submitting }} />
     </Form>
   );
 };
 
 export default DefaultForm;
-export const EditFormCard: React.FC<FormCardProps> = FormCard;

@@ -14,7 +14,7 @@ import { primaryColor } from '@/models/useAuthUser';
 // https://protable.ant.design/api#columns
 export const createColumns = (
   i18n: IntlShape,
-  actions?: {
+  services?: {
     removeRow?: (item: QueryTableItem) => void;
     editRow?: (item: QueryTableItem) => void;
     gotoRole?: (key: string) => void;
@@ -34,7 +34,7 @@ export const createColumns = (
       render: (text, record) => (
         //<Link to={`/system/gateway/edit?id=${record.id}`}>{text}</Link>
         <a //href="#"
-          onClick={() => !!actions?.editRow && actions.editRow(record)}
+          onClick={() => !!services?.editRow && services.editRow(record)}
         >
           {text}
         </a>
@@ -95,7 +95,7 @@ export const createColumns = (
               <Tag color={primaryColor} key={idx}>
                 <a
                   onClick={() =>
-                    !!actions?.gotoRole && actions.gotoRole(tag.id)
+                    !!services?.gotoRole && services.gotoRole(tag.id)
                   }
                 >
                   {tag.name}
@@ -119,7 +119,7 @@ export const createColumns = (
               <Tag color={primaryColor} key={idx}>
                 <a
                   onClick={() =>
-                    !!actions?.gotoGateway && actions.gotoGateway(tag.id)
+                    !!services?.gotoGateway && services.gotoGateway(tag.id)
                   }
                 >
                   {tag.name}
@@ -150,7 +150,7 @@ export const createColumns = (
         <>
           <span className={styles.operating}>
             <a // href="#"
-              onClick={() => !!actions?.editRow && actions.editRow(record)}
+              onClick={() => !!services?.editRow && services.editRow(record)}
             >
               {<EditOutlined />}
             </a>
@@ -162,7 +162,7 @@ export const createColumns = (
                 defaultMessage: 'Are you sure delete this row?',
               })}
               onConfirm={() =>
-                !!actions?.removeRow && actions.removeRow(record)
+                !!services?.removeRow && services.removeRow(record)
               }
             >
               <a href="#">

@@ -55,7 +55,7 @@ export async function queryKindSystem() {
 // service.ts  页面中除拉取操作外的所有操作动作（queryTableList，拉去数据的请求)
 // data.d.ts   定义数据类型
 //
-export function createActions(i18n: IntlShape, ref: any) {
+export function createViewService(i18n: IntlShape, ref: any) {
   const { run: removeRowsByIds } = useRequest(
     (ids: string[]) => postRemoveTableItem(ids),
     {

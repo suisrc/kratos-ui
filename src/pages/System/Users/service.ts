@@ -17,20 +17,37 @@ export async function queryTableList(
   return request(`/api/v1/system/users/list${stringify2(params)}`);
 }
 
-export async function postRemoveGatewayApis(ids: string[]) {
+export async function postRemoveTableItem(ids: string[]) {
   return request(`/api/v1/system/users/remove`, {
     method: 'delete',
     data: ids,
   });
 }
 
-//const { run: removeRowsByIds } = useRequest((ids: string[]) => ({
-//  url: '/api/v1/system/gateway/delete',
-//  method: 'delete',
-//  data: ids,
-//}), {
-//  manual: true,
-//});
+export async function queryTableItem(id: string) {
+  return request(`/api/v1/system/users/item?id=${id}`);
+}
+
+export async function postEditTableItem(item: QueryTableItem) {
+  return request(`/api/v1/system/users/item`, {
+    method: 'put',
+    data: item,
+  });
+}
+
+export async function postNewTableItem(item: QueryTableItem) {
+  return request(`/api/v1/system/users/item`, {
+    method: 'post',
+    data: item,
+  });
+}
+
+export async function queryRuleDataSources() {
+  return request('/api/v1/system/users/rule/sources');
+}
+export async function queryGatewayDataSources() {
+  return request('/api/v1/system/users/gateway/sources');
+}
 
 //===============================================================================================
 // 系统中处理queryTableList外所有的操作动作, 这里主要通过columns.tsx和components中的内容作用使用
@@ -38,15 +55,19 @@ export async function postRemoveGatewayApis(ids: string[]) {
 // service.ts  页面中除拉取操作外的所有操作动作（queryTableList，拉去数据的请求)
 // data.d.ts   定义数据类型
 //
-export function createActions(i18n: IntlShape, ref: any) {
+export function createViewService(i18n: IntlShape, ref: any) {
   const { run: removeRowsByIds } = useRequest(
-    (ids: string[]) => postRemoveGatewayApis(ids),
+    (ids: string[]) => postRemoveTableItem(ids),
     {
       manual: true,
       onSuccess: _ => ref?.actionRef?.current?.reload(),
     },
   );
+  const { data: ruleDataSources } = useRequest(queryRuleDataSources);
+  const { data: gatewayDataSources } = useRequest(queryGatewayDataSources);
   return {
+    ruleDataSources,
+    gatewayDataSources,
     newRow: () => {
       history.push('/system/users/edit?id=');
     },
@@ -54,10 +75,10 @@ export function createActions(i18n: IntlShape, ref: any) {
       history.push(`/system/users/edit?id=${item.id}`);
     },
     removeRow: (item: QueryTableItem) => {
-      removeRowsByIds([item.id]);
+      removeRowsByIds([item.id as string]);
     },
     removeRows: (items: QueryTableItem[]) => {
-      removeRowsByIds(items.map(item => item.id));
+      removeRowsByIds(items.map(item => item.id as string));
     },
     gotoRole: (key: string) => {
       history.push(`/system/roles/edit?id=${key}`);

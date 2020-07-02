@@ -34,25 +34,25 @@ export interface QueryFilter {
 
 export interface TagType {
   id: string;
-  name: string;
+  name?: string;
+  desc?: string;
 }
 
 /**
  * 展示的数据类型
  */
 export interface QueryTableItem {
-  id: string; // ID
-  unique: string; // 全局唯一标识, 不可变更
-  name: string; // 全局唯一,登陆名
+  id?: string; // ID
+  unique?: string; // 全局唯一标识, 不可变更
+  name?: string; // 全局唯一,登陆名
+  nickname?: string; // 昵称
 
-  nickname: string; // 昵称
-
-  tags: TagType[]; // 标签
+  tags?: TagType[]; // 标签
   // role可以理解为gateway的集合, 也就是说,用户可以通过role确认权限,
   // 也可以通过gateway直接管理权限,推荐使用role管理
-  roles: TagType[];
-  gateways: TagType[];
+  roles?: TagType[];
+  gateways?: TagType[];
 
-  updateAt: string;
-  createAt: string; // 用户加入系统时间
+  updateAt?: string;
+  createAt?: string; // 用户加入系统时间
 }

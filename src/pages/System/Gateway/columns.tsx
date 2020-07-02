@@ -28,7 +28,7 @@ const colors = {
 // https://protable.ant.design/api#columns
 export const createColumns = (
   i18n: IntlShape,
-  actions?: {
+  services?: {
     removeRow?: (item: QueryTableItem) => void;
     editRow?: (item: QueryTableItem) => void;
     [key: string]: any;
@@ -46,7 +46,7 @@ export const createColumns = (
       render: (text, record) => (
         //<Link to={`/system/gateway/edit?id=${record.id}`}>{text}</Link>
         <a //href="#"
-          onClick={() => !!actions?.editRow && actions.editRow(record)}
+          onClick={() => !!services?.editRow && services.editRow(record)}
         >
           {text}
         </a>
@@ -218,7 +218,7 @@ export const createColumns = (
         <>
           <span className={styles.operating}>
             <a // href="#"
-              onClick={() => !!actions?.editRow && actions.editRow(record)}
+              onClick={() => !!services?.editRow && services.editRow(record)}
             >
               {<EditOutlined />}
             </a>
@@ -230,7 +230,7 @@ export const createColumns = (
                 defaultMessage: 'Are you sure delete this row?',
               })}
               onConfirm={() =>
-                !!actions?.removeRow && actions.removeRow(record)
+                !!services?.removeRow && services.removeRow(record)
               }
             >
               <a href="#">

@@ -15,7 +15,7 @@ import { primaryColor } from '@/models/useAuthUser';
 // https://protable.ant.design/api#columns
 export const createColumns = (
   i18n: IntlShape,
-  actions?: {
+  services?: {
     removeRow?: (item: QueryTableItem) => void;
     editRow?: (item: QueryTableItem) => void;
     kindLangs?: {};
@@ -34,7 +34,7 @@ export const createColumns = (
       dataIndex: 'id',
       key: 'id',
       render: (text, record) => (
-        <a onClick={() => !!actions?.editRow && actions.editRow(record)}>
+        <a onClick={() => !!services?.editRow && services.editRow(record)}>
           {text}
         </a>
       ),
@@ -64,7 +64,7 @@ export const createColumns = (
       dataIndex: 'lang',
       key: 'lang',
       filters: undefined,
-      valueEnum: actions?.kindLangs || {},
+      valueEnum: services?.kindLangs || {},
       formItemProps: {
         allowClear: true,
         clearIcon: <CloseOutlined />,
@@ -80,7 +80,7 @@ export const createColumns = (
       dataIndex: 'system',
       key: 'system',
       filters: undefined,
-      valueEnum: actions?.kindSystem || {},
+      valueEnum: services?.kindSystem || {},
       formItemProps: {
         allowClear: true,
         clearIcon: <CloseOutlined />,
@@ -118,7 +118,7 @@ export const createColumns = (
         <>
           <span className={styles.operating}>
             <a // href="#"
-              onClick={() => !!actions?.editRow && actions.editRow(record)}
+              onClick={() => !!services?.editRow && services.editRow(record)}
             >
               {<EditOutlined />}
             </a>
@@ -130,7 +130,7 @@ export const createColumns = (
                 defaultMessage: 'Are you sure delete this row?',
               })}
               onConfirm={() =>
-                !!actions?.removeRow && actions.removeRow(record)
+                !!services?.removeRow && services.removeRow(record)
               }
             >
               <a href="#">

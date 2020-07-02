@@ -19,14 +19,17 @@ const warpToolBar = (
     selectedRowKeys?: React.ReactText[] | undefined;
     selectedRows?: QueryTableItem[] | undefined;
   },
-  actions?: {
+  services?: {
     newRow?: () => void;
     removeRows?: (items: QueryTableItem[]) => void;
     [key: string]: any;
   },
 ) => {
   return [
-    <Button type="primary" onClick={() => actions?.newRow && actions.newRow()}>
+    <Button
+      type="primary"
+      onClick={() => services?.newRow && services.newRow()}
+    >
       <PlusOutlined />{' '}
       {i18n.formatMessage({
         id: 'page.system.gateway.toolbar.new.text',
@@ -38,8 +41,8 @@ const warpToolBar = (
         overlay={
           <Menu
             onClick={e => {
-              if (e.key === 'remove' && !!actions?.removeRows) {
-                actions.removeRows(rows.selectedRows || []);
+              if (e.key === 'remove' && !!services?.removeRows) {
+                services.removeRows(rows.selectedRows || []);
               }
             }}
             selectedKeys={[]}

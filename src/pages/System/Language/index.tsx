@@ -6,7 +6,7 @@ import ProTable, { ActionType } from '@ant-design/pro-table';
 
 import warpToolBar from './WarpToolBar';
 import { QueryTableItem, QueryParams, QuerySort, QueryFilter } from './data';
-import { queryTableList, createActions } from './service';
+import { queryTableList, createViewService } from './service';
 import { createColumns } from './columns';
 import styles from './index.less';
 import EditView from './components/EditView';
@@ -39,12 +39,12 @@ const DefaultView = () => {
   const [editItem, setEditItem] = useState(undefined);
   const [editModalVisible, setEditModalVisible] = useState(false);
 
-  const actions = createActions(i18n, {
+  const services = createViewService(i18n, {
     actionRef,
     setEditItem,
     setEditModalVisible,
   });
-  const columns = createColumns(i18n, actions);
+  const columns = createColumns(i18n, services);
   //根据需求,createColumns中需要使用use方法,所以无法使用useState嵌套
   //如果使用useState,意味着colums中的内容不在改变
   //const [columns] = useState(() => createColumns(i18n, actions)); //  只加载一次
@@ -64,7 +64,7 @@ const DefaultView = () => {
         }}
         request={queryTableItems}
         toolBarRender={(action, rows) =>
-          warpToolBar(i18n, action, rows, actions)
+          warpToolBar(i18n, action, rows, services)
         }
         tableAlertRender={false}
         //tableAlertRender={({ selectedRowKeys, selectedRows }) => (
@@ -86,7 +86,7 @@ const DefaultView = () => {
           reload && actionRef.current?.reload();
           setEditModalVisible(false);
         }}
-        refFormItemParams={{ actions }}
+        refFormItemParams={{ services }}
       />
     </div>
     //</PageHeaderWrapper>

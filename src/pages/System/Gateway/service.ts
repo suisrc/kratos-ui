@@ -35,7 +35,7 @@ export async function postNewTableItem(item: QueryTableItem) {
   });
 }
 
-export async function postRemoveGatewayApis(ids: string[]) {
+export async function postRemoveTableItem(ids: string[]) {
   return request(`/api/v1/system/gateway/remove`, {
     method: 'delete',
     data: ids,
@@ -56,9 +56,9 @@ export async function postRemoveGatewayApis(ids: string[]) {
 // service.ts  页面中除拉取操作外的所有操作动作（queryTableList，拉去数据的请求)
 // data.d.ts   定义数据类型
 //
-export function createActions(i18n: IntlShape, ref: any) {
+export function createViewService(i18n: IntlShape, ref: any) {
   const { run: removeRowsByIds } = useRequest(
-    (ids: string[]) => postRemoveGatewayApis(ids),
+    (ids: string[]) => postRemoveTableItem(ids),
     {
       manual: true,
       onSuccess: _ => ref?.actionRef?.current?.reload(),

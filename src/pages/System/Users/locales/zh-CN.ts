@@ -1,7 +1,7 @@
 export default {
   'page.system.users.name': '请求网关',
 
-  'page.system.users.table.unique.title': '索引',
+  'page.system.users.table.unique.title': '编码',
   'page.system.users.table.name.title': '名称',
   'page.system.users.table.nickname.title': '昵称',
   'page.system.users.table.tag.title': '标签',
