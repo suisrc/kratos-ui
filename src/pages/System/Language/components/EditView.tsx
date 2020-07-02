@@ -88,7 +88,7 @@ interface EditViewProps {
   setData: (data: any) => void;
 
   editModalVisible: boolean;
-  closeModalVisible: () => void;
+  closeModalVisible: (reload?: boolean) => void;
   refFormItemParams: { [key: string]: any };
 }
 const EditView: React.FC<EditViewProps> = ({
@@ -105,7 +105,7 @@ const EditView: React.FC<EditViewProps> = ({
       //onSubmit={form => form.submit()}
       onSubmitSuccess={(_, data) => {
         setData(data);
-        closeModalVisible();
+        closeModalVisible(true);
       }}
       data={data}
       createFormItemProps={createFormItemProps}
@@ -117,7 +117,7 @@ const EditView: React.FC<EditViewProps> = ({
         width: 640,
         bodyStyl: { padding: '32px 40px 48px' },
         visible: editModalVisible,
-        onCancel: closeModalVisible,
+        onCancel: () => closeModalVisible(),
       }}
     />
   );

@@ -8,6 +8,7 @@ import { ButtonProps } from 'antd/es/button';
 
 import EditForm from './EditForm';
 import PageLoading from '../PageLoading';
+import EditFormItems from './EditFormItems';
 
 /**
  *
@@ -31,6 +32,7 @@ export interface FormItemProps {
     [key: string]: any;
   };
   render?: (item: FormItemProps) => React.ReactNode;
+  renderFormItem?: (item: FormItemProps) => React.ReactNode;
   valueEnum?: {
     [key: string]: any;
   };
@@ -43,6 +45,20 @@ export interface FormItemProps {
     submit?: boolean;
     props?: ButtonProps; //& { [key: string]: any };
   }[];
+}
+
+/**
+ *
+ */
+export interface FormItemCards {
+  formItems: FormItemProps[];
+  cardProps?: {
+    bordered?: boolean;
+    title?: string;
+    [key: string]: any;
+  };
+  title?: string;
+  render?: (items: FormItemProps[]) => React.ReactNode;
 }
 
 interface FormBasicFormProps {
@@ -147,10 +163,17 @@ const DefaultForm: FC<FormBasicFormProps> = ({
   }
 
   return (
-    <EditForm
-      data={initData()}
-      {...{ form, formItemProps, onFinish, submitting }}
-    />
+    <Form
+      hideRequiredMark
+      form={form}
+      name="edit"
+      initialValues={initData()}
+      onFinish={onFinish}
+      //onFinishFailed={onFinishFailed}
+      //onValuesChange={onValuesChange}
+    >
+      <EditFormItems {...{ formItemProps, submitting }} />
+    </Form>
   );
 };
 

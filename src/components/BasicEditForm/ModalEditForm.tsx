@@ -5,8 +5,8 @@ import { useIntl, useRequest, IntlShape } from 'umi';
 
 import { FormInstance } from 'antd/es/form';
 
-import EditForm from './EditForm';
 import { FormItemProps } from './index';
+import EditFormItems from './EditFormItems';
 
 interface ModalEditFormProps {
   data: any;
@@ -119,10 +119,17 @@ const DefaultForm: FC<ModalEditFormProps> = ({
       //visible={editModalVisible}
       //onCancel={closeModalVisible}
     >
-      <EditForm
-        data={initData()}
-        {...{ form, formItemProps, onFinish, submitting }}
-      />
+      <Form
+        hideRequiredMark
+        form={form}
+        name="edit"
+        initialValues={initData()}
+        onFinish={onFinish}
+        //onFinishFailed={onFinishFailed}
+        //onValuesChange={onValuesChange}
+      >
+        <EditFormItems {...{ formItemProps, submitting }} />
+      </Form>
     </Modal>
   );
 };
