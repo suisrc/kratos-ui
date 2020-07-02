@@ -82,7 +82,10 @@ const DefaultView = () => {
         data={editItem}
         setData={setEditItem}
         editModalVisible={editModalVisible}
-        closeModalVisible={() => setEditModalVisible(false)}
+        closeModalVisible={() => {
+          setEditModalVisible(false);
+          actionRef.current?.reload();
+        }}
         refFormItemParams={{ actions }}
       />
     </div>
