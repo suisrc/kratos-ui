@@ -60,7 +60,7 @@ export function createViewService(i18n: IntlShape, ref: any) {
     (ids: string[]) => postRemoveTableItem(ids),
     {
       manual: true,
-      onSuccess: _ => ref?.actionRef?.current?.reload(),
+      onSuccess: _ => ref?.actionRef?.current?.reloadAndRest(),
     },
   );
   const { data: kindLangs } = useRequest(queryKindLang);

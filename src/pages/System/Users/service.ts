@@ -49,6 +49,13 @@ export async function queryGatewayDataSources() {
   return request('/api/v1/system/users/gateway/sources');
 }
 
+export async function postNewUserTags(tags: string[], ids: string[]) {
+  return request(`/api/v1/system/users/tags`, {
+    method: 'post',
+    data: { ids, tags },
+  });
+}
+
 //===============================================================================================
 // 系统中处理queryTableList外所有的操作动作, 这里主要通过columns.tsx和components中的内容作用使用
 // columns.tsx 页面的table和search的内容描述
@@ -60,10 +67,19 @@ export function createViewService(i18n: IntlShape, ref: any) {
     (ids: string[]) => postRemoveTableItem(ids),
     {
       manual: true,
-      onSuccess: _ => ref?.actionRef?.current?.reload(),
+      onSuccess: _ => ref?.actionRef?.current?.reloadAndRest(),
+    },
+  );
+  const { run: newUserTags, loading: newUserTagsLoading } = useRequest(
+    postNewUserTags,
+    {
+      manual: true,
+      onSuccess: _ => ref?.actionRef?.current?.reloadAndRest(),
     },
   );
   return {
+    newUserTags,
+    newUserTagsLoading,
     newRow: () => {
       history.push('/system/users/edit?id=');
     },

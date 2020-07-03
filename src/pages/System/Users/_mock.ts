@@ -103,4 +103,6 @@ export default {
         ),
       1000,
     ),
+  'POST /api/v1/system/users/tags': (req: Request, res: Response) =>
+    setTimeout(() => res.send({ success: true }), 1000),
 };

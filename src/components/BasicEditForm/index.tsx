@@ -22,7 +22,7 @@ export interface FormItemProps {
     rules?: Rule[];
     [key: string]: any;
   };
-  layout?:
+  customLayout?:
     | true
     | {
         labelCol?: any;

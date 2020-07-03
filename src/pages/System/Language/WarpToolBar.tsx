@@ -1,27 +1,24 @@
 // 涉及所有的请求操作内容
 import React from 'react';
 
-import {
-  UseFetchDataAction,
-  RequestData,
-} from '@ant-design/pro-table/lib/useFetchData';
+import { UseFetchDataAction } from '@ant-design/pro-table/lib/useFetchData';
 
 import { IntlShape } from 'umi';
-import { Button, Dropdown, Menu } from 'antd';
+import { Button, Dropdown, Menu, Modal } from 'antd';
 import { PlusOutlined, DownOutlined } from '@ant-design/icons';
 
 import { QueryTableItem } from './data';
 
 const warpToolBar = (
   i18n: IntlShape,
-  action: UseFetchDataAction<RequestData<QueryTableItem>>,
+  action: UseFetchDataAction<any>,
   rows: {
     selectedRowKeys?: React.ReactText[] | undefined;
     selectedRows?: QueryTableItem[] | undefined;
   },
   services?: {
-    newRow?: () => void;
-    removeRows?: (items: QueryTableItem[]) => void;
+    newRow: () => void;
+    removeRows: (items: QueryTableItem[]) => void;
     [key: string]: any;
   },
 ) => {
@@ -41,8 +38,14 @@ const warpToolBar = (
         overlay={
           <Menu
             onClick={e => {
-              if (e.key === 'remove' && !!services?.removeRows) {
-                services.removeRows(rows.selectedRows || []);
+              if (e.key === 'remove') {
+                Modal.confirm({
+                  title: '批量删除',
+                  content: '确认同时删除这些数据吗?',
+                  onOk: () => {
+                    services?.removeRows(rows?.selectedRows || []);
+                  },
+                });
               }
             }}
             selectedKeys={[]}

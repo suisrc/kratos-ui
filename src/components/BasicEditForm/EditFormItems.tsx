@@ -38,9 +38,9 @@ const formSubmitLayout = {
   },
 };
 
-interface EditFormItemProps {
+export interface EditFormItemProps {
   formItemProps: FormItemProps[];
-  submitting: boolean;
+  submitting?: boolean;
 }
 
 const EditFormItems: FC<EditFormItemProps> = ({
@@ -57,7 +57,7 @@ const EditFormItems: FC<EditFormItemProps> = ({
               {item.renderHeader && item.renderHeader(item, idx)}
               <FormItem
                 //key={item.key}
-                {...(item.layout ||
+                {...(item.customLayout ||
                   (item.valueType === 'submit' || item.valueType === 'none'
                     ? formSubmitLayout
                     : formItemLayout))}

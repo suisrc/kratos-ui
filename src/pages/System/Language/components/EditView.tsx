@@ -23,14 +23,14 @@ const createFormItemProps = (
   return [
     {
       key: 'key',
-      layout: true,
+      customLayout: true,
       props: {
         label: '标识',
         name: 'key',
         rules: [
           {
             required: true,
-            message: '请输入网关名称',
+            message: '请输入标识',
           },
         ],
       },
@@ -38,14 +38,14 @@ const createFormItemProps = (
     },
     {
       key: 'value',
-      layout: true,
+      customLayout: true,
       props: {
         label: '内容',
         name: 'value',
         rules: [
           {
             required: true,
-            message: '请输入网关名称',
+            message: '请输入内容',
           },
         ],
       },
@@ -53,7 +53,7 @@ const createFormItemProps = (
     },
     {
       key: 'lang',
-      layout: true,
+      customLayout: true,
       props: {
         label: '语言',
         name: 'lang',
@@ -68,7 +68,7 @@ const createFormItemProps = (
     },
     {
       key: 'system',
-      layout: true,
+      customLayout: true,
       props: {
         label: '系统',
         name: 'system',

@@ -2,7 +2,7 @@ import React from 'react';
 import { FormattedMessage, IntlShape } from 'umi';
 import { ProColumns } from '@ant-design/pro-table';
 
-import { Tag, Switch, Popconfirm, Space, Divider } from 'antd';
+import { Tag, Switch, Popconfirm, Space, Divider, message } from 'antd';
 import { DeleteOutlined, EditOutlined, CloseOutlined } from '@ant-design/icons';
 
 import { QueryTableItem } from './data';
@@ -73,7 +73,7 @@ export const createColumns = (
             record.tags.map((tag, idx) => (
               <Tag color={primaryColor} key={idx}>
                 {tag.name}&nbsp;
-                <a>
+                <a onClick={() => message.info('功能正在开发中')}>
                   <CloseOutlined />
                 </a>
               </Tag>
@@ -96,30 +96,6 @@ export const createColumns = (
                 <a
                   onClick={() =>
                     !!services?.gotoRole && services.gotoRole(tag.id)
-                  }
-                >
-                  {tag.name}
-                </a>
-              </Tag>
-            ))}
-        </>
-      ),
-    },
-    {
-      title: i18n.formatMessage({
-        id: 'page.system.users.table.gateway.title',
-        defaultMessage: 'Role',
-      }),
-      dataIndex: 'gateways',
-      key: 'gateway',
-      render: (_, record) => (
-        <>
-          {record.gateways &&
-            record.gateways.map((tag, idx) => (
-              <Tag color={primaryColor} key={idx}>
-                <a
-                  onClick={() =>
-                    !!services?.gotoGateway && services.gotoGateway(tag.id)
                   }
                 >
                   {tag.name}
