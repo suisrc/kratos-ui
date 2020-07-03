@@ -52,6 +52,7 @@ const createFormCardProps = (
           },
           formItemProps: {
             disabled: true,
+            placeholder: '自动生成',
           },
           valueType: 'string',
         },
@@ -112,10 +113,12 @@ const createFormCardProps = (
           },
           valueParser: vs => {
             setRuleTargetKeys(!vs ? [] : vs.map((v: { id: string }) => v.id));
-            return vs;
+            return vs; // 不修改原始数据
           },
           valueFormatter: _ =>
-            !ruleTargetKeys ? [] : ruleTargetKeys.map(v => ({ id: v })),
+            !ruleTargetKeys?.length
+              ? undefined
+              : ruleTargetKeys.map(v => ({ id: v })),
           render: _ => {
             //const value = ref?.form?.getFieldValue('roles');
             //const [targetKeys, setTargetKeys] = useState<string[]>([]);
@@ -159,11 +162,13 @@ const createFormCardProps = (
             name: 'gateways',
           },
           valueParser: vs => {
-            setRuleTargetKeys(!vs ? [] : vs.map((v: { id: string }) => v.id));
-            return vs;
+            setGateTargetKeys(!vs ? [] : vs.map((v: { id: string }) => v.id));
+            return vs; // 不修改原始数据
           },
           valueFormatter: _ =>
-            !ruleTargetKeys ? [] : ruleTargetKeys.map(v => ({ id: v })),
+            !gateTargetKeys?.length
+              ? undefined
+              : gateTargetKeys.map(v => ({ id: v })),
           render: _ => (
             <>
               <Transfer
@@ -171,7 +176,7 @@ const createFormCardProps = (
                   width: '100%',
                   height: 300,
                 }}
-                dataSource={services?.ruleDataSources || []}
+                dataSource={services?.gateDataSources || []}
                 targetKeys={gateTargetKeys}
                 onChange={setGateTargetKeys}
                 rowKey={item => item.id}

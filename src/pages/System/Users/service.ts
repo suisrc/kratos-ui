@@ -84,11 +84,12 @@ export function createViewService(i18n: IntlShape, ref: any) {
     },
   };
 }
+
 export function createEditService(i18n: IntlShape, ref: any) {
   const { data: ruleDataSources } = useRequest(queryRuleDataSources);
-  const { data: gatewayDataSources } = useRequest(queryGatewayDataSources);
+  const { data: gateDataSources } = useRequest(queryGatewayDataSources);
   return {
     ruleDataSources,
-    gatewayDataSources,
+    gateDataSources,
   };
 }

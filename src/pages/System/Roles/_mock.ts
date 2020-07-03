@@ -34,4 +34,54 @@ export default {
     success: true,
     errorMessage: '操作失败',
   },
+  'GET /api/v1/system/roles/item': {
+    success: true,
+    data: Mock.mock({
+      id: '@integer(1, 10000)',
+      unique: '@word',
+      name: '@cname',
+      desc: '@ctitle(3, 5)',
+
+      'tags|1-2': [{ id: '@integer(1, 10000)', name: '@cword(2,4)' }],
+      'gateways|1-2': [{ 'id|+1': 3, name: '@cword(2,4)' }],
+
+      updateAt: '@datetime',
+      createAt: '@datetime',
+    }),
+  },
+
+  'PUT /api/v1/system/roles/item': (req: Request, res: Response) =>
+    setTimeout(() => {
+      const body = req.body;
+      res.send({
+        success: true,
+        data: { ...body, unique: body.unique + '-123' },
+      });
+    }, 1000),
+  'POST /api/v1/system/roles/item': (req: Request, res: Response) =>
+    setTimeout(() => {
+      const body = req.body;
+      res.send({
+        success: true,
+        data: { ...body, id: 123, unique: 'kjdickd' },
+      });
+    }, 1000),
+
+  'GET /api/v1/system/roles/gateway/sources': (req: Request, res: Response) =>
+    setTimeout(
+      () =>
+        res.send(
+          Mock.mock({
+            success: true,
+            ['data|20']: [
+              {
+                'id|+1': 1,
+                name: '@word(4, 7)',
+                desc: '@cword(4, 7)',
+              },
+            ],
+          }),
+        ),
+      1000,
+    ),
 };

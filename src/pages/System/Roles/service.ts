@@ -32,6 +32,28 @@ export async function postRemoveTableItem(ids: string[]) {
 //  manual: true,
 //});
 
+export async function queryTableItem(id: string) {
+  return request(`/api/v1/system/roles/item?id=${id}`);
+}
+
+export async function postEditTableItem(item: QueryTableItem) {
+  return request(`/api/v1/system/roles/item`, {
+    method: 'put',
+    data: item,
+  });
+}
+
+export async function postNewTableItem(item: QueryTableItem) {
+  return request(`/api/v1/system/roles/item`, {
+    method: 'post',
+    data: item,
+  });
+}
+
+export async function queryGatewayDataSources() {
+  return request('/api/v1/system/roles/gateway/sources');
+}
+
 //===============================================================================================
 // 系统中处理queryTableList外所有的操作动作, 这里主要通过columns.tsx和components中的内容作用使用
 // columns.tsx 页面的table和search的内容描述
@@ -59,5 +81,12 @@ export function createViewService(i18n: IntlShape, ref: any) {
     removeRows: (items: QueryTableItem[]) => {
       removeRowsByIds(items.map(item => item.id));
     },
+  };
+}
+
+export function createEditService(i18n: IntlShape, ref: any) {
+  const { data: gateDataSources } = useRequest(queryGatewayDataSources);
+  return {
+    gateDataSources,
   };
 }
