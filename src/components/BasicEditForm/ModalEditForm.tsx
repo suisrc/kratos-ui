@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState, useCallback } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 import { Form, message, Modal } from 'antd';
 import { useIntl, useRequest, IntlShape } from 'umi';
@@ -46,7 +46,8 @@ const DefaultForm: FC<ModalEditFormProps> = ({
   // 表单
   const [form] = Form.useForm();
   const i18n = useIntl();
-  const first = useRef(true);
+
+  const [initData, setInitData] = useState<{}>();
 
   const { run: submit, loading: submitting } = useRequest(
     (item: any) => (data ? postEditTableItem : postNewTableItem)(item),
@@ -77,22 +78,32 @@ const DefaultForm: FC<ModalEditFormProps> = ({
     );
     submit(params);
   };
-  const initData = useCallback(() => {
-    if (!data || !formItemProps) {
-      return {};
-    }
-    //console.log(data);
-    let params = { ...(data || {}) };
-    formItemProps.forEach(
-      v =>
-        !!v.valueParser &&
-        !!v.props?.name &&
-        (params[v.props?.name] = v.valueParser(params[v.props?.name])),
-    );
-    return params;
-  }, [data]);
+
+  const formItemProps = createFormItemProps(i18n, {
+    form,
+    data,
+    submitting,
+    ...(refFormItemParams || {}),
+  });
 
   useEffect(() => {
+    if (data) {
+      //console.log(data);
+      let params = { ...(data || {}) };
+      formItemProps.forEach(
+        v =>
+          !!v.valueParser &&
+          !!v.props?.name &&
+          (params[v.props?.name] = v.valueParser(params[v.props?.name])),
+      );
+      setInitData(params);
+      setTimeout(() => form.resetFields(), 0); // 异步刷新,否则会有数据不同步问题
+      //form.resetFields();
+    } else if (initData) {
+      setInitData({});
+      setTimeout(() => form.resetFields(), 0);
+      //form.resetFields();
+    }
     if (titleSetter) {
       titleSetter(
         i18n.formatMessage({
@@ -101,15 +112,7 @@ const DefaultForm: FC<ModalEditFormProps> = ({
         }),
       );
     }
-    (first.current && ((first.current = false) || true)) || form.resetFields();
   }, [data]);
-
-  const formItemProps = createFormItemProps(i18n, {
-    form,
-    data,
-    submitting,
-    ...(refFormItemParams || {}),
-  });
 
   return (
     <Modal
@@ -128,7 +131,7 @@ const DefaultForm: FC<ModalEditFormProps> = ({
         hideRequiredMark
         form={form}
         name="edit"
-        initialValues={initData()}
+        initialValues={initData}
         onFinish={onFinish}
         //onFinishFailed={onFinishFailed}
         //onValuesChange={onValuesChange}

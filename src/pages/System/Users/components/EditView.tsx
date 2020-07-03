@@ -38,7 +38,9 @@ const createFormCardProps = (
 ): FormItemCards[] => {
   const { form, services } = ref;
   const [ruleShowSearch, setRuleShowSearch] = useState(false);
+  const [ruleTargetKeys, setRuleTargetKeys] = useState<string[]>([]);
   const [gateShowSearch, setGateShowSearch] = useState(false);
+  const [gateTargetKeys, setGateTargetKeys] = useState<string[]>([]);
   return [
     {
       title: '基本配置',
@@ -108,9 +110,15 @@ const createFormCardProps = (
             label: '角色',
             name: 'roles',
           },
+          valueParser: vs => {
+            setRuleTargetKeys(!vs ? [] : vs.map((v: { id: string }) => v.id));
+            return vs;
+          },
+          valueFormatter: _ =>
+            !ruleTargetKeys ? [] : ruleTargetKeys.map(v => ({ id: v })),
           render: _ => {
             //const value = ref?.form?.getFieldValue('roles');
-            const [targetKeys, setTargetKeys] = useState<string[]>([]);
+            //const [targetKeys, setTargetKeys] = useState<string[]>([]);
             return (
               <>
                 <Transfer
@@ -119,10 +127,8 @@ const createFormCardProps = (
                     height: 300,
                   }}
                   dataSource={services?.ruleDataSources || []}
-                  targetKeys={targetKeys}
-                  onChange={(nextTargetKeys, direction, moveKeys) => {
-                    setTargetKeys(nextTargetKeys);
-                  }}
+                  targetKeys={ruleTargetKeys}
+                  onChange={setRuleTargetKeys}
                   rowKey={item => item.id}
                   render={item => (
                     <Tooltip title={item.desc}>{item.name}</Tooltip>
@@ -140,8 +146,8 @@ const createFormCardProps = (
           valueType: 'none',
           render: _ => (
             <Switch
-              checkedChildren={<span>搜索</span>}
-              unCheckedChildren={<span>搜索</span>}
+              checkedChildren="搜索"
+              unCheckedChildren="搜索"
               checked={ruleShowSearch}
               onChange={setRuleShowSearch}
             />
@@ -152,40 +158,40 @@ const createFormCardProps = (
             label: '网关',
             name: 'gateways',
           },
-          render: _ => {
-            //const value = ref?.form?.getFieldValue('gateways');
-            const [targetKeys, setTargetKeys] = useState<string[]>([]);
-            return (
-              <>
-                <Transfer
-                  listStyle={{
-                    width: '100%',
-                    height: 300,
-                  }}
-                  dataSource={services?.ruleDataSources || []}
-                  targetKeys={targetKeys}
-                  onChange={(nextTargetKeys, direction, moveKeys) => {
-                    setTargetKeys(nextTargetKeys);
-                  }}
-                  rowKey={item => item.id}
-                  render={item => (
-                    <Tooltip title={item.desc}>{item.name}</Tooltip>
-                  )}
-                  showSearch={gateShowSearch}
-                  filterOption={(inputValue, item) =>
-                    item.name.indexOf(inputValue) !== -1
-                  }
-                />
-              </>
-            );
+          valueParser: vs => {
+            setRuleTargetKeys(!vs ? [] : vs.map((v: { id: string }) => v.id));
+            return vs;
           },
+          valueFormatter: _ =>
+            !ruleTargetKeys ? [] : ruleTargetKeys.map(v => ({ id: v })),
+          render: _ => (
+            <>
+              <Transfer
+                listStyle={{
+                  width: '100%',
+                  height: 300,
+                }}
+                dataSource={services?.ruleDataSources || []}
+                targetKeys={gateTargetKeys}
+                onChange={setGateTargetKeys}
+                rowKey={item => item.id}
+                render={item => (
+                  <Tooltip title={item.desc}>{item.name}</Tooltip>
+                )}
+                showSearch={gateShowSearch}
+                filterOption={(inputValue, item) =>
+                  item.name.indexOf(inputValue) !== -1
+                }
+              />
+            </>
+          ),
         },
         {
           valueType: 'none',
           render: _ => (
             <Switch
-              checkedChildren={<span>搜索</span>}
-              unCheckedChildren={<span>搜索</span>}
+              checkedChildren="搜索"
+              unCheckedChildren="搜索"
               checked={gateShowSearch}
               onChange={setGateShowSearch}
             />

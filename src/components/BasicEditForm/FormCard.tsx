@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, ReactNode, useCallback } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 
 import { Form, message } from 'antd';
 import { useIntl, useRequest, IntlShape } from 'umi';
@@ -43,7 +43,9 @@ const DefaultForm: FC<FormCardProps> = ({
   const [form] = Form.useForm();
   const i18n = useIntl();
 
-  const [data, setData] = useState();
+  const [data, setData] = useState<{}>();
+  const [initData, setInitData] = useState<{}>();
+
   if (!!dataId && queryTableItem) {
     // 初始化数据
     useRequest(() => queryTableItem(dataId as string), {
@@ -62,7 +64,8 @@ const DefaultForm: FC<FormCardProps> = ({
             defaultMessage: 'Success',
           }),
         );
-        form.resetFields();
+        //form.resetFields();
+        setTimeout(() => form.resetFields(), 0);
       },
     },
   );
@@ -73,35 +76,12 @@ const DefaultForm: FC<FormCardProps> = ({
       f.formItems.forEach(
         v =>
           !!v.valueFormatter &&
-          (params[v.key] = v.valueFormatter(params[v.key])),
+          !!v.props?.name &&
+          (params[v.props?.name] = v.valueFormatter(params[v.props?.name])),
       ),
     );
     submit(params);
   };
-  const initData = useCallback(() => {
-    if (!data || !cfp) {
-      return {};
-    }
-    //console.log(data);
-    let params = { ...(data || {}) };
-    cfp.forEach(f =>
-      f.formItems.forEach(
-        v => !!v.valueParser && (params[v.key] = v.valueParser(params[v.key])),
-      ),
-    );
-    return params;
-  }, [data]);
-
-  if (titleSetter) {
-    useEffect(() => {
-      titleSetter(
-        i18n.formatMessage({
-          id: data ? 'component.form.title.edit' : 'component.form.title.new',
-          defaultMessage: 'Edit',
-        }),
-      );
-    }, [data]);
-  }
 
   const cfp = createFormCardProps(i18n, {
     form,
@@ -111,16 +91,40 @@ const DefaultForm: FC<FormCardProps> = ({
     ...(refFormItemParams || {}),
   });
 
-  if (!!dataId && !data) {
+  useEffect(() => {
+    if (data) {
+      //console.log(data);
+      let params = { ...(data || {}) };
+      cfp.forEach(f =>
+        f.formItems.forEach(
+          v =>
+            !!v.valueParser &&
+            !!v.props?.name &&
+            (params[v.props?.name] = v.valueParser(params[v.props?.name])),
+        ),
+      );
+      setInitData(params);
+      //console.log(params);
+    }
+    if (titleSetter) {
+      titleSetter(
+        i18n.formatMessage({
+          id: data ? 'component.form.title.edit' : 'component.form.title.new',
+          defaultMessage: 'Edit',
+        }),
+      );
+    }
+  }, [data]);
+
+  if (!!dataId && !initData) {
     return <PageLoading />;
   }
-
   return (
     <Form
       hideRequiredMark
       form={form}
       name="edit"
-      initialValues={initData()}
+      initialValues={initData}
       onFinish={onFinish}
       //onFinishFailed={onFinishFailed}
       //onValuesChange={onValuesChange}

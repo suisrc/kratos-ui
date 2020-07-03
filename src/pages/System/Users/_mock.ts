@@ -59,7 +59,7 @@ export default {
       const body = req.body;
       res.send({
         success: true,
-        data: { ...body },
+        data: { ...body, unique: body.unique + '-123' },
       });
     }, 1000),
   'POST /api/v1/system/users/item': (req: Request, res: Response) =>

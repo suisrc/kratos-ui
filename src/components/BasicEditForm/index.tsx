@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, ReactNode, useCallback } from 'react';
+import React, { FC, useState, useEffect, ReactNode } from 'react';
 
 import { Form, message } from 'antd';
 import { useIntl, useRequest, IntlShape } from 'umi';
@@ -96,6 +96,8 @@ const DefaultForm: FC<FormBasicFormProps> = ({
   const i18n = useIntl();
 
   const [data, setData] = useState();
+  const [initData, setInitData] = useState<{}>();
+
   if (!!dataId && queryTableItem) {
     // 初始化数据
     useRequest(() => queryTableItem(dataId as string), {
@@ -114,7 +116,7 @@ const DefaultForm: FC<FormBasicFormProps> = ({
             defaultMessage: 'Success',
           }),
         );
-        form.resetFields();
+        setTimeout(() => form.resetFields(), 0);
       },
     },
   );
@@ -129,31 +131,6 @@ const DefaultForm: FC<FormBasicFormProps> = ({
     );
     submit(params);
   };
-  const initData = useCallback(() => {
-    if (!data || !formItemProps) {
-      return {};
-    }
-    //console.log(data);
-    let params = { ...(data || {}) };
-    formItemProps.forEach(
-      v =>
-        !!v.valueParser &&
-        !!v.props?.name &&
-        (params[v.props?.name] = v.valueParser(params[v.props?.name])),
-    );
-    return params;
-  }, [data]);
-
-  if (titleSetter) {
-    useEffect(() => {
-      titleSetter(
-        i18n.formatMessage({
-          id: data ? 'component.form.title.edit' : 'component.form.title.new',
-          defaultMessage: 'Edit',
-        }),
-      );
-    }, [data]);
-  }
 
   const formItemProps = createFormItemProps(i18n, {
     form,
@@ -162,8 +139,29 @@ const DefaultForm: FC<FormBasicFormProps> = ({
     submitting,
     ...(refFormItemParams || {}),
   });
+  useEffect(() => {
+    if (data) {
+      //console.log(data);
+      let params = { ...(data || {}) };
+      formItemProps.forEach(
+        v =>
+          !!v.valueParser &&
+          !!v.props?.name &&
+          (params[v.props?.name] = v.valueParser(params[v.props?.name])),
+      );
+      setInitData(params);
+    }
+    if (titleSetter) {
+      titleSetter(
+        i18n.formatMessage({
+          id: data ? 'component.form.title.edit' : 'component.form.title.new',
+          defaultMessage: 'Edit',
+        }),
+      );
+    }
+  }, [data]);
 
-  if (!!dataId && !data) {
+  if (!!dataId && !initData) {
     return <PageLoading />;
   }
 
@@ -172,7 +170,7 @@ const DefaultForm: FC<FormBasicFormProps> = ({
       hideRequiredMark
       form={form}
       name="edit"
-      initialValues={initData()}
+      initialValues={initData}
       onFinish={onFinish}
       //onFinishFailed={onFinishFailed}
       //onValuesChange={onValuesChange}
