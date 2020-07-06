@@ -1,12 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 
-import ProLayout, {
-  MenuDataItem,
-  BasicLayoutProps,
-  //SettingDrawer,
-  //Settings,
-  //PageHeaderWrapper,
-} from '@ant-design/pro-layout';
+import ProLayout from '@ant-design/pro-layout';
 
 import { useIntl, IRouteComponentProps, NavLink, useModel, IRoute } from 'umi';
 import { stringify } from 'qs';
