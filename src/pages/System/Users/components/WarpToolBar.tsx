@@ -17,8 +17,8 @@ import {
 //import { FormItemProps } from '@/components/BasicEditForm';
 import { EditFormViewProps } from '@/components/Modal';
 
-import { QueryTableItem } from './data';
-import { postNewUserTags, postRemoveTableItem } from './service';
+import { QueryTableItem } from '../data';
+import { postNewUserTags, postRemoveTableItem } from '../service';
 
 const warpToolBar = (
   _: UseFetchDataAction<any>,
@@ -43,7 +43,7 @@ const warpToolBar = (
     (ids: string[]) => postRemoveTableItem(ids),
     {
       manual: true,
-      onSuccess: _ => ref?.actionRef?.current?.reloadAndRest(),
+      onSuccess: _ => actionRef?.current?.reloadAndRest(),
     },
   );
   const removeRows = (items: QueryTableItem[]) => {
@@ -62,7 +62,7 @@ const warpToolBar = (
     // 🎊注意,注意,注意.
     setEditFormProps({
       data: {},
-      createFormItemProps: i18n => [
+      createFormItemProps: _ => [
         {
           props: {
             label: '标签',

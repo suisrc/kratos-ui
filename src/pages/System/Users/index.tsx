@@ -6,7 +6,7 @@ import ProTable, { ActionType } from '@ant-design/pro-table';
 
 import { EditFormView, EditFormViewProps } from '@/components/Modal';
 
-import warpToolBar from './WarpToolBar';
+import warpToolBar from './components/WarpToolBar';
 import { QueryTableItem, QueryParams, QuerySort, QueryFilter } from './data';
 import { queryTableList } from './service';
 import { createColumns } from './columns';

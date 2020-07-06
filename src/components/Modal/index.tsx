@@ -75,14 +75,12 @@ export const openEditForm = (
 export interface EditFormViewProps {
   data?: { [key: string]: any };
 
-  createFormItemProps?: (
-    i18n: IntlShape,
-    ref: {
-      // data, setData, submitting,
-      form: FormInstance;
-      [key: string]: any;
-    },
-  ) => FormItemProps[];
+  createFormItemProps?: (ref: {
+    i18n: IntlShape;
+    // data, setData, submitting,
+    form: FormInstance;
+    [key: string]: any;
+  }) => FormItemProps[];
   refFormItemParams?: { [key: string]: any };
 
   submit?: API.WithFalse<
@@ -139,7 +137,8 @@ export const EditFormView: React.FC<{
   });
 
   const formItemProps = createFormItemProps
-    ? createFormItemProps(i18n, {
+    ? createFormItemProps({
+        i18n,
         form,
         data,
         ...(refFormItemParams || {}),
