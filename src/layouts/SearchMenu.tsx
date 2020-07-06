@@ -40,16 +40,7 @@ const SearchMenu: React.FC<{
   setKeyword: (value: string) => void;
   [key: string]: any;
 }> = ({ setKeyword, ...props }) => {
-  return (
-    <Input.Search
-      // style={{
-      //   width: collapsed ? 0 : '100%',
-      //   transition: collapsed ? undefined : 'all 0.3s',
-      //   opacity: collapsed ? 0 : 1,
-      // }}
-      onSearch={setKeyword}
-    />
-  );
+  return <Input.Search onSearch={setKeyword} />;
 };
 
 export default SearchMenu;

@@ -168,7 +168,11 @@ const Layout = (
               )}
           </>
         )}
-        postMenuData={old => filterByMenuDate(old || [], keyword)}
+        postMenuData={old =>
+          !settings.menuSearch || !!collapsed
+            ? old || []
+            : filterByMenuDate(old || [], keyword)
+        }
         disableContentMargin={true}
         children={unaccessible ? <Error403 /> : props.children}
         //pure={false}
@@ -186,39 +190,3 @@ const Layout = (
 };
 
 export default Layout;
-
-// const fixOpenKeysByMenuData = (
-//   menuMap:  Record<string, MenuDataItem>,
-//   keys: string[],
-// ) => {
-//   if (!keys || keys.length !== 1) {
-//     return keys;
-//   }
-//   // 当keys的lenght=1时候,会发生勾选叶子节点,二无法正确展开的问题
-//   let res = {};
-//   return Object.keys(res);
-// };
-
-// const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] => // menuList;
-//  menuList.map((item) => {
-//    const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
-//    return Authorized.check(item.authority, localItem, null) as MenuDataItem;
-//});
-
-//const filterAccessByMenuDate = (
-//  data: MenuDataItem[],
-//  filter: (item: MenuDataItem) => boolean,
-//): MenuDataItem[] =>
-//  filterThreeData(
-//    data,
-//    filter
-//  ) as MenuDataItem[];
-
-//const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
-//  menuList.map(item => {
-//    let localItem = {
-//      ...item,
-//      children: item.children ? menuDataRender(item.children) : [],
-//    };
-//    return localItem;
-//  });
