@@ -32,10 +32,15 @@ export default {
       data,
     });
   },
-  'DELETE /api/v1/system/users/remove': {
-    success: true,
-    errorMessage: '操作失败',
-  },
+  'DELETE /api/v1/system/users/remove': (req: Request, res: Response) =>
+    setTimeout(
+      () =>
+        res.send({
+          success: true,
+          errorMessage: '操作失败',
+        }),
+      1000,
+    ),
 
   'GET /api/v1/system/users/item': {
     success: true,

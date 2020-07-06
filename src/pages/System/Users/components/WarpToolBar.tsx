@@ -39,19 +39,22 @@ const warpToolBar = (
     history.push('/system/users/edit?id=');
   };
   //===========================================================
-  const { run: removeRowsByIds } = useRequest(
-    (ids: string[]) => postRemoveTableItem(ids),
+  const { run: removeRowsByIds, loading: remvoeLoading } = useRequest(
+    postRemoveTableItem,
     {
       manual: true,
       onSuccess: _ => actionRef?.current?.reloadAndRest(),
     },
   );
   const removeRows = (items: QueryTableItem[]) => {
-    Modal.confirm({
+    const modal = Modal.confirm({
       title: '批量删除',
       content: '确认同时删除这些数据吗?',
-      onOk: () => {
-        removeRowsByIds(items.map(v => v.id as string));
+      okText: '删除',
+      onOk: async () => {
+        modal.update({ okButtonProps: { loading: true } });
+        await removeRowsByIds(items.map(v => v.id as string));
+        modal.update({ okButtonProps: { loading: false } });
       },
     });
   };
