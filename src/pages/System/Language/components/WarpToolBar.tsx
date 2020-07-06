@@ -31,13 +31,10 @@ const warpToolBar = (
     setEditItemVisible(true);
   };
   //===========================================================
-  const { run: removeRowsByIds, loading: remvoeLoading } = useRequest(
-    postRemoveTableItem,
-    {
-      manual: true,
-      onSuccess: _ => actionRef?.current?.reloadAndRest(),
-    },
-  );
+  const { run: removeRowsByIds } = useRequest(postRemoveTableItem, {
+    manual: true,
+    onSuccess: _ => actionRef?.current?.reloadAndRest(),
+  });
   const removeRows = (items: QueryTableItem[]) => {
     const modal = Modal.confirm({
       title: '批量删除',

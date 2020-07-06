@@ -1,16 +1,7 @@
 import React, { useState } from 'react';
 
-import { IntlShape, useIntl } from 'umi';
-import {
-  Divider,
-  Card,
-  Transfer,
-  Tag,
-  Empty,
-  Space,
-  Tooltip,
-  Switch,
-} from 'antd';
+import { IntlShape, useIntl, useRequest } from 'umi';
+import { Divider, Card, Transfer, Tag, Tooltip, Switch } from 'antd';
 import { FormInstance } from 'antd/es/form';
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -22,23 +13,22 @@ import {
   postNewTableItem,
   postEditTableItem,
   queryTableItem,
-  createEditService,
+  queryGatewayDataSources,
 } from '../service';
 
 import styles from '../index.less';
 import { TagType } from '../data';
 
-const createFormCardProps = (
-  i18n: IntlShape,
-  ref: {
-    form?: FormInstance;
-    services?: any;
-    [key: string]: any;
-  },
-): FormItemCards[] => {
-  const { form, services } = ref;
+const createFormCardProps = (ref: {
+  i18n: IntlShape;
+  form?: FormInstance;
+  //[key: string]: any;
+}): FormItemCards[] => {
+  const { form } = ref;
   const [gateShowSearch, setGateShowSearch] = useState(false);
   const [gateTargetKeys, setGateTargetKeys] = useState<string[]>([]);
+
+  const { data: gateDataSources } = useRequest(queryGatewayDataSources);
   return [
     {
       title: '基本配置',
@@ -118,7 +108,7 @@ const createFormCardProps = (
                   width: '100%',
                   height: 300,
                 }}
-                dataSource={services?.gateDataSources || []}
+                dataSource={gateDataSources || []}
                 targetKeys={gateTargetKeys}
                 onChange={setGateTargetKeys}
                 rowKey={item => item.id}
@@ -158,10 +148,8 @@ const createFormCardProps = (
 };
 
 export default () => {
-  const i18n = useIntl();
   const [title, setTitle] = useState('');
   const { id } = getPageQuery() || {};
-  const services = createEditService(i18n, {});
   return (
     <PageHeaderWrapper title={title || 'Loading'} className={styles.pageHeader}>
       <Card bordered={false}>
@@ -174,7 +162,6 @@ export default () => {
             postEditTableItem,
           }}
           titleSetter={setTitle}
-          refFormItemParams={{ services }}
         />
       </Card>
     </PageHeaderWrapper>

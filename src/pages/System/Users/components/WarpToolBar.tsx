@@ -30,7 +30,8 @@ const warpToolBar = (
     i18n: IntlShape;
     setEditFormShow: (show: boolean) => void;
     setEditFormProps: (props: EditFormViewProps) => void;
-    [key: string]: any;
+    actionRef: any;
+    //[key: string]: any;
   },
 ) => {
   const { i18n, setEditFormShow, setEditFormProps, actionRef } = ref;
@@ -39,13 +40,10 @@ const warpToolBar = (
     history.push('/system/users/edit?id=');
   };
   //===========================================================
-  const { run: removeRowsByIds, loading: remvoeLoading } = useRequest(
-    postRemoveTableItem,
-    {
-      manual: true,
-      onSuccess: _ => actionRef?.current?.reloadAndRest(),
-    },
-  );
+  const { run: removeRowsByIds } = useRequest(postRemoveTableItem, {
+    manual: true,
+    onSuccess: _ => actionRef?.current?.reloadAndRest(),
+  });
   const removeRows = (items: QueryTableItem[]) => {
     const modal = Modal.confirm({
       title: '批量删除',
