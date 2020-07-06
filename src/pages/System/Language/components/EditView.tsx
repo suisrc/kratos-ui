@@ -98,10 +98,10 @@ const EditView: React.FC<EditViewProps> = ({
   closeModalVisible,
   refFormItemParams,
 }) => {
-  const [title, setTitle] = useState('Loading');
+  //const [title, setTitle] = useState('Loading');
   return (
     <ModalEditForm
-      titleSetter={setTitle}
+      //titleSetter={setTitle}
       //onSubmit={form => form.submit()}
       onSubmitSuccess={(_, data) => {
         setData(data);
@@ -113,7 +113,7 @@ const EditView: React.FC<EditViewProps> = ({
       postEditTableItem={postEditTableItem}
       refFormItemParams={refFormItemParams}
       refModalProps={{
-        title: title,
+        //title: title,
         width: 640,
         bodyStyl: { padding: '32px 40px 48px' },
         visible: editModalVisible,

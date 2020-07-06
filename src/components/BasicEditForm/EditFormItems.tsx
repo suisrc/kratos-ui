@@ -41,13 +41,16 @@ const formSubmitLayout = {
 export interface EditFormItemProps {
   formItemProps: FormItemProps[];
   submitting?: boolean;
+  setFormItemPropsRef?: (props: FormItemProps[]) => void;
 }
 
 const EditFormItems: FC<EditFormItemProps> = ({
   formItemProps,
   submitting,
+  setFormItemPropsRef,
 }) => {
   const i18n = useIntl();
+  setFormItemPropsRef && setFormItemPropsRef(formItemProps);
   return (
     <>
       {formItemProps.map(

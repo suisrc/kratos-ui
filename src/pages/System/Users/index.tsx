@@ -4,6 +4,8 @@ import React, { useState, useRef } from 'react';
 import { useRequest, useIntl } from 'umi';
 import ProTable, { ActionType } from '@ant-design/pro-table';
 
+import { EditFormView, EditFormViewProps } from '@/components/Modal';
+
 import warpToolBar from './WarpToolBar';
 import { QueryTableItem, QueryParams, QuerySort, QueryFilter } from './data';
 import { queryTableList, createViewService } from './service';
@@ -34,38 +36,60 @@ const DefaultView = () => {
       },
     },
   );
-  const services = createViewService(i18n, { actionRef });
+  const [editFormShow, setEditFormShow] = useState(false);
+  const [editFormProps, setEditFormProps] = useState<EditFormViewProps>({});
+  const services = createViewService(i18n, {
+    actionRef,
+    setEditFormShow,
+    setEditFormProps,
+  });
+
   //const columns = createColumns(i18n, services);
   const [columns] = useState(() => createColumns(i18n, services)); //  只加载一次
 
+  const editFormSubmitting =
+    editFormShow &&
+    editFormProps.serviceKey &&
+    services.loading[editFormProps.serviceKey];
   return (
     //<PageHeaderWrapper className={styles.pageHeader}>
-    <ProTable<QueryTableItem>
-      //headerTitle="网关管理"
-      //dataSource onSubmit onReset loading
-      className={styles.container}
-      actionRef={actionRef}
-      rowKey="id"
-      pagination={{
-        defaultPageSize: 20,
-        pageSizeOptions: ['10', '20', '50', '100', '200'],
-      }}
-      request={queryTableItems}
-      toolBarRender={(action, rows) =>
-        warpToolBar(i18n, action, rows, services)
-      }
-      tableAlertRender={false}
-      //tableAlertRender={({ selectedRowKeys, selectedRows }) => (
-      //  <div>已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a>&nbsp;项&nbsp;</div>
-      //)}
-      columns={columns}
-      rowSelection={{}}
-      search={true}
-      //options={{
-      //  density: false,
-      //  fullScreen: false,
-      //}}
-    />
+    <div>
+      <ProTable<QueryTableItem>
+        //headerTitle="网关管理"
+        //dataSource onSubmit onReset loading
+        className={styles.container}
+        actionRef={actionRef}
+        rowKey="id"
+        pagination={{
+          defaultPageSize: 20,
+          pageSizeOptions: ['10', '20', '50', '100', '200'],
+        }}
+        request={queryTableItems}
+        toolBarRender={(action, rows) =>
+          warpToolBar(i18n, action, rows, services, {
+            setEditFormShow,
+            setEditFormProps,
+          })
+        }
+        tableAlertRender={false}
+        //tableAlertRender={({ selectedRowKeys, selectedRows }) => (
+        //  <div>已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a>&nbsp;项&nbsp;</div>
+        //)}
+        columns={columns}
+        rowSelection={{}}
+        search={true}
+        //options={{
+        //  density: false,
+        //  fullScreen: false,
+        //}}
+      />
+      <EditFormView
+        visible={editFormShow}
+        setVisible={setEditFormShow}
+        submitting={editFormSubmitting}
+        {...editFormProps}
+      />
+    </div>
     //</PageHeaderWrapper>
   );
 };

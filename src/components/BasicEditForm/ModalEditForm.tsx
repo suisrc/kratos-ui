@@ -116,7 +116,11 @@ const DefaultForm: FC<ModalEditFormProps> = ({
 
   return (
     <Modal
-      destroyOnClose={true}
+      title={i18n.formatMessage({
+        id: data ? 'component.form.title.edit' : 'component.form.title.new',
+        defaultMessage: 'Edit',
+      })}
+      destroyOnClose
       okText={i18n.formatMessage({ id: 'component.form.button.submit' })}
       onOk={onSubmit ? () => onSubmit(form) : form.submit}
       confirmLoading={submitting}

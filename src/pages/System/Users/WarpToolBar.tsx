@@ -17,6 +17,9 @@ import {
   TagsOutlined,
 } from '@ant-design/icons';
 
+//import { FormItemProps } from '@/components/BasicEditForm';
+import { EditFormViewProps } from '@/components/Modal';
+
 import { QueryTableItem } from './data';
 
 const warpToolBar = (
@@ -29,11 +32,63 @@ const warpToolBar = (
   services?: {
     newRow: () => void;
     removeRows: (items: QueryTableItem[]) => void;
-    newUserTags: (tags: string[], ids: string[]) => void;
-    newUserTagsLoading: boolean;
+    newTags: (tags: string[], ids: string[]) => void;
     [key: string]: any;
   },
+  ref?: {
+    setEditFormShow: (show: boolean) => void;
+    setEditFormProps: (props: EditFormViewProps) => void;
+  },
 ) => {
+  const removeRows = (items: QueryTableItem[]) => {
+    Modal.confirm({
+      title: '批量删除',
+      content: '确认同时删除这些数据吗?',
+      onOk: () => {
+        services?.removeRows(items);
+      },
+    });
+  };
+  //===========================================================
+  const openConfigTags = (items: QueryTableItem[]) => {
+    ref?.setEditFormProps({
+      data: {},
+      createFormItemProps: i18n => [
+        {
+          props: {
+            label: '标签',
+            name: 'tags',
+            rules: [
+              {
+                required: true,
+                message: '请输入标签',
+              },
+            ],
+          },
+          valueType: 'string',
+          customLayout: true,
+          renderHeader: () => (
+            <div style={{ marginBottom: 10 }}>多个标签请使用","进行分割</div>
+          ),
+          valueFormatter: (v: string) => v.trim().split(','),
+        },
+      ],
+      modalProps: {
+        title: '标签编辑',
+        okText: '提交',
+      },
+      submit: (value: any) => {
+        //console.log(value);
+        //console.log(items?.map(v => v.id));
+        const ids: string[] = items?.map(v => v.id) as string[];
+        services?.newTags(value.tags, ids);
+        //setTimeout(() => form.resetFields, 0);
+      },
+      serviceKey: 'newTags', // 用于回调显示loading状态
+    });
+    ref?.setEditFormShow(true);
+  };
+  //===========================================================
   return [
     //<span>{contextHolder}</span>,
     <Button
@@ -91,15 +146,9 @@ const warpToolBar = (
           <Menu
             onClick={e => {
               if (e.key === 'remove') {
-                Modal.confirm({
-                  title: '批量删除',
-                  content: '确认同时删除这些数据吗?',
-                  onOk: () => {
-                    services?.removeRows(rows?.selectedRows || []);
-                  },
-                });
+                removeRows(rows?.selectedRows || []);
               } else if (e.key === 'tags') {
-                //configTags(rows?.selectedRows);
+                openConfigTags(rows?.selectedRows || []);
               }
             }}
             selectedKeys={[]}
@@ -137,52 +186,3 @@ const warpToolBar = (
 };
 
 export default warpToolBar;
-
-//const formItemProps: FormItemProps[] = [
-//  {
-//    props: {
-//      label: '标签',
-//      name: 'tags',
-//      rules: [
-//        {
-//          required: true,
-//          message: '请输入标签',
-//        },
-//      ],
-//    },
-//    valueType: 'string',
-//    customLayout: true,
-//    renderHeader: () => (
-//      <div style={{ marginTop: 20 }}>多个标签请使用","进行分割</div>
-//    ),
-//    valueFormatter: (v: string) => v.trim().split(','),
-//  },
-//];
-//
-//const [form] = Form.useForm();
-//const [modal, contextHolder] = Modal.useModal();
-//
-//const configTags = (items?: QueryTableItem[]) => {
-//  ModalPlus.openEditForm(
-//    modal,
-//    {
-//      title: '配置标签',
-//      okButtonProps: {
-//        loading: services?.newUserTagsLoading,
-//      },
-//    },
-//    _ => ({
-//      formItemProps: formItemProps,
-//    }),
-//    form,
-//    value => {
-//      //console.log(value);
-//      //console.log(items?.map(v => v.id));
-//      const ids: string[] = items?.map(v => v.id) as string[];
-//      services?.newUserTags(value.tags, ids);
-//      setTimeout(() => form.resetFields, 0);
-//    },
-//  );
-//};
-//
-//

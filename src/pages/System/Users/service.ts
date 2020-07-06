@@ -3,6 +3,7 @@ import request, { addSortParams, fixPageParams } from '@/utils/request';
 import { stringify2 } from '@/utils/qs2';
 import { IntlShape, useRequest, history } from 'umi';
 
+// import { BaseResult } from '@ahooksjs/use-request/es/types';
 import { QueryParams, QuerySort, QueryFilter, QueryTableItem } from './data';
 
 export async function queryTableList(
@@ -70,16 +71,19 @@ export function createViewService(i18n: IntlShape, ref: any) {
       onSuccess: _ => ref?.actionRef?.current?.reloadAndRest(),
     },
   );
-  const { run: newUserTags, loading: newUserTagsLoading } = useRequest(
+  const { run: newTags, loading: newTagsLoading } = useRequest(
     postNewUserTags,
     {
       manual: true,
-      onSuccess: _ => ref?.actionRef?.current?.reloadAndRest(),
+      onSuccess: _ => {
+        ref?.actionRef?.current?.reloadAndRest();
+        ref?.setEditFormShow(false);
+      },
     },
   );
   return {
-    newUserTags,
-    newUserTagsLoading,
+    loading: { newTags: newTagsLoading },
+    newTags,
     newRow: () => {
       history.push('/system/users/edit?id=');
     },
