@@ -10,7 +10,11 @@ import {
   EditOutlined,
 } from '@ant-design/icons';
 
+import { useRequest, history } from 'umi';
+
 import { QueryTableItem } from './data';
+import { postRemoveTableItem } from './service';
+
 import styles from './index.less';
 
 // https://ant.design/components/tag-cn/
@@ -26,14 +30,29 @@ const colors = {
 //https://protable.ant.design/getting-started
 // 这里使用pro-table取代umijs中的table
 // https://protable.ant.design/api#columns
-export const createColumns = (
-  i18n: IntlShape,
-  services?: {
-    removeRow?: (item: QueryTableItem) => void;
-    editRow?: (item: QueryTableItem) => void;
-    [key: string]: any;
-  },
-): ProColumns<QueryTableItem>[] => {
+export const createColumns = (ref: {
+  i18n: IntlShape;
+  actionRef: any;
+}): ProColumns<QueryTableItem>[] => {
+  const { i18n, actionRef } = ref;
+  //=======================================================
+  const { run: removeRowsByIds } = useRequest(
+    (ids: string[]) => postRemoveTableItem(ids),
+    {
+      manual: true,
+      onSuccess: _ => actionRef?.current?.reloadAndRest(),
+    },
+  );
+  //=======================================================
+  const editRow = (item: QueryTableItem) => {
+    history.push(`/system/gateway/edit?id=${item.id}`);
+  };
+  const removeRow = (item: QueryTableItem) => {
+    removeRowsByIds([item.id as string]);
+  };
+  //=======================================================
+
+  //=======================================================
   return [
     {
       order: 30,
@@ -46,7 +65,7 @@ export const createColumns = (
       render: (text, record) => (
         //<Link to={`/system/gateway/edit?id=${record.id}`}>{text}</Link>
         <a //href="#"
-          onClick={() => !!services?.editRow && services.editRow(record)}
+          onClick={() => editRow(record)}
         >
           {text}
         </a>
@@ -218,7 +237,7 @@ export const createColumns = (
         <>
           <span className={styles.operating}>
             <a // href="#"
-              onClick={() => !!services?.editRow && services.editRow(record)}
+              onClick={() => editRow(record)}
             >
               {<EditOutlined />}
             </a>
@@ -229,9 +248,7 @@ export const createColumns = (
                 id: 'page.system.gateway.table.action.delete.message',
                 defaultMessage: 'Are you sure delete this row?',
               })}
-              onConfirm={() =>
-                !!services?.removeRow && services.removeRow(record)
-              }
+              onConfirm={() => removeRow(record)}
             >
               <a href="#">
                 <DeleteOutlined />

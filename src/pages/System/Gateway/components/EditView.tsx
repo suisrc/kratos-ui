@@ -17,10 +17,11 @@ import {
 import styles from '../index.less';
 import { getPageQuery } from '@/utils/utils';
 
-const createFormItemProps = (
-  i18n: IntlShape,
-  ref: { [key: string]: any },
-): FormItemProps[] => {
+const createFormItemProps = (ref: {
+  i18n: IntlShape;
+  //[key: string]: any;
+}): FormItemProps[] => {
+  const {} = ref;
   return [
     {
       key: 'unique',

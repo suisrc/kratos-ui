@@ -4,9 +4,9 @@ import React, { useState, useRef } from 'react';
 import { useRequest, useIntl } from 'umi';
 import ProTable, { ActionType } from '@ant-design/pro-table';
 
-import warpToolBar from './WarpToolBar';
+import warpToolBar from './components/WarpToolBar';
 import { QueryTableItem, QueryParams, QuerySort, QueryFilter } from './data';
-import { queryTableList, createViewService } from './service';
+import { queryTableList } from './service';
 import { createColumns } from './columns';
 import styles from './index.less';
 
@@ -34,8 +34,7 @@ const DefaultView = () => {
       },
     },
   );
-  const services = createViewService(i18n, { actionRef });
-  const [columns] = useState(() => createColumns(i18n, services)); //  只加载一次
+  const columns = createColumns({ i18n, actionRef }); //  只加载一次
 
   return (
     //<PageHeaderWrapper className={styles.pageHeader}>
@@ -51,7 +50,7 @@ const DefaultView = () => {
       }}
       request={queryTableItems}
       toolBarRender={(action, rows) =>
-        warpToolBar(i18n, action, rows, services)
+        warpToolBar(action, rows, { i18n, actionRef })
       }
       tableAlertRender={false}
       //tableAlertRender={({ selectedRowKeys, selectedRows }) => (

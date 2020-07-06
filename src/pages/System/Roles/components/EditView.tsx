@@ -21,7 +21,7 @@ import { TagType } from '../data';
 
 const createFormCardProps = (ref: {
   i18n: IntlShape;
-  form?: FormInstance;
+  form: FormInstance;
   //[key: string]: any;
 }): FormItemCards[] => {
   const { form } = ref;
