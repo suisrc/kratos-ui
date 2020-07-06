@@ -6,6 +6,8 @@ import { Tag, Popconfirm } from 'antd';
 import { CloseOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
 import { QueryTableItem } from './data';
+import { postRemoveTableItem, queryKindLang, queryKindSystem } from './service';
+
 import styles from './index.less';
 
 import { primaryColor } from '@/models/useAuthUser';
@@ -13,16 +15,36 @@ import { primaryColor } from '@/models/useAuthUser';
 //https://protable.ant.design/getting-started
 // 这里使用pro-table取代umijs中的table
 // https://protable.ant.design/api#columns
-export const createColumns = (
-  i18n: IntlShape,
-  services?: {
-    removeRow?: (item: QueryTableItem) => void;
-    editRow?: (item: QueryTableItem) => void;
-    kindLangs?: {};
-    kindSystem?: {};
-    [key: string]: any;
-  },
-): ProColumns<QueryTableItem>[] => {
+export const createColumns = (ref: {
+  i18n: IntlShape;
+  setEditItem: (data: any) => void;
+  setEditItemVisible: (show: boolean) => void;
+  actionRef: any;
+  //[key: string]: any;
+}): ProColumns<QueryTableItem>[] => {
+  const { i18n, actionRef, setEditItem, setEditItemVisible } = ref;
+  //=======================================================
+  const { run: removeRowsByIds } = useRequest(
+    (ids: string[]) => postRemoveTableItem(ids),
+    {
+      manual: true,
+      onSuccess: _ => actionRef?.current?.reloadAndRest(),
+    },
+  );
+  //=======================================================
+  const editRow = (item: QueryTableItem) => {
+    setEditItem(item);
+    setEditItemVisible(true);
+  };
+  const removeRow = (item: QueryTableItem) => {
+    removeRowsByIds([item.id as string]);
+  };
+  //=======================================================
+  const { data: kindLangs } = useRequest(queryKindLang);
+  const { data: kindSystem } = useRequest(queryKindSystem);
+  //=======================================================
+
+  //=======================================================
   return [
     {
       hideInSearch: true,
@@ -33,11 +55,7 @@ export const createColumns = (
       }),
       dataIndex: 'id',
       key: 'id',
-      render: (text, record) => (
-        <a onClick={() => !!services?.editRow && services.editRow(record)}>
-          {text}
-        </a>
-      ),
+      render: (text, record) => <a onClick={() => editRow(record)}>{text}</a>,
     },
     {
       title: i18n.formatMessage({
@@ -64,7 +82,7 @@ export const createColumns = (
       dataIndex: 'lang',
       key: 'lang',
       filters: undefined,
-      valueEnum: services?.kindLangs || {},
+      valueEnum: kindLangs || {},
       formItemProps: {
         allowClear: true,
         clearIcon: <CloseOutlined />,
@@ -80,7 +98,7 @@ export const createColumns = (
       dataIndex: 'system',
       key: 'system',
       filters: undefined,
-      valueEnum: services?.kindSystem || {},
+      valueEnum: kindSystem || {},
       formItemProps: {
         allowClear: true,
         clearIcon: <CloseOutlined />,
@@ -118,7 +136,7 @@ export const createColumns = (
         <>
           <span className={styles.operating}>
             <a // href="#"
-              onClick={() => !!services?.editRow && services.editRow(record)}
+              onClick={() => editRow(record)}
             >
               {<EditOutlined />}
             </a>
@@ -129,9 +147,7 @@ export const createColumns = (
                 id: 'page.system.gateway.language.action.delete.message',
                 defaultMessage: 'Are you sure delete this row?',
               })}
-              onConfirm={() =>
-                !!services?.removeRow && services.removeRow(record)
-              }
+              onConfirm={() => removeRow(record)}
             >
               <a href="#">
                 <DeleteOutlined />

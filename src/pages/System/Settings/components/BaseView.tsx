@@ -9,10 +9,10 @@ import BasicEditForm, { FormItemProps } from '@/components/BasicEditForm';
 import { postEditSystemInfo, querySystemInfo } from '../service';
 import styles from '../style.less';
 
-const createFormItemProps = (
-  i18n: IntlShape,
-  ref: { [key: string]: any },
-): FormItemProps[] => {
+const createFormItemProps = (ref: {
+  i18n: IntlShape;
+  [key: string]: any;
+}): FormItemProps[] => {
   return [
     {
       key: 'key',

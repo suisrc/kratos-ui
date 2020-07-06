@@ -15,14 +15,12 @@ interface ModalEditFormProps {
   postNewTableItem: (item: any) => Promise<any>;
   titleSetter?: (title: string) => void;
 
-  createFormItemProps: (
-    i18n: IntlShape,
-    ref: {
-      // data, setData, submitting,
-      form: FormInstance;
-      [key: string]: any;
-    },
-  ) => FormItemProps[];
+  createFormItemProps: (ref: {
+    i18n: IntlShape;
+    // data, setData, submitting,
+    form: FormInstance;
+    [key: string]: any;
+  }) => FormItemProps[];
   refFormItemParams?: { [key: string]: any };
 
   modalProps?: { [key: string]: any };
@@ -79,7 +77,8 @@ const DefaultForm: FC<ModalEditFormProps> = ({
     submit(params);
   };
 
-  const formItemProps = createFormItemProps(i18n, {
+  const formItemProps = createFormItemProps({
+    i18n,
     form,
     data,
     submitting,

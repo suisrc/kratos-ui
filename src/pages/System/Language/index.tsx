@@ -4,9 +4,9 @@ import React, { useState, useRef } from 'react';
 import { useRequest, useIntl } from 'umi';
 import ProTable, { ActionType } from '@ant-design/pro-table';
 
-import warpToolBar from './WarpToolBar';
+import warpToolBar from './components/WarpToolBar';
 import { QueryTableItem, QueryParams, QuerySort, QueryFilter } from './data';
-import { queryTableList, createViewService } from './service';
+import { queryTableList } from './service';
 import { createColumns } from './columns';
 import styles from './index.less';
 import EditView from './components/EditView';
@@ -37,17 +37,14 @@ const DefaultView = () => {
   );
 
   const [editItem, setEditItem] = useState(undefined);
-  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editItemVisible, setEditItemVisible] = useState(false);
 
-  const services = createViewService(i18n, {
+  const columns = createColumns({
+    i18n,
     actionRef,
     setEditItem,
-    setEditModalVisible,
+    setEditItemVisible,
   });
-  const columns = createColumns(i18n, services);
-  //根据需求,createColumns中需要使用use方法,所以无法使用useState嵌套
-  //如果使用useState,意味着colums中的内容不在改变
-  //const [columns] = useState(() => createColumns(i18n, actions)); //  只加载一次
 
   return (
     //<PageHeaderWrapper className={styles.pageHeader}>
@@ -64,7 +61,12 @@ const DefaultView = () => {
         }}
         request={queryTableItems}
         toolBarRender={(action, rows) =>
-          warpToolBar(i18n, action, rows, services)
+          warpToolBar(action, rows, {
+            i18n,
+            actionRef,
+            setEditItem,
+            setEditItemVisible,
+          })
         }
         tableAlertRender={false}
         //tableAlertRender={({ selectedRowKeys, selectedRows }) => (
@@ -81,12 +83,11 @@ const DefaultView = () => {
       <EditView
         data={editItem}
         setData={setEditItem}
-        editModalVisible={editModalVisible}
+        editModalVisible={editItemVisible}
         closeModalVisible={(reload?: boolean) => {
           reload && actionRef.current?.reloadAndRest();
-          setEditModalVisible(false);
+          setEditItemVisible(false);
         }}
-        refFormItemParams={{ services }}
       />
     </div>
     //</PageHeaderWrapper>

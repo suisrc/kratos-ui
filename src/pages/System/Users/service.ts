@@ -1,7 +1,6 @@
 // 数据请求
 import request, { addSortParams, fixPageParams } from '@/utils/request';
 import { stringify2 } from '@/utils/qs2';
-import { IntlShape, useRequest, history } from 'umi';
 
 // import { BaseResult } from '@ahooksjs/use-request/es/types';
 import { QueryParams, QuerySort, QueryFilter, QueryTableItem } from './data';

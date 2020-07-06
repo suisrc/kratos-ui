@@ -15,15 +15,16 @@ import { primaryColor } from '@/models/useAuthUser';
 // https://protable.ant.design/api#columns
 export const createColumns = (ref: {
   i18n: IntlShape;
-  [key: string]: any;
+  actionRef: any;
+  //[key: string]: any;
 }): ProColumns<QueryTableItem>[] => {
-  const { i18n } = ref;
+  const { i18n, actionRef } = ref;
   //=======================================================
   const { run: removeRowsByIds } = useRequest(
     (ids: string[]) => postRemoveTableItem(ids),
     {
       manual: true,
-      onSuccess: _ => ref?.actionRef?.current?.reloadAndRest(),
+      onSuccess: _ => actionRef?.current?.reloadAndRest(),
     },
   );
   //=======================================================

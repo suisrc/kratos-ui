@@ -1,10 +1,9 @@
 import React, { useState, useRef } from 'react';
 
-import { IntlShape } from 'umi';
-import { Modal } from 'antd';
+import { IntlShape, useRequest } from 'umi';
 
 import { CloseOutlined } from '@ant-design/icons';
-import { FormInstance } from 'antd/es/form';
+//import { FormInstance } from 'antd/es/form';
 
 import { FormItemProps } from '@/components/BasicEditForm';
 import ModalEditForm from '@/components/BasicEditForm/ModalEditForm';
@@ -12,14 +11,18 @@ import ModalEditForm from '@/components/BasicEditForm/ModalEditForm';
 import {
   postNewTableItem,
   postEditTableItem,
-  queryTableItem,
+  queryKindLang,
+  queryKindSystem,
 } from '../service';
 
-const createFormItemProps = (
-  i18n: IntlShape,
-  ref: { [key: string]: any },
-): FormItemProps[] => {
+const createFormItemProps = (ref: {
+  i18n: IntlShape;
+  //[key: string]: any;
+}): FormItemProps[] => {
   //console.log(ref);
+  const { i18n } = ref;
+  const { data: kindLangs } = useRequest(queryKindLang);
+  const { data: kindSystem } = useRequest(queryKindSystem);
   return [
     {
       key: 'key',
@@ -64,7 +67,7 @@ const createFormItemProps = (
           },
         ],
       },
-      valueEnum: ref?.actions?.kindLangs || {},
+      valueEnum: kindLangs || {},
     },
     {
       key: 'system',
@@ -73,7 +76,7 @@ const createFormItemProps = (
         label: '系统',
         name: 'system',
       },
-      valueEnum: ref?.actions?.kindSystem || {},
+      valueEnum: kindSystem || {},
       formItemProps: {
         allowClear: true,
         clearIcon: <CloseOutlined />,
@@ -89,7 +92,7 @@ interface EditViewProps {
 
   editModalVisible: boolean;
   closeModalVisible: (reload?: boolean) => void;
-  refFormItemParams: { [key: string]: any };
+  refFormItemParams?: { [key: string]: any };
 }
 const EditView: React.FC<EditViewProps> = ({
   data,
