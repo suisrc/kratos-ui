@@ -73,19 +73,19 @@ const Layout = (
   const uriParams = settings.menuDrawer
     ? getDifferentSettingPath({ ...settings })
     : undefined;
-  //当前系统会出现一个问题,当重新登陆后,系统会在URL上没有风格参数
-  //当时暂时不适合在这里解决,这个参数主要是给菜单,以保障在跳转后,保留风格参数
+  //当前系统会出现一个问题,当重新登陆后,系统会在URL上没有主题参数
+  //暂时不适合在这里解决,这个参数主要是给菜单,以保障在跳转后,保留主题参数
   //if (uriParams) {
-  //  history.replace(getPath(props.location.pathname, uriParams)
+  //  history.replace(getPath(props.location.pathname, uriParams);
   //}
 
-  // const [uriParams, setUriParams] = useState<string>(); // => SettingDrawer.onDiffUriParams
-  const [keyword, setKeyword] = useState('');
-  const [openKeys, setOpenKeys] = useState<string[]>([]);
-  const [collapsed, setCollapsed] = useState<boolean>(false);
-  const [selected, setSelected] = useState<string[]>([]);
+  const [keyword, setKeyword] = useState(''); // 菜单搜索
+  const [openKeys, setOpenKeys] = useState<string[]>([]); // 已经打开的菜单
+  const [collapsed, setCollapsed] = useState<boolean>(false); // 是否折叠菜单
+  const [selected, setSelected] = useState<string[]>([]); // 已经选中的菜单
 
   useEffect(() => {
+    // 处理首次打开页面的时候,已经打开的菜单和已经选中的菜单
     let path = props.location.pathname;
     let inms: any[] = findFirstNodeByTree(menus, item => item?.path === path);
     if (inms?.length > 1) {
