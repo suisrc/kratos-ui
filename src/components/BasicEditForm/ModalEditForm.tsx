@@ -25,7 +25,7 @@ interface ModalEditFormProps {
   ) => FormItemProps[];
   refFormItemParams?: { [key: string]: any };
 
-  refModalProps?: { [key: string]: any };
+  modalProps?: { [key: string]: any };
   onSubmit?: (form: FormInstance) => void;
   onSubmitSuccess?: (form: FormInstance, data: any, params: any) => void;
   onSubmitError?: (form: FormInstance, error: any, params: any) => void;
@@ -38,7 +38,7 @@ const DefaultForm: FC<ModalEditFormProps> = ({
   titleSetter,
   createFormItemProps,
   refFormItemParams,
-  refModalProps,
+  modalProps,
   onSubmit,
   onSubmitSuccess,
   onSubmitError,
@@ -50,7 +50,7 @@ const DefaultForm: FC<ModalEditFormProps> = ({
   const [initData, setInitData] = useState<{}>();
 
   const { run: submit, loading: submitting } = useRequest(
-    (item: any) => (data ? postEditTableItem : postNewTableItem)(item),
+    data || !postNewTableItem ? postEditTableItem : postNewTableItem,
     {
       manual: true,
       onSuccess: (data, params) => {
@@ -87,7 +87,7 @@ const DefaultForm: FC<ModalEditFormProps> = ({
   });
 
   useEffect(() => {
-    if (data) {
+    if (!!data && !!formItemProps) {
       //console.log(data);
       let params = { ...(data || {}) };
       formItemProps.forEach(
@@ -124,23 +124,22 @@ const DefaultForm: FC<ModalEditFormProps> = ({
       okText={i18n.formatMessage({ id: 'component.form.button.submit' })}
       onOk={onSubmit ? () => onSubmit(form) : form.submit}
       confirmLoading={submitting}
-      {...refModalProps}
+      {...modalProps}
       //width={480}
       //bodyStyle={{ padding: '32px 40px 48px' }}
-      //title={title}
       //visible={editModalVisible}
       //onCancel={closeModalVisible}
     >
       <Form
         hideRequiredMark
         form={form}
-        name="edit"
+        name="modal-form"
         initialValues={initData}
         onFinish={onFinish}
         //onFinishFailed={onFinishFailed}
         //onValuesChange={onValuesChange}
       >
-        <EditFormItems {...{ formItemProps, submitting }} />
+        <EditFormItems formItemProps={formItemProps} />
       </Form>
     </Modal>
   );

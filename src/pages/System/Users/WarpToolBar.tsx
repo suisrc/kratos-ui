@@ -1,12 +1,9 @@
 // 涉及所有的请求操作内容
 import React, { useState } from 'react';
 
-import {
-  UseFetchDataAction,
-  RequestData,
-} from '@ant-design/pro-table/lib/useFetchData';
+import { UseFetchDataAction } from '@ant-design/pro-table/lib/useFetchData';
 
-import { IntlShape } from 'umi';
+import { IntlShape, useRequest, history } from 'umi';
 import { Button, Dropdown, Menu, message, Modal, Form } from 'antd';
 import {
   PlusOutlined,
@@ -21,36 +18,46 @@ import {
 import { EditFormViewProps } from '@/components/Modal';
 
 import { QueryTableItem } from './data';
+import { postNewUserTags, postRemoveTableItem } from './service';
 
 const warpToolBar = (
   i18n: IntlShape,
-  action: UseFetchDataAction<any>,
+  _: UseFetchDataAction<any>,
   rows: {
     selectedRowKeys?: React.ReactText[] | undefined;
     selectedRows?: QueryTableItem[] | undefined;
   },
-  services?: {
-    newRow: () => void;
-    removeRows: (items: QueryTableItem[]) => void;
-    newTags: (tags: string[], ids: string[]) => void;
-    [key: string]: any;
-  },
   ref?: {
     setEditFormShow: (show: boolean) => void;
     setEditFormProps: (props: EditFormViewProps) => void;
+    [key: string]: any;
   },
 ) => {
+  const newRow = () => {
+    history.push('/system/users/edit?id=');
+  };
+  //===========================================================
+  const { run: removeRowsByIds } = useRequest(
+    (ids: string[]) => postRemoveTableItem(ids),
+    {
+      manual: true,
+      onSuccess: _ => ref?.actionRef?.current?.reloadAndRest(),
+    },
+  );
   const removeRows = (items: QueryTableItem[]) => {
     Modal.confirm({
       title: '批量删除',
       content: '确认同时删除这些数据吗?',
       onOk: () => {
-        services?.removeRows(items);
+        removeRowsByIds(items.map(v => v.id as string));
       },
     });
   };
   //===========================================================
   const openConfigTags = (items: QueryTableItem[]) => {
+    // 🎊这是一种实验性的写法,在实际生产中,不推荐使用这种写法
+    // 🎊最好使用常规写法,在components中新建一个Modal内容,可以继承BasicEditForm中的ModalEditForm.
+    // 🎊注意,注意,注意.
     ref?.setEditFormProps({
       data: {},
       createFormItemProps: i18n => [
@@ -77,24 +84,30 @@ const warpToolBar = (
         title: '标签编辑',
         okText: '提交',
       },
-      submit: (value: any) => {
+      submit: (
+        value: { [key: string]: any },
+        submit: (...args: any[]) => Promise<any>,
+      ) => {
         //console.log(value);
         //console.log(items?.map(v => v.id));
         const ids: string[] = items?.map(v => v.id) as string[];
-        services?.newTags(value.tags, ids);
+        submit(value.tags, ids);
         //setTimeout(() => form.resetFields, 0);
       },
-      serviceKey: 'newTags', // 用于回调显示loading状态
+      request: postNewUserTags,
+      onSubmitSuccess: () => {
+        ref?.actionRef?.current?.reloadAndRest();
+        ref?.setEditFormShow(false);
+      },
     });
     ref?.setEditFormShow(true);
   };
   //===========================================================
+
+  //===========================================================
   return [
     //<span>{contextHolder}</span>,
-    <Button
-      type="primary"
-      onClick={() => services?.newRow && services.newRow()}
-    >
+    <Button type="primary" onClick={newRow}>
       <PlusOutlined />{' '}
       {i18n.formatMessage({
         id: 'page.system.users.toolbar.new.text',

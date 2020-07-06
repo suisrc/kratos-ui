@@ -112,7 +112,7 @@ const EditView: React.FC<EditViewProps> = ({
       postNewTableItem={postNewTableItem}
       postEditTableItem={postEditTableItem}
       refFormItemParams={refFormItemParams}
-      refModalProps={{
+      modalProps={{
         //title: title,
         width: 640,
         bodyStyl: { padding: '32px 40px 48px' },

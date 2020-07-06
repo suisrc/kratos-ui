@@ -1,11 +1,12 @@
 import React from 'react';
-import { FormattedMessage, IntlShape } from 'umi';
+import { FormattedMessage, IntlShape, history, useRequest } from 'umi';
 import { ProColumns } from '@ant-design/pro-table';
 
 import { Tag, Switch, Popconfirm, Space, Divider, message } from 'antd';
 import { DeleteOutlined, EditOutlined, CloseOutlined } from '@ant-design/icons';
 
 import { QueryTableItem } from './data';
+import { postRemoveTableItem } from './service';
 import styles from './index.less';
 
 import { primaryColor } from '@/models/useAuthUser';
@@ -14,14 +15,29 @@ import { primaryColor } from '@/models/useAuthUser';
 // https://protable.ant.design/api#columns
 export const createColumns = (
   i18n: IntlShape,
-  services?: {
-    removeRow?: (item: QueryTableItem) => void;
-    editRow?: (item: QueryTableItem) => void;
-    gotoRole?: (key: string) => void;
-    gotoGateway?: (key: string) => void;
-    [key: string]: any;
-  },
+  ref?: any,
 ): ProColumns<QueryTableItem>[] => {
+  //=======================================================
+  const { run: removeRowsByIds } = useRequest(
+    (ids: string[]) => postRemoveTableItem(ids),
+    {
+      manual: true,
+      onSuccess: _ => ref?.actionRef?.current?.reloadAndRest(),
+    },
+  );
+  //=======================================================
+  const editRow = (item: QueryTableItem) => {
+    history.push(`/system/users/edit?id=${item.id}`);
+  };
+  const removeRow = (item: QueryTableItem) => {
+    removeRowsByIds([item.id as string]);
+  };
+  const gotoRole = (key: string) => {
+    history.push(`/system/roles/edit?id=${key}`);
+  };
+  //=======================================================
+
+  //=======================================================
   return [
     {
       order: 30,
@@ -34,7 +50,7 @@ export const createColumns = (
       render: (text, record) => (
         //<Link to={`/system/gateway/edit?id=${record.id}`}>{text}</Link>
         <a //href="#"
-          onClick={() => !!services?.editRow && services.editRow(record)}
+          onClick={() => editRow(record)}
         >
           {text}
         </a>
@@ -93,13 +109,7 @@ export const createColumns = (
           {record.roles &&
             record.roles.map((tag, idx) => (
               <Tag color={primaryColor} key={idx}>
-                <a
-                  onClick={() =>
-                    !!services?.gotoRole && services.gotoRole(tag.id)
-                  }
-                >
-                  {tag.name}
-                </a>
+                <a onClick={() => gotoRole(tag.id)}>{tag.name}</a>
               </Tag>
             ))}
         </>
@@ -126,7 +136,7 @@ export const createColumns = (
         <>
           <span className={styles.operating}>
             <a // href="#"
-              onClick={() => !!services?.editRow && services.editRow(record)}
+              onClick={() => editRow(record)}
             >
               {<EditOutlined />}
             </a>
@@ -137,9 +147,7 @@ export const createColumns = (
                 id: 'page.system.users.table.action.delete.message',
                 defaultMessage: 'Are you sure delete this row?',
               })}
-              onConfirm={() =>
-                !!services?.removeRow && services.removeRow(record)
-              }
+              onConfirm={() => removeRow(record)}
             >
               <a href="#">
                 <DeleteOutlined />

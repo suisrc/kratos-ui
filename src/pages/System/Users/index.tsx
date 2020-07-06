@@ -8,7 +8,7 @@ import { EditFormView, EditFormViewProps } from '@/components/Modal';
 
 import warpToolBar from './WarpToolBar';
 import { QueryTableItem, QueryParams, QuerySort, QueryFilter } from './data';
-import { queryTableList, createViewService } from './service';
+import { queryTableList } from './service';
 import { createColumns } from './columns';
 import styles from './index.less';
 
@@ -38,19 +38,9 @@ const DefaultView = () => {
   );
   const [editFormShow, setEditFormShow] = useState(false);
   const [editFormProps, setEditFormProps] = useState<EditFormViewProps>({});
-  const services = createViewService(i18n, {
-    actionRef,
-    setEditFormShow,
-    setEditFormProps,
-  });
 
-  //const columns = createColumns(i18n, services);
-  const [columns] = useState(() => createColumns(i18n, services)); //  只加载一次
+  const columns = createColumns(i18n, { actionRef });
 
-  const editFormSubmitting =
-    editFormShow &&
-    editFormProps.serviceKey &&
-    services.loading[editFormProps.serviceKey];
   return (
     //<PageHeaderWrapper className={styles.pageHeader}>
     <div>
@@ -66,7 +56,8 @@ const DefaultView = () => {
         }}
         request={queryTableItems}
         toolBarRender={(action, rows) =>
-          warpToolBar(i18n, action, rows, services, {
+          warpToolBar(i18n, action, rows, {
+            actionRef,
             setEditFormShow,
             setEditFormProps,
           })
@@ -86,7 +77,6 @@ const DefaultView = () => {
       <EditFormView
         visible={editFormShow}
         setVisible={setEditFormShow}
-        submitting={editFormSubmitting}
         {...editFormProps}
       />
     </div>
