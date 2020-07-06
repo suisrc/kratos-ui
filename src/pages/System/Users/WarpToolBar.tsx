@@ -21,18 +21,20 @@ import { QueryTableItem } from './data';
 import { postNewUserTags, postRemoveTableItem } from './service';
 
 const warpToolBar = (
-  i18n: IntlShape,
   _: UseFetchDataAction<any>,
   rows: {
     selectedRowKeys?: React.ReactText[] | undefined;
     selectedRows?: QueryTableItem[] | undefined;
   },
-  ref?: {
+  ref: {
+    i18n: IntlShape;
     setEditFormShow: (show: boolean) => void;
     setEditFormProps: (props: EditFormViewProps) => void;
     [key: string]: any;
   },
 ) => {
+  const { i18n, setEditFormShow, setEditFormProps, actionRef } = ref;
+  //===========================================================
   const newRow = () => {
     history.push('/system/users/edit?id=');
   };
@@ -58,7 +60,7 @@ const warpToolBar = (
     // 🎊这是一种实验性的写法,在实际生产中,不推荐使用这种写法
     // 🎊最好使用常规写法,在components中新建一个Modal内容,可以继承BasicEditForm中的ModalEditForm.
     // 🎊注意,注意,注意.
-    ref?.setEditFormProps({
+    setEditFormProps({
       data: {},
       createFormItemProps: i18n => [
         {
@@ -96,11 +98,11 @@ const warpToolBar = (
       },
       request: postNewUserTags,
       onSubmitSuccess: () => {
-        ref?.actionRef?.current?.reloadAndRest();
-        ref?.setEditFormShow(false);
+        actionRef?.current?.reloadAndRest();
+        setEditFormShow(false);
       },
     });
-    ref?.setEditFormShow(true);
+    setEditFormShow(true);
   };
   //===========================================================
 

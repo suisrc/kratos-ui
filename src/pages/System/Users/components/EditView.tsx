@@ -20,13 +20,11 @@ import styles from '../index.less';
 import { getPageQuery } from '@/utils/utils';
 import { TagType } from '../data';
 
-const createFormCardProps = (
-  i18n: IntlShape,
-  ref: {
-    form: FormInstance;
-    [key: string]: any;
-  },
-): FormItemCards[] => {
+const createFormCardProps = (ref: {
+  i18n: IntlShape;
+  form: FormInstance;
+  [key: string]: any;
+}): FormItemCards[] => {
   const { form } = ref;
   const [ruleShowSearch, setRuleShowSearch] = useState(false);
   const [ruleTargetKeys, setRuleTargetKeys] = useState<string[]>([]);
@@ -210,7 +208,7 @@ const createFormCardProps = (
 };
 
 export default () => {
-  const i18n = useIntl();
+  //const i18n = useIntl();
   const [title, setTitle] = useState('');
   const { id } = getPageQuery() || {};
   return (

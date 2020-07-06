@@ -13,10 +13,11 @@ import { primaryColor } from '@/models/useAuthUser';
 //https://protable.ant.design/getting-started
 // 这里使用pro-table取代umijs中的table
 // https://protable.ant.design/api#columns
-export const createColumns = (
-  i18n: IntlShape,
-  ref?: any,
-): ProColumns<QueryTableItem>[] => {
+export const createColumns = (ref: {
+  i18n: IntlShape;
+  [key: string]: any;
+}): ProColumns<QueryTableItem>[] => {
+  const { i18n } = ref;
   //=======================================================
   const { run: removeRowsByIds } = useRequest(
     (ids: string[]) => postRemoveTableItem(ids),

@@ -18,14 +18,12 @@ export interface FormCardProps {
   postNewTableItem: (item: any) => Promise<any>;
   titleSetter?: (title: string) => void;
 
-  createFormCardProps: (
-    i18n: IntlShape,
-    ref: {
-      // data, setData, submitting,
-      form: FormInstance;
-      [key: string]: any;
-    },
-  ) => FormItemCards[];
+  createFormCardProps: (ref: {
+    i18n: IntlShape;
+    // data, setData, submitting,
+    form: FormInstance;
+    [key: string]: any;
+  }) => FormItemCards[];
   refFormItemParams?: { [key: string]: any };
 }
 
@@ -83,7 +81,8 @@ const DefaultForm: FC<FormCardProps> = ({
     submit(params);
   };
 
-  const cfp = createFormCardProps(i18n, {
+  const cfp = createFormCardProps({
+    i18n,
     form,
     data,
     setData,

@@ -39,7 +39,7 @@ const DefaultView = () => {
   const [editFormShow, setEditFormShow] = useState(false);
   const [editFormProps, setEditFormProps] = useState<EditFormViewProps>({});
 
-  const columns = createColumns(i18n, { actionRef });
+  const columns = createColumns({ i18n, actionRef });
 
   return (
     //<PageHeaderWrapper className={styles.pageHeader}>
@@ -56,7 +56,8 @@ const DefaultView = () => {
         }}
         request={queryTableItems}
         toolBarRender={(action, rows) =>
-          warpToolBar(i18n, action, rows, {
+          warpToolBar(action, rows, {
+            i18n,
             actionRef,
             setEditFormShow,
             setEditFormProps,
