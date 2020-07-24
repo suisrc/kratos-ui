@@ -12,7 +12,7 @@ export default {
       res.send(
         getResult({
           status: 'ok', // ok, error
-          idToken: '12345678',
+          token: '12345678',
         }),
       );
       return;
@@ -40,7 +40,7 @@ export default {
       res.send(
         getResult({
           status: 'ok',
-          idToken: '12345679',
+          token: '12345679',
         }),
       );
       return;
@@ -50,7 +50,7 @@ export default {
       res.send(
         getResult({
           status: 'ok',
-          idToken: '22345678',
+          token: '22345678',
         }),
       );
       return;

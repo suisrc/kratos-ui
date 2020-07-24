@@ -101,8 +101,8 @@ export default function(): {
   const signin = useCallback(async (params: SigninParamsType) => {
     const res: any = await login(params);
     if (res.success && res.data?.status === 'ok') {
-      if (res.data?.idToken) {
-        localStorage.setItem('kratos_token', res.data?.idToken);
+      if (res.data?.token) {
+        localStorage.setItem('kratos_token', res.data?.token);
         //if (res.data?.refreshToken) {
         //  localStorage.setItem('kratos_token_r', res.data?.refreshToken);
         //  tokenRefreshRun(res.data?.refreshToken);
