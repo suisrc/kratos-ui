@@ -48,7 +48,7 @@ export default defineConfig({
   title: defaultSettings.title,
   // favicon: '/assets/favicon.ico',
   ignoreMomentLocale: true,
-  proxy: proxy['dev'], //proxy[REACT_APP_ENV || 'dev'],
+  proxy: proxy['zgo'], //proxy[REACT_APP_ENV || 'dev'],
   manifest: {
     basePath: '/',
   },
