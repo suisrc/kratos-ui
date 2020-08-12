@@ -11,6 +11,8 @@ import {
   hasAuthToken,
 } from '@/models/useAuthUser';
 
+import { createFromIconfontCN } from '@ant-design/icons';
+
 /**
  * 应用初次加载,进行初始化配置
  * @umijs/plugin-initial-state
@@ -25,6 +27,8 @@ export async function getInitialState(): Promise<{
   // [key: string]: any;
 }> {
   const systemInfo = await querySystemInfo();
+
+  createFromIconfontCN({ scriptUrl: systemInfo?.iconfontUrls || [] }); // 在IconFont中的得到修正
   //if ( !history.location.pathname.startsWith('/auth/') &&
   if (hasAuthToken()) {
     try {

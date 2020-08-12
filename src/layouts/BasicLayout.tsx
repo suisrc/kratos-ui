@@ -123,6 +123,8 @@ const Layout = (
         logo={<LogoIcon style={{ width: '54px', padding: '10px 0px' }} />}
         title={settings.title}
         //menu={{ locale: true }}
+        siderWidth={200}
+        fixSiderbar
         formatMessage={msg =>
           msg.id ? i18n.formatMessage(msg) : msg.defaultMessage || ''
         }
@@ -135,14 +137,14 @@ const Layout = (
           onSelect: param => setSelected(param.selectedKeys),
         }}
         menuDataRender={_ => menus}
+        iconfontUrl={defaultSettings.iconfontUrl}
         menuItemRender={(item, dom) =>
-          fixIcon(
-            item,
-            !item.itemPath ? (
-              dom
-            ) : (
-              <NavLink to={getPath(item.itemPath, uriParams)}>{dom}</NavLink>
-            ),
+          !item.itemPath ? (
+            fixIcon(item, dom)
+          ) : (
+            <NavLink to={getPath(item.itemPath, uriParams)}>
+              {fixIcon(item, dom)}
+            </NavLink>
           )
         }
         subMenuItemRender={(item, dom) => fixIcon(item, dom)}

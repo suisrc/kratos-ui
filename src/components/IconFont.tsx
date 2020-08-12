@@ -13,19 +13,27 @@ export const IconFont = createFromIconfontCN({
 //   icon: 'setting',
 //   icon: <Icon type="setting" />,
 export const getIcon = (
-  icon?: string /*| React.ReactNode*/,
+  icon?: React.ReactNode,
   className?: any,
 ): React.ReactNode => {
   if (typeof icon === 'string' && icon !== '') {
     if (icon.startsWith('icon')) {
-      return <IconFont type={icon} className={className} />;
+      return React.createElement(IconFont, {
+        type: icon,
+      });
+      //return <IconFont type={icon} className={className} />;
     }
     if (isUrl(icon)) {
-      return (
-        <Icon
-          component={() => <img src={icon} alt="icon" className={className} />}
-        />
-      );
+      return React.createElement(Icon, {
+        component: function component() {
+          return React.createElement('img', {
+            src: icon,
+            alt: 'icon',
+            className: className,
+          });
+        },
+      });
+      // return <Icon component={() => <img src={icon} alt="icon" className={className} />} />;
     }
   }
   return undefined;
@@ -40,12 +48,18 @@ export const fixIcon = (
   item: MenuDataItem,
   dom: React.ReactNode,
 ): React.ReactNode => {
-  return item.icon1 ? (
-    <span>
-      {getIcon(item.icon1, 'ant-pro-sider-menu-icon')}
-      <span>{dom}</span>
-    </span>
-  ) : (
-    dom
-  );
+  if (
+    item.icon &&
+    typeof dom === 'object' &&
+    (dom as any)?.props?.children?.length == 2
+  ) {
+    return (
+      <span>
+        {getIcon(item.icon + '', 'ant-pro-sider-menu-icon')}
+        {(dom as any)?.props?.children[1]}
+      </span>
+    );
+  } else {
+    return dom;
+  }
 };

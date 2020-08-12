@@ -62,7 +62,7 @@ const menus: any[] = [
     name: 'account',
     //locale: 'menu.account', // 通过name字段合并
     key: '001',
-    icon1: 'iconuser',
+    icon: 'iconuser',
     children: [
       {
         name: 'center',
@@ -70,7 +70,7 @@ const menus: any[] = [
         path: '/account/center',
         key: '001001',
         //parentKeys: ['001'], // 通过pro_layout_parentKeys合成
-        icon1: 'iconcontrol',
+        icon: 'iconcontrol',
       },
       {
         name: 'settings',
@@ -78,7 +78,7 @@ const menus: any[] = [
         path: '/account/settings',
         key: '001002',
         //parentKeys: ['001'],
-        icon1: 'iconsetting',
+        icon: 'iconsetting',
       },
     ],
   },
@@ -86,7 +86,7 @@ const menus: any[] = [
     name: 'system',
     key: '003',
     //locale: 'menu.system.settings',
-    icon1: 'iconcontrol',
+    icon: 'iconcontrol',
     //path: '/system/settings',
     children: [
       {
@@ -94,7 +94,7 @@ const menus: any[] = [
         name: '系统配置',
         locale: false,
         key: '003001',
-        icon1: 'iconcontrol',
+        icon: 'iconcontrol',
         path: '/system/settings',
       },
       {
@@ -102,7 +102,7 @@ const menus: any[] = [
         name: '用户管理',
         locale: false,
         key: '003002',
-        icon1: 'iconcontrol',
+        icon: 'iconcontrol',
         path: '/system/users',
       },
       {
@@ -110,7 +110,7 @@ const menus: any[] = [
         name: '角色管理',
         locale: false,
         key: '003003',
-        icon1: 'iconcontrol',
+        icon: 'iconcontrol',
         path: '/system/roles',
       },
       {
@@ -118,7 +118,7 @@ const menus: any[] = [
         name: '网关管理',
         locale: false,
         key: '003004',
-        icon1: 'iconcontrol',
+        icon: 'iconcontrol',
         path: '/system/gateway',
       },
       {
@@ -126,7 +126,7 @@ const menus: any[] = [
         name: '国际化',
         locale: false,
         key: '003005',
-        icon1: 'iconcontrol',
+        icon: 'iconcontrol',
         path: '/system/language',
       },
     ],

@@ -15,8 +15,8 @@ declare namespace API {
       // 是当前登陆使用的角色
       id: string; // 角色ID, 如果角色存在,那么id和name是必须存在的内容
       name: string; // 角色名称
-      avatar?: string; // 角色头像
-      show?: boolean; // 是否显示
+      avatar?: string; // 角色头像, 预留字段
+      show?: boolean; // 是否显示, 预留字段
     }; // 多角色用户,登陆系统后,是能使用单角色
 
     // UserMenuItem[]
@@ -24,22 +24,22 @@ declare namespace API {
     // 兼容MenuDataItem类型
     menus?: [];
 
-    datetime?: string; // 获取当前信息的时间
+    createAt?: number; // 获取当前信息的时间
   }
 
   /**
    * 菜单数据类型
    *
    * import { MenuDataItem } from '@ant-design/pro-layout';
-   * icon1: ant@4对icon不在支持,这里用icon1代替icon, 在 components/IconFont 中处理
+   * icon1: ant@4对icon不在支持,这里用icon1代替icon, 在 components/IconFont 中处理 ❌
    * 兼容MenuDataItem类型
    */
   export interface UserMenuItem {
     children?: UserMenuItem[]; // 子菜单
-    icon1?: string;
+    icon?: string;
     locale?: string | false; // menu.welcome, 可以直接抽取i18n对应的内容,如果不配置,可以通过name抽取
     name?: string; // 必须字段,如果不存在,内容会被隐藏
-    key?: string; // 全局唯一标识符,在当前系统中, 层级结构,每层使用3个字符
+    key?: string; // 全局唯一标识符
     path?: string; // 和route.ts路由对应
   }
 

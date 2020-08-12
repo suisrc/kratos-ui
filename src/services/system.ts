@@ -6,6 +6,7 @@ export interface SystemInfo {
   copyright?: string; //
   beian?: string; // 备案信息,中国国内需要
   developer?: boolean; //开发者信息,默认开启,可以配置屏蔽
+  iconfontUrls?: string[]; // 图标
 }
 /**
  * 获取系统公共配置,主要用于展示页面的自定义部分内容

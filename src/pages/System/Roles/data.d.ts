@@ -40,7 +40,7 @@ export interface TagType {
 export interface QueryTableItem {
   id: string; // ID
   unique: string; // 全局唯一标识, 不可变更
-  name: string; // 全局唯一,登陆名
+  name: string; // 全局唯一
 
   tags: TagType[]; // 标签
   desc: string;
