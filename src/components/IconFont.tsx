@@ -59,7 +59,6 @@ export const fixIcon = (
         {(dom as any)?.props?.children[1]}
       </span>
     );
-  } else {
-    return dom;
   }
+  return dom;
 };

@@ -120,10 +120,11 @@ const Layout = (
       <ProLayout
         {...settings}
         // location={{pathname: '/welcom'}}
-        logo={<LogoIcon style={{ width: '54px', padding: '10px 0px' }} />}
+        logo={<LogoIcon style={{ width: '32px', padding: '10px 0px' }} />}
         title={settings.title}
         //menu={{ locale: true }}
         siderWidth={200}
+        //collapsedWidth={48}
         fixSiderbar
         formatMessage={msg =>
           msg.id ? i18n.formatMessage(msg) : msg.defaultMessage || ''
@@ -132,12 +133,11 @@ const Layout = (
         onCollapse={setCollapsed}
         menuProps={{
           openKeys: openKeys,
-          onOpenChange: setOpenKeys,
+          onOpenChange: keys => setOpenKeys(keys as string[]),
           selectedKeys: selected,
-          onSelect: param => setSelected(param.selectedKeys),
+          onSelect: param => setSelected(param.selectedKeys as string[]),
         }}
         menuDataRender={_ => menus}
-        iconfontUrl={defaultSettings.iconfontUrl}
         menuItemRender={(item, dom) =>
           !item.itemPath ? (
             fixIcon(item, dom)
@@ -148,14 +148,15 @@ const Layout = (
           )
         }
         subMenuItemRender={(item, dom) => fixIcon(item, dom)}
-        focusable={true}
-        forceSubMenuRender={true}
+        //focusable={true}
+        //forceSubMenuRender={true}
         rightContentRender={() => (
           <GlobalHeaderRight
             theme={settings.navTheme}
             layout={settings.layout}
           />
         )}
+        // links={["1234"]}
         footerRender={() => <Footer />}
         menuHeaderRender={(logo, title) => (
           <>
@@ -165,7 +166,7 @@ const Layout = (
             </NavLink>
             {settings.menuSearch &&
               !collapsed &&
-              settings.layout === 'sidemenu' && (
+              settings.layout === 'side' && (
                 <SearchMenu setKeyword={setKeyword} />
               )}
           </>
