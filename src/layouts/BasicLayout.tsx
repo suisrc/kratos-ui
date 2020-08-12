@@ -1,15 +1,18 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 
-import ProLayout from '@ant-design/pro-layout';
+import ProLayout, { PageContainer } from '@ant-design/pro-layout';
 
 import { useIntl, IRouteComponentProps, NavLink, useModel, IRoute } from 'umi';
+import { Space } from 'antd';
 import { stringify } from 'qs';
 //import useMergeValue from 'use-merge-value'
+
+import { SettingDrawer } from '@ant-design/pro-layout';
+// import SettingDrawer from '@/components/SettingDrawer';
 
 import LogoIcon from '@/assets/LogoIcon';
 import GlobalHeaderRight from '@/components/GlobalHeader/RightContent';
 import Footer from '@/components/Footer';
-import SettingDrawer from '@/components/SettingDrawer';
 import { fixIcon } from '@/components/IconFont';
 import { findFirstNodeByTree, getPrejudgeRoute } from '@/utils/utils';
 import Error403 from '@/exceptions/403';
@@ -74,27 +77,27 @@ const Layout = (
   //}
 
   const [keyword, setKeyword] = useState(''); // 菜单搜索
-  const [openKeys, setOpenKeys] = useState<string[]>([]); // 已经打开的菜单
   const [collapsed, setCollapsed] = useState<boolean>(false); // 是否折叠菜单
-  const [selected, setSelected] = useState<string[]>([]); // 已经选中的菜单
-
-  useEffect(() => {
-    // 处理首次打开页面的时候,已经打开的菜单和已经选中的菜单
-    let path = props.location.pathname;
-    let inms: any[] = findFirstNodeByTree(menus, item => item?.path === path);
-    if (inms?.length > 1) {
-      setOpenKeys(
-        inms
-          .slice(1)
-          .reverse()
-          .map(v => v.key),
-      );
-    }
-    if (inms?.length) {
-      setSelected([inms[0].key]);
-    }
-    //console.log(inms);
-  }, []);
+  //const [openKeys, setOpenKeys] = useState<string[]>([]); // 已经打开的菜单
+  //const [selected, setSelected] = useState<string[]>([]); // 已经选中的菜单
+  //
+  //useEffect(() => {
+  //  // 处理首次打开页面的时候,已经打开的菜单和已经选中的菜单
+  //  let path = props.location.pathname;
+  //  let inms: any[] = findFirstNodeByTree(menus, item => item?.path === path);
+  //  if (inms?.length > 1) {
+  //    setOpenKeys(
+  //      inms
+  //        .slice(1)
+  //        .reverse()
+  //        .map(v => v.key),
+  //    );
+  //  }
+  //  if (inms?.length) {
+  //    setSelected([inms[0].key]);
+  //  }
+  //  //console.log(inms);
+  //}, []);
 
   // 配置路由权限 & 缓存
   const routeAcc = useCallback(() => {
@@ -120,7 +123,7 @@ const Layout = (
       <ProLayout
         {...settings}
         // location={{pathname: '/welcom'}}
-        logo={<LogoIcon style={{ width: '32px', padding: '10px 0px' }} />}
+        logo={<LogoIcon style={{ width: '32px' }} />}
         title={settings.title}
         //menu={{ locale: true }}
         siderWidth={200}
@@ -131,12 +134,12 @@ const Layout = (
         }
         collapsed={collapsed}
         onCollapse={setCollapsed}
-        menuProps={{
-          openKeys: openKeys,
-          onOpenChange: keys => setOpenKeys(keys as string[]),
-          selectedKeys: selected,
-          onSelect: param => setSelected(param.selectedKeys as string[]),
-        }}
+        //menuProps={{
+        //  openKeys: openKeys,
+        //  onOpenChange: keys => setOpenKeys(keys as string[]),
+        //  selectedKeys: selected,
+        //  onSelect: param => setSelected(param.selectedKeys as string[]),
+        //}}
         menuDataRender={_ => menus}
         menuItemRender={(item, dom) =>
           !item.itemPath ? (
@@ -160,24 +163,30 @@ const Layout = (
         footerRender={() => <Footer />}
         menuHeaderRender={(logo, title) => (
           <>
-            <NavLink to="/" replace={true}>
-              {logo}
-              {title}
-            </NavLink>
-            {settings.menuSearch &&
-              !collapsed &&
-              settings.layout === 'side' && (
-                <SearchMenu setKeyword={setKeyword} />
-              )}
+            <NavLink to="/account/center"> {logo} </NavLink>&nbsp;
+            <NavLink to="/"> {title} </NavLink>
           </>
         )}
+        menuExtraRender={({ collapsed }) =>
+          settings.menuSearch &&
+          !collapsed &&
+          settings.layout === 'side' && <SearchMenu setKeyword={setKeyword} />
+        }
         postMenuData={old =>
           !settings.menuSearch || !!collapsed
             ? old || []
             : filterByMenuDate(old || [], keyword)
         }
         disableContentMargin={true}
-        children={unaccessible ? <Error403 /> : props.children}
+        // breadcrumbRender={(route)=>route}
+        children={
+          unaccessible ? (
+            <Error403 />
+          ) : (
+            <PageContainer children={props.children} />
+          )
+        }
+        // children={unaccessible ? <Error403 /> : (props.children)}
         //pure={false}
         //{...props}
         //{...settings}

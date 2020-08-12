@@ -52,7 +52,7 @@ const LayoutSetting: React.FC<{
               onSelect={value => changeSetting('contentWidth', value)}
               style={{ width: 80 }}
             >
-              {layout === 'sidemenu' ? null : (
+              {layout === 'side' ? null : (
                 <Select.Option value="Fixed">
                   {i18n.formatMessage({
                     id: 'app.setting.content-width.fixed',
@@ -87,7 +87,7 @@ const LayoutSetting: React.FC<{
             id: 'app.setting.fixedsidebar',
             defaultMessage: 'Fixed Sidebar',
           }),
-          disabled: layout === 'topmenu',
+          disabled: layout === 'top',
           disabledReason: i18n.formatMessage({
             id: 'app.setting.fixedsidebar.hint',
             defaultMessage: 'Works on Side Menu Layout',
@@ -105,7 +105,7 @@ const LayoutSetting: React.FC<{
             id: 'app.setting.searchmenu',
             defaultMessage: 'Search Menu',
           }),
-          disabled: layout === 'topmenu',
+          disabled: layout === 'top',
           action: (
             <Switch
               size="small"

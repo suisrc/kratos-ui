@@ -20,6 +20,7 @@ export const getIcon = (
     if (icon.startsWith('icon')) {
       return React.createElement(IconFont, {
         type: icon,
+        className: className,
       });
       //return <IconFont type={icon} className={className} />;
     }
