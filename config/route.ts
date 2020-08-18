@@ -103,7 +103,7 @@ const routes = [
     // 🌈全局菜单,该内容对于umijs-layout自带的菜单很不友好. 现实就是这样
     name: 'root',
     path: '/',
-    component: '@/layouts/BasicLayout', // 全局只使用一次,防止刷新,重回导致菜单闪烁
+    component: '@/layouts/SiderLayout', // 全局只使用一次,防止刷新,重回导致菜单闪烁
     wrappers: ['@/wrappers/auth'],
     routes: [
       {

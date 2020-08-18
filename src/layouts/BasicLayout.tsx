@@ -3,7 +3,7 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import ProLayout, { PageContainer } from '@ant-design/pro-layout';
 
 import { useIntl, IRouteComponentProps, NavLink, useModel, IRoute } from 'umi';
-import { Space } from 'antd';
+import { Space, Divider } from 'antd';
 import { stringify } from 'qs';
 //import useMergeValue from 'use-merge-value'
 
@@ -60,9 +60,14 @@ const getDifferentSettingPath = (state: Partial<DefaultSettings>) => {
 };
 
 const Layout = (
-  props: IRouteComponentProps /*IRouteComponentProps BasicLayoutProps*/,
+  props: IRouteComponentProps & {
+    onClickLogo: (e: any) => void;
+  } /*IRouteComponentProps BasicLayoutProps*/,
 ) => {
   const i18n = useIntl();
+
+  const { onClickLogo } = props;
+  const titleToUrl = '/';
 
   //const { initialState, setInitialState } = useModel('@@initialState');
   const { menus, settings, setSettings } = useModel('useAuthUser');
@@ -125,6 +130,8 @@ const Layout = (
         // location={{pathname: '/welcom'}}
         logo={<LogoIcon style={{ width: '32px' }} />}
         title={settings.title}
+        //style={{zIndex: 100}}
+        contentStyle={{ zIndex: 3 }}
         //menu={{ locale: true }}
         siderWidth={200}
         //collapsedWidth={48}
@@ -162,10 +169,11 @@ const Layout = (
         // links={["1234"]}
         footerRender={() => <Footer />}
         menuHeaderRender={(logo, title) => (
-          <>
-            <NavLink to="/account/center"> {logo} </NavLink>&nbsp;
-            <NavLink to="/"> {title} </NavLink>
-          </>
+          <div>
+            <a onClick={onClickLogo}>{logo}</a>
+            <Divider type={'vertical'} />
+            <NavLink to={titleToUrl}>{title}</NavLink>
+          </div>
         )}
         menuExtraRender={({ collapsed }) =>
           settings.menuSearch &&
@@ -179,14 +187,20 @@ const Layout = (
         }
         disableContentMargin={true}
         // breadcrumbRender={(route)=>route}
+        //children={
+        //  unaccessible ? (
+        //    <Error403 />
+        //  ) : (
+        //      <PageContainer children={props.children} />
+        //    )
+        //}
         children={
           unaccessible ? (
             <Error403 />
           ) : (
-            <PageContainer children={props.children} />
+            <div style={{ zIndex: 1 }}>{props.children}</div>
           )
         }
-        // children={unaccessible ? <Error403 /> : (props.children)}
         //pure={false}
         //{...props}
         //{...settings}

@@ -1,0 +1,10 @@
+description: "面向分布式架构和微服务的应用配置管理工具"
+firstChar: "y"
+helpCategoryId: null
+icon: "icon-logo-new icon-acms"
+link: "https://acmnext.console.aliyun.com"
+name: "应用配置管理"
+openStatus: true
+pinyin: "YINGYONGPEIZHIGUANLI"
+productId: "acms"
+shortName: null
