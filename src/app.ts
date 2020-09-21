@@ -48,6 +48,7 @@ export async function getInitialState(): Promise<{
   }
   return {
     // settings: defaultSettings
+    currentUser: undefined,
     isSignin: false,
     systemInfo,
   };

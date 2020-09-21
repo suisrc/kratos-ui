@@ -37,11 +37,15 @@ import defaultSettings, { DefaultSettings } from '../../config/defaultSettings';
 import {
   signout as logout,
   signin as login,
+  refresh as relogin,
   SigninParamsType,
 } from '@/services/signin';
+// import e from 'express';
 
 // 主题颜色
 export const primaryColor = defaultSettings.primaryColor;
+
+const KratosAccessToken = 'kratos_access_token';
 
 // https://umijs.org/plugins/plugin-model
 // 用于完成用户权限认证和获取用户
@@ -49,13 +53,14 @@ export default function(): {
   // 登陆相关
   signin: (params: SigninParamsType) => Promise<any>;
   signout: () => void;
+  // 配置访问令牌, 主要给oauth2认证使用
+  setToken: (token: API.SigninStateType) => void;
   // 配置相关
   settings: DefaultSettings;
   setSettings: (settings: DefaultSettings) => void;
+  // 菜单相关
   menus: MenuDataItem[];
   setMenus: (menus: MenuDataItem[]) => void;
-  //setCurrentUser: (user: API.CurrentUser) => void;
-  //updateCurrentUser: (userFields: {[key: string]: any}) => void;
 } {
   const { initialState, setInitialState, refresh } = useModel('@@initialState');
   // 更新用户
@@ -101,18 +106,70 @@ export default function(): {
   const signin = useCallback(async (params: SigninParamsType) => {
     const res: any = await login(params);
     if (res.success && res.data?.status === 'ok') {
-      if (res.data?.token) {
-        localStorage.setItem('kratos_token', res.data?.token);
-        //if (res.data?.refreshToken) {
-        //  localStorage.setItem('kratos_token_r', res.data?.refreshToken);
-        //  tokenRefreshRun(res.data?.refreshToken);
-        //}
-      }
-      await refresh();
-      // setTimeout(() => refresh(), 0);
+      await setToken(res.data); // 配置令牌
     }
     return res;
   }, []);
+
+  /**
+   * 配置令牌
+   */
+  const setToken = async (token: API.SigninStateType) => {
+    if (!!token?.access_token) {
+      sessionStorage.setItem(KratosAccessToken, token.accessToken);
+      //localStorage.setItem(KratosAccessToken, token);
+      if (!!token?.refresh_token) {
+        let interval: number = !!token.expires_in
+          ? token.expires_in * 500
+          : 600 * 1000; // 使用间隔时间的一半, 如果不存在, 默认使用10分钟更新一次令牌
+        if (interval < 300 * 1000) {
+          interval = 300 * 1000; // 注意, 该内容和refreshToken会形成循环递归, 所以注意,刷新间隔不能太短
+        }
+        setTimeout(
+          () => refreshToken(token.access_token, token.refresh_token),
+          interval,
+        ); // 刷新访问令牌
+      }
+      if (!initialState?.currentUser) {
+        // 当前用户未登陆
+        await refresh(); // 重置登陆信息
+        // setTimeout(() => refresh(), 0);
+      }
+    } else {
+      // 无法使用新令牌, 访问下出现异常
+      //sessionStorage.removeItem(KratosAccessToken);
+      //localStorage.removeItem(KratosAccessToken);
+      //setCurrentUser(undefined);
+    }
+  };
+
+  /**
+   * 刷新令牌
+   * @param atoken access token
+   * @param rtoken refresh token
+   */
+  const refreshToken = async (
+    atoken: string | undefined,
+    rtoken: string | undefined,
+  ) => {
+    if (!!atoken && !!rtoken) {
+      // 执行令牌刷新, 注意, 该内容和setToken形成循环递归, 一定要注意调用的方式
+      const otoken: any = sessionStorage.getItem(KratosAccessToken);
+      if (atoken === otoken) {
+        // 确定是否是本次需要更新的令牌, 由于退出重新登陆操作, 会将令牌冲掉, 导致刷新令牌异常
+        const res: any = await relogin(rtoken);
+        if (res.success && res.data?.status === 'ok') {
+          await setToken(res.data); // 配置令牌
+        } else {
+          // 令牌更新失败, 重定向到登陆页面
+          // 无法得到正确的访问令牌, 删除已有的令牌,
+          sessionStorage.removeItem(KratosAccessToken);
+          //localStorage.removeItem(KratosAccessToken);
+          gotoSigninPage(); // 无法得到正确的访问令牌, 重定向到登陆页面
+        }
+      }
+    }
+  };
 
   /**
    * 登出
@@ -123,7 +180,8 @@ export default function(): {
       //if (tokenRefreshLoading) {
       //  tokenRefreshCancel();
       //}
-      localStorage.removeItem('kratos_token');
+      sessionStorage.removeItem(KratosAccessToken);
+      //localStorage.removeItem(KratosAccessToken);
       setCurrentUser(undefined);
     }
     gotoSigninPage();
@@ -133,6 +191,7 @@ export default function(): {
   return {
     signin,
     signout,
+    setToken,
     settings,
     setSettings,
     menus,
@@ -145,8 +204,9 @@ export default function(): {
  * @param key
  */
 export const hasAuthToken = () => {
-  // document.cookie.includes('kratos_token')
-  return !!localStorage.getItem('kratos_token');
+  // document.cookie.includes(KratosAccessToken)
+  return !!sessionStorage.getItem(KratosAccessToken);
+  //return !!localStorage.getItem(KratosAccessToken);
 };
 
 /**
@@ -157,15 +217,17 @@ export const hasAuthToken = () => {
  * @param options
  */
 export const authorization = (url: string, options: any) => {
-  let token = localStorage.getItem('kratos_token');
+  let token = sessionStorage.getItem(KratosAccessToken);
+  //let token = localStorage.getItem(KratosAccessToken);
+  if (!token) {
+    return { url, options };
+  }
   return {
     url,
-    options: !token
-      ? options
-      : {
-          ...options,
-          headers: { ...options.headers, authorization: `Bearer ${token}` },
-        },
+    options: {
+      ...options,
+      headers: { ...options.headers, authorization: `Bearer ${token}` },
+    },
   };
 };
 /**

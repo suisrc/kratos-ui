@@ -36,11 +36,18 @@ export const SigninType: Record<string, string> = {
  * @param params
  */
 export async function signin(params: SigninParamsType): Promise<any> {
-  return request('/api/v1/signin/account', {
+  return request('/api/v1/signin', {
     method: 'POST',
     data: params,
     skipErrorHandler: true,
   });
+}
+
+/**
+ * 刷新令牌
+ */
+export async function refresh(token: string): Promise<any> {
+  return request(`/api/v1/signin/refresh?refresh_token=${token}`);
 }
 
 /**
@@ -55,5 +62,5 @@ export async function queryCaptcha(mobile: string): Promise<any> {
  * 登出
  */
 export async function signout(): Promise<any> {
-  return request('/api/v1/signin/signout');
+  return request('/api/v1/signout');
 }

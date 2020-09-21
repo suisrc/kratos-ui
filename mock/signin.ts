@@ -6,13 +6,13 @@ export default {
   // 密码错误 admin xxxxxx
   // 角色登陆 role  123456
   // 手机登陆 不限定
-  'POST  /api/v1/signin/account': (req: Request, res: Response) => {
+  'POST  /api/v1/signin': (req: Request, res: Response) => {
     const { password, username, type, mobile, captcha, role } = req.body;
     if (password === '123456' && username === 'admin') {
       res.send(
         getResult({
           status: 'ok', // ok, error
-          token: '12345678',
+          accessToken: '12345678',
         }),
       );
       return;
@@ -40,7 +40,7 @@ export default {
       res.send(
         getResult({
           status: 'ok',
-          token: '12345679',
+          accessToken: '12345679',
         }),
       );
       return;
@@ -50,7 +50,7 @@ export default {
       res.send(
         getResult({
           status: 'ok',
-          token: '22345678',
+          accessToken: '22345678',
         }),
       );
       return;
@@ -74,7 +74,7 @@ export default {
       }),
     );
   },
-  'GET /api/v1/signin/signout': (req: Request, res: Response) => {
+  'GET /api/v1/signout': (req: Request, res: Response) => {
     // 登出
     res.send(getResult(null));
   },

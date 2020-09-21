@@ -97,14 +97,17 @@ declare namespace API {
     // token会持久化存储,这就导致浏览器重新打开,用户还是登陆状态
     // 基于这个问题,服务器会将用于唯一标识token_client_id存储在cookie中,以解决这个问题
     // 是否需要认证,是token中的内容决定的
-    token?: string; // 访问令牌,系统基于jwt认证时候,需要使用,一般为10个小时
-    // 🐖:下面是设计需要,当前环境并没有适配和支持
+    access_token?: string; // 访问令牌,系统基于jwt认证时候,需要使用,一般为2个小时
     // ======================================================, 可以在AuthUser.ts中做出更改
     // 如果refresh_token不存在,即系统不希望存在刷新令牌的存在
     // 用户体验上可能存在问题,即当令牌过期后,需要重新登陆,
     // 刷新令牌则每一个小时,会想认证服务器重新获取认证信息
     // 注意,重新获取的认证接口调用为后端服务器行为, 非前端直接调用
-    refreshToken?: string; // 刷新令牌,比token有着更长的有效期,一般为7天,
+    refresh_token?: string; // 刷新令牌,比token有着更长的有效期,一般为7天,
+
+    token_type?: string; // 令牌类型
+    expires_at?: number; // 过期时间
+    expires_in?: number; // 过期时间
 
     // 消息， 优先显示
     message?: string;
