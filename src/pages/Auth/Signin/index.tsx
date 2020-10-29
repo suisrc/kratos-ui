@@ -15,7 +15,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useModel, useIntl, useRequest } from 'umi';
 
 import { Sign3rdType, sign3rd, querySign3rdApp } from '@/services/signin3rd';
-import { SigninParamsType, SigninType } from '@/services/signin';
+import { SigninParamsType, queryCaptcha } from '@/services/signin';
 
 import LogoIcon from '@/assets/LogoIcon';
 import SigninFrom from '@/components/Signin';
@@ -59,6 +59,7 @@ const Signin: React.FC<{}> = () => {
 
   const [autoSignin, setAutoSignin] = useState(false);
   const [type, setType] = useState<string>('account');
+  const [code, setCode] = useState<string>();
 
   const [signinState, setSigninState] = useState<API.SigninStateType>({});
   const [submitting, setSubmitting] = useState(false);
@@ -70,11 +71,27 @@ const Signin: React.FC<{}> = () => {
   //   //return <PageLoading />;
   // }
 
-  const handleSubmit = async (values: SigninParamsType) => {
+  const handleSubmit = async (params: any) => {
     setSubmitting(true);
     try {
       // 登录
-      const msg = await signin({ ...values, type: SigninType[type] });
+      const loginType = type; // 暂存当前的登陆方式
+      let values: SigninParamsType = {};
+      if (loginType === 'account') {
+        values = {
+          ...values,
+          username: params.username,
+          password: params.password,
+        };
+      } else if (loginType === 'mobile') {
+        values = {
+          ...values,
+          username: params.mobile,
+          captcha: params.captcha,
+          code: code,
+        };
+      }
+      const msg = await signin(values);
       //const {data} = useRequest(() => signin({ ...values, type: SigninType[type] }));
       if (msg.success && msg.data?.status === 'ok') {
         message.success(
@@ -86,15 +103,18 @@ const Signin: React.FC<{}> = () => {
         // replaceGoto(); 重定向内容在/wrappers/noauth中完成
         // setTimeout(() => refresh(), 0); // 使用initialState模式,刷新全局用户信息
         return;
-      }
-      if (!msg.success) {
+      } else if (!msg.success && !msg.errorMessage) {
         setSigninState({});
         message.error(
           i18n.formatMessage({ id: 'page.auth.signin.func.submit.error' }),
         );
       } else {
         // 如果失败去设置用户错误信息
-        setSigninState(msg.data ? { ...msg.data, type } : {});
+        setSigninState({
+          status: 'error',
+          type: loginType,
+          message: msg.errorMessage,
+        });
       }
     } catch (error) {
       setSigninState({});
@@ -103,6 +123,24 @@ const Signin: React.FC<{}> = () => {
       );
     }
     setSubmitting(false);
+  };
+  // 发送验证码
+  const handleCaptcha = async (params: any) => {
+    const res = await queryCaptcha(params);
+    if (res.success && res.data?.status === 'ok') {
+      message.success(
+        i18n.formatMessage({ id: 'page.auth.signin.func.captcha.success' }),
+      );
+      // 缓存签名code内容
+      setCode(res.data.code);
+    } else if (!res.success && !res.errorMessage) {
+      message.error(
+        i18n.formatMessage({ id: 'page.auth.signin.func.captcha.error' }),
+      );
+    } else {
+      message.error(res.errorMessage);
+    }
+    return res;
   };
   const { status, type: loginType, roles, message: loginMessage } = signinState;
   // const  clearRoles = () => {
@@ -236,6 +274,8 @@ const Signin: React.FC<{}> = () => {
                     ]}
                   />
                   <Captcha
+                    accountField="mobile"
+                    queryCaptcha={mobile => handleCaptcha({ mobile })}
                     name="captcha"
                     placeholder={i18n.formatMessage({
                       id: 'page.auth.signin.tabs.mobile.captcha.placeholder',

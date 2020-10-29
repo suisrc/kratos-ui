@@ -4,8 +4,8 @@ import {
   SettingOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Avatar, Menu, Spin } from 'antd';
-import { ClickParam } from 'antd/es/menu';
+import { Avatar, Menu, Spin, message } from 'antd';
+// import { ClickParam } from 'antd/es/menu';
 import { history, useModel, useIntl } from 'umi';
 
 import HeaderDropdown from './HeaderDropdown';
@@ -21,11 +21,17 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
 
   const i18n = useIntl();
 
-  const onMenuClick = useCallback((event: ClickParam) => {
+  const onMenuClick = useCallback(async (event: any /*ClickParam*/) => {
     const { key } = event;
     if (key === 'signout') {
       // await signout();
-      signout();
+      const res = await signout();
+      if (res?.success) {
+        // 登出成功
+        message.success(
+          i18n.formatMessage({ id: 'page.auth.signout.func.success' }),
+        );
+      }
       return;
     }
     history.push(`/account/${key}`);

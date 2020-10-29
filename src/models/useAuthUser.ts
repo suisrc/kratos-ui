@@ -24,7 +24,7 @@
  * 但是，目前无法做到initialState和当前环境中的currentUser内容联动
  * 所以，目前只能保留signin和signout的两个方法
  */
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 
 //import { message } from 'antd';
 import { useRequest, useModel, history } from 'umi';
@@ -46,13 +46,14 @@ import {
 export const primaryColor = defaultSettings.primaryColor;
 
 const KratosAccessToken = 'kratos_access_token';
+const KratosRefreshToken = 'kratos_refresh_token';
 
 // https://umijs.org/plugins/plugin-model
 // 用于完成用户权限认证和获取用户
 export default function(): {
   // 登陆相关
   signin: (params: SigninParamsType) => Promise<any>;
-  signout: () => void;
+  signout: () => Promise<any>;
   // 配置访问令牌, 主要给oauth2认证使用
   setToken: (token: API.SigninStateType) => void;
   // 配置相关
@@ -76,12 +77,31 @@ export default function(): {
   });
   const [menus, setMenus] = useState<MenuDataItem[]>([...defaultMenus]);
 
+  // 登陆标识
+  const isSignin = useRef<boolean>(false);
+  // 令牌刷新标识
+  const runRefreshHandle = useRef<NodeJS.Timeout | undefined>();
+
   // 当initialState中的currentUser发生变化时候触发
   useEffect(() => {
     if (initialState?.currentUser?.menus) {
       setMenus([...initialState?.currentUser?.menus]);
     } else {
       setMenus([...defaultMenus]);
+    }
+    // 判定是否登陆
+    isSignin.current = !!initialState?.currentUser;
+
+    // 启动令牌刷新
+    if (isSignin.current && runRefreshHandle.current === undefined) {
+      // 没有执行更新令牌,需要更新令牌
+      const token = sessionStorage.getItem(KratosRefreshToken);
+      if (!!token && token != 'undefined') {
+        refreshToken(token); // 立即启动令牌刷新
+      }
+    } else if (!isSignin.current && runRefreshHandle.current != undefined) {
+      clearTimeout(runRefreshHandle.current);
+      runRefreshHandle.current = undefined;
     }
   }, [initialState?.currentUser]);
 
@@ -106,6 +126,7 @@ export default function(): {
   const signin = useCallback(async (params: SigninParamsType) => {
     const res: any = await login(params);
     if (res.success && res.data?.status === 'ok') {
+      setCurrentUser(undefined); // 清除之前人员的登陆信息,重新刷新用户信息
       await setToken(res.data); // 配置令牌
     }
     return res;
@@ -116,46 +137,49 @@ export default function(): {
    */
   const setToken = async (token: API.SigninStateType) => {
     if (!!token?.access_token) {
-      sessionStorage.setItem(KratosAccessToken, token.accessToken);
+      sessionStorage.setItem(KratosAccessToken, token.access_token);
       //localStorage.setItem(KratosAccessToken, token);
       if (!!token?.refresh_token) {
+        sessionStorage.setItem(KratosRefreshToken, token.refresh_token);
         let interval: number = !!token.expires_in
           ? token.expires_in * 500
           : 600 * 1000; // 使用间隔时间的一半, 如果不存在, 默认使用10分钟更新一次令牌
         if (interval < 300 * 1000) {
           interval = 300 * 1000; // 注意, 该内容和refreshToken会形成循环递归, 所以注意,刷新间隔不能太短
         }
-        setTimeout(
-          () => refreshToken(token.access_token, token.refresh_token),
+        // interval = 10000; // 测试使用
+        // sessionStorage.setItem(KratosRefreshInterval, interval + '')
+        if (runRefreshHandle.current != undefined) {
+          clearTimeout(runRefreshHandle.current); // 关闭令牌句柄
+          runRefreshHandle.current = undefined; // 清除令牌句柄
+        }
+        runRefreshHandle.current = setTimeout(
+          () => refreshToken(token.refresh_token),
           interval,
         ); // 刷新访问令牌
       }
-      if (!initialState?.currentUser) {
-        // 当前用户未登陆
-        await refresh(); // 重置登陆信息
+      if (!isSignin.current) {
         // setTimeout(() => refresh(), 0);
+        await refresh(); // 当前用户未登陆, 重置登陆信息
       }
     } else {
       // 无法使用新令牌, 访问下出现异常
-      //sessionStorage.removeItem(KratosAccessToken);
-      //localStorage.removeItem(KratosAccessToken);
+      sessionStorage.removeItem(KratosAccessToken);
+      sessionStorage.removeItem(KratosRefreshToken);
+      // localStorage.removeItem(KratosAccessToken);
       //setCurrentUser(undefined);
     }
   };
 
   /**
    * 刷新令牌
-   * @param atoken access token
    * @param rtoken refresh token
    */
-  const refreshToken = async (
-    atoken: string | undefined,
-    rtoken: string | undefined,
-  ) => {
-    if (!!atoken && !!rtoken) {
+  const refreshToken = async (rtoken: string | undefined) => {
+    if (!!rtoken) {
       // 执行令牌刷新, 注意, 该内容和setToken形成循环递归, 一定要注意调用的方式
-      const otoken: any = sessionStorage.getItem(KratosAccessToken);
-      if (atoken === otoken) {
+      const otoken: any = sessionStorage.getItem(KratosRefreshToken);
+      if (rtoken === otoken) {
         // 确定是否是本次需要更新的令牌, 由于退出重新登陆操作, 会将令牌冲掉, 导致刷新令牌异常
         const res: any = await relogin(rtoken);
         if (res.success && res.data?.status === 'ok') {
@@ -164,6 +188,7 @@ export default function(): {
           // 令牌更新失败, 重定向到登陆页面
           // 无法得到正确的访问令牌, 删除已有的令牌,
           sessionStorage.removeItem(KratosAccessToken);
+          sessionStorage.removeItem(KratosRefreshToken);
           //localStorage.removeItem(KratosAccessToken);
           gotoSigninPage(); // 无法得到正确的访问令牌, 重定向到登陆页面
         }
@@ -180,11 +205,13 @@ export default function(): {
       //if (tokenRefreshLoading) {
       //  tokenRefreshCancel();
       //}
-      sessionStorage.removeItem(KratosAccessToken);
-      //localStorage.removeItem(KratosAccessToken);
-      setCurrentUser(undefined);
     }
+    sessionStorage.removeItem(KratosAccessToken);
+    sessionStorage.removeItem(KratosRefreshToken);
+    //localStorage.removeItem(KratosAccessToken);
+    setCurrentUser(undefined);
     gotoSigninPage();
+    return res;
   }, []);
 
   //console.log(`access=> ${JSON.stringify(initialState?.currentUser)}`);
@@ -219,7 +246,7 @@ export const hasAuthToken = () => {
 export const authorization = (url: string, options: any) => {
   let token = sessionStorage.getItem(KratosAccessToken);
   //let token = localStorage.getItem(KratosAccessToken);
-  if (!token) {
+  if (!token || token === 'undefined') {
     return { url, options };
   }
   return {
@@ -245,6 +272,8 @@ export const unauthorization = (response: any, options: any) => {
   //}
   if (response.status === 401) {
     //location.href = '/auth/signin';
+    sessionStorage.removeItem(KratosAccessToken);
+    sessionStorage.removeItem(KratosRefreshToken);
     gotoSigninPage();
   }
   return response;

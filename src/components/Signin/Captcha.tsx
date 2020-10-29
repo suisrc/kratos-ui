@@ -6,13 +6,15 @@ import omit from 'omit.js';
 import { FormItemProps } from 'antd/es/form/FormItem';
 
 //import { useRequest } from 'umi';
-import { queryCaptcha } from '@/services/signin';
+//import { queryCaptcha } from '@/services/signin';
 
 import Context, { ContextProps } from './Context';
 import styles from './index.less';
 import gstyle from '@/global.less';
 
 export interface CaptchaProps extends Partial<FormItemProps> {
+  accountField: string; // 默认mobile
+  queryCaptcha: (value: string) => Promise<any>;
   name?: string;
   style?: React.CSSProperties;
   placeholder?: string;
@@ -62,6 +64,8 @@ const Captcha: React.FC<CaptchaProps> = props => {
     defaultValue,
     rules,
     name,
+    accountField,
+    queryCaptcha,
     getCaptchaButtonText,
     getCaptchaSecondText,
     updateActive,
@@ -70,8 +74,8 @@ const Captcha: React.FC<CaptchaProps> = props => {
     ...restProps
   } = props;
 
-  const onGetCaptcha = useCallback(async (mobile: string) => {
-    const result = await queryCaptcha(mobile);
+  const onGetCaptcha = useCallback(async (value: string) => {
+    const result = await queryCaptcha(value);
     if (result.success === false) {
       return;
     }
@@ -108,7 +112,7 @@ const Captcha: React.FC<CaptchaProps> = props => {
 
   return (
     <FormItem shouldUpdate noStyle>
-      {({ getFieldValue }) => (
+      {({ getFieldValue, getFieldError }) => (
         <Row gutter={8}>
           <Col span={16}>
             <FormItem name={name} {...options}>
@@ -117,11 +121,15 @@ const Captcha: React.FC<CaptchaProps> = props => {
           </Col>
           <Col span={8}>
             <Button
-              disabled={timing}
+              disabled={
+                timing ||
+                !getFieldValue(accountField) ||
+                getFieldError(accountField).length > 0
+              }
               className={styles.getCaptcha}
               size="large"
               onClick={() => {
-                const value = getFieldValue('mobile');
+                const value = getFieldValue(accountField);
                 onGetCaptcha(value);
               }}
             >

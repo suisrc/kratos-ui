@@ -23,7 +23,7 @@ export type DefaultSettings = Settings & {
 
 const defaultSettings: DefaultSettings = {
   navTheme: 'light', // light, dark
-  primaryColor: '#F5222D',
+  primaryColor: '#13C2C2',
   layout: 'side', // side, top
   contentWidth: 'Fluid', // Fluid, Fixed
   fixedHeader: true,

@@ -1,7 +1,11 @@
 export default {
   'page.auth.signin.func.submit.success': '登录成功！',
   'page.auth.signin.func.submit.error': '登录失败，请稍后重试！',
+  'page.auth.signin.func.captcha.success': '验证码发送成功',
+  'page.auth.signin.func.captcha.error': '验证码发送失败，请稍后重试！',
   'page.auth.signin.func.submit.button': '登录',
+
+  'page.auth.signout.func.success': '登出成功！',
 
   'page.auth.signin.logo.title': 'Kratos',
   'page.auth.signin.logo.desc': '一个云原生权限控制系统',

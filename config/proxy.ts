@@ -20,7 +20,7 @@ export default {
     '/api/': {
       target: 'http://vsc-lys2go-0.vsc-lys-dev.ws01.svc',
       changeOrigin: true,
-      pathRewrite: { '^': '' },
+      pathRewrite: { '^/api/v1/': '/api/' },
     },
   },
 };
